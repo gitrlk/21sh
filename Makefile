@@ -6,7 +6,7 @@
 #    By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/04/19 14:14:34 by jecarol           #+#    #+#              #
-#    Updated: 2018/01/04 18:04:30 by rlkcmptr         ###   ########.fr        #
+#    Updated: 2018/01/05 16:09:28 by rlkcmptr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 NAME = 21sh
@@ -37,7 +37,7 @@ SUCCESS = $(C_GOOD)COMPILATION SUCCEEDED
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@make re -C ./libft/
+	# @make re -C ./libft/
 	@echo $(C_DURING)"Compiling" [ $(NAME) . . . ]
 	@$(CC) $(CFLAGS) $^ $(LIB) -o $@
 	@echo $(SUCCESS)
@@ -48,12 +48,12 @@ $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
 
 clean:
 		@/bin/rm -rf $(OBJS_DIR) $(NAME).dSYM
-		@make clean -C libft/
+		# @make clean -C libft/
 		@echo $(C_GOOD)"OBJ FILES DELETED"
 
 fclean: clean
 		@/bin/rm -rf $(NAME)
-		@make fclean -C libft/
+		# @make fclean -C libft/
 		@echo $(C_GOOD)"EXECUTABLE FILE DELETED"
 
 re: fclean all

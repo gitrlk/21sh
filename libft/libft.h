@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 18:48:21 by jecarol           #+#    #+#             */
-/*   Updated: 2016/12/14 15:49:07 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/01/05 15:30:09 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,23 @@
 # include <unistd.h>
 # include <string.h>
 # include <stdlib.h>
+
+# define DEFAULT "\033[0m"
+# define BLACK "\033[30m"
+# define RED "\033[31m"
+# define GREEN "\033[32m"
+# define YELLOW "\033[33m"
+# define BLUE "\033[34m"
+# define PURPLE "\033[35m"
+# define TURQUOISE "\033[36m"
+# define REDCOVER "\033[41m"
+# define GREENCOVER "\033[42m"
+# define YELLOWCOVER "\033[43m"
+# define BLUECOVER "\033[44m"
+# define PURPLECOVER "\033[45m"
+# define UGLYBLUECOVER "\033[46m"
+# define GREYCOVER "\033[47m"
+# define TEST "\033[51m"
 
 typedef struct		s_list
 {
