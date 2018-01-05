@@ -6,7 +6,7 @@
 #    By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/04/19 14:14:34 by jecarol           #+#    #+#              #
-#    Updated: 2018/01/05 16:09:28 by rlkcmptr         ###   ########.fr        #
+#    Updated: 2018/01/05 17:27:57 by rfabre           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 NAME = 21sh
@@ -39,7 +39,7 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	# @make re -C ./libft/
 	@echo $(C_DURING)"Compiling" [ $(NAME) . . . ]
-	@$(CC) $(CFLAGS) $^ $(LIB) -o $@
+	@$(CC) $(CFLAGS) $^ $(LIB) -o $(NAME) -ltermcap
 	@echo $(SUCCESS)
 
 $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
