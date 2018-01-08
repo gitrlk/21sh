@@ -6,7 +6,7 @@
 #    By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/07 12:20:17 by jecarol           #+#    #+#              #
-#    Updated: 2016/12/14 15:48:28 by jecarol          ###   ########.fr        #
+#    Updated: 2018/01/07 19:08:17 by rfabre           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -75,6 +75,8 @@ SRC = 	ft_atoi.c \
 	ft_lstmap.c \
 	ft_printstrs.c \
 	ft_lstforeach.c \
+	ft_freejoinstr.c\
+	ft_strndup.c
 
 OBJ = $(SRC:.c=.o)
 

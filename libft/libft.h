@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/22 18:48:21 by jecarol           #+#    #+#             */
-/*   Updated: 2018/01/05 15:30:09 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/01/07 19:08:05 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,5 +102,6 @@ void				ft_lstiter(t_list *lst, void(*f)(t_list *elem));
 t_list				*ft_lstmap(t_list *lst, t_list *(*f)(t_list *elem));
 void				ft_printstrs(char **str);
 void				ft_lstforeach(t_list *begin_list, void (*f)(void *));
-
+char				*ft_freejoinstr(char *dst, char *src);
+char				*ft_strndup(const char *s, size_t n);
 #endif
