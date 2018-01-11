@@ -39,12 +39,21 @@ void ft_insert(char *buf, t_edit *line)
 	char *tmp2;
 	char *tmp3;
 
-	tmp = ft_strndup(line->line, line->cursor_pos -1);
-	tmp2 = ft_strsub(line->line, line->cursor_pos - 1 , line->max_size);
-	tmp3 = ft_freejoinstr(tmp, buf);
-	free (line->line);
-	line->line = ft_freejoinstr(tmp3, tmp2);
-	free (tmp2);
+	if (line->cursor_pos)
+	{
+		tmp = ft_strndup(line->line, line->cursor_pos - 1);
+		tmp2 = ft_strsub(line->line, line->cursor_pos - 1 , line->max_size);
+		tmp3 = ft_freejoinstr(tmp, buf);
+		free (line->line);
+		line->line = ft_freejoinstr(tmp3, tmp2);
+		free (tmp2);
+	}
+	else
+	{
+		tmp = NULL;
+		tmp2 = NULL;
+		tmp3 = NULL;
+	}
 }
 
 void handle_key(char *buf, t_edit *line)
@@ -53,20 +62,13 @@ void handle_key(char *buf, t_edit *line)
 	{
 		line->cursor_pos++;
 		line->max_size++;
-		if (line->line_number == 0)
-		{
-			if ((line->cursor_pos + 2) == line->sz.ws_col)
-			{
-				ft_putstr("LALALALAL");
-				line->line_number++;
-			}
-		}
-		else if ((line->line_number > 0) && (line->cursor_pos == line->sz.ws_col))
-		{
-			line->line_number++;
-			ft_putstr("ICICICII");
-			ft_putnbr(line->line_number);
-		}
+	}
+	if (line->cursor_pos == line->sz.ws_col - 1)
+	{
+		line->line_number++;
+		line->cursor_pos = 0;
+		line->max_size = 0;
+		ft_putnbr(line->line_number);
 	}
 	if (buf[0] == 27)
 		ft_isarrow(buf, line);
@@ -81,9 +83,9 @@ void handle_key(char *buf, t_edit *line)
 
 void			ft_line_reset(t_edit *line)
 {
-	line->cursor_pos = 0;
+	line->cursor_pos = 2;
 	line->line_number = 0;
-	line->max_size = 0;
+	line->max_size = 2;
 	line->line = ft_memalloc(sizeof(char));
 }
 
