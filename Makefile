@@ -48,12 +48,12 @@ $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
 
 clean:
 		@/bin/rm -rf $(OBJS_DIR) $(NAME).dSYM
-		# @make clean -C libft/
+		@make clean -C libft/
 		@echo $(C_GOOD)"OBJ FILES DELETED"
 
 fclean: clean
 		@/bin/rm -rf $(NAME)
-		# @make fclean -C libft/
+		@make fclean -C libft/
 		@echo $(C_GOOD)"EXECUTABLE FILE DELETED"
 
 re: fclean all
