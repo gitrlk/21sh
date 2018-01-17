@@ -63,12 +63,12 @@ void handle_key(char *buf, t_edit *line)
 		line->cursor_pos++;
 		line->max_size++;
 	}
-	if (line->cursor_pos == line->sz.ws_col - 1)
+	if (line->cursor_pos == line->sz.ws_col)
 	{
 		line->line_number++;
 		line->cursor_pos = 0;
 		line->max_size = 0;
-		ft_putnbr(line->line_number);
+		// ft_putnbr(line->line_number);
 	}
 	if (buf[0] == 27)
 		ft_isarrow(buf, line);
