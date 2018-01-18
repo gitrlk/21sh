@@ -84,12 +84,6 @@ void ft_delete(t_edit *line)
   	tmp = ft_strndup(line->line, (line->cursor_pos - 3));
 		tmp2 = ft_strsub(line->line, (line->cursor_pos - 2), (ft_strlen(line->line) - line->cursor_pos) + 3);
 		free (line->line);
-		ft_putchar('\n');
-		ft_putstr("tmp1->");
-		ft_putstr(tmp);
-		ft_putchar('\n');
-		ft_putstr("tmp2->");
-		ft_putstr(tmp2);
 		line->line = ft_strjoin(tmp, tmp2);
 		free (tmp);
 		free (tmp2);
