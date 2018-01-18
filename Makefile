@@ -12,7 +12,7 @@
 NAME = 21sh
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror
 
 SRCS_LIST = main.c line_movement.c
 
@@ -37,7 +37,7 @@ SUCCESS = $(C_GOOD)COMPILATION SUCCEEDED
 all: $(NAME)
 
 $(NAME): $(OBJS)
-	@make re -C ./libft/
+	@make -C ./libft/
 	@echo $(C_DURING)"Compiling" [ $(NAME) . . . ]
 	@$(CC) $(CFLAGS) $^ $(LIB) -o $(NAME) -ltermcap
 	@echo $(SUCCESS)
@@ -47,7 +47,7 @@ $(OBJS_DIR)%.o : $(SRCS_DIR)%.c
 	@$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
 
 clean:
-		@/bin/rm -rf $(OBJS_DIR) $(NAME).dSYM
+		@/bin/rm -rf $(OBJS_DIR)
 		@make clean -C libft/
 		@echo $(C_GOOD)"OBJ FILES DELETED"
 

@@ -63,13 +63,6 @@ void handle_key(char *buf, t_edit *line)
 		line->cursor_pos++;
 		line->max_size++;
 	}
-	if (line->cursor_pos == line->sz.ws_col)
-	{
-		line->line_number++;
-		line->cursor_pos = 0;
-		line->max_size = 0;
-		// ft_putnbr(line->line_number);
-	}
 	if (buf[0] == 27)
 		ft_isarrow(buf, line);
 	else if ((line->cursor_pos == line->max_size) && (ft_isprint(buf[0])))
@@ -84,7 +77,6 @@ void handle_key(char *buf, t_edit *line)
 void			ft_line_reset(t_edit *line)
 {
 	line->cursor_pos = 2;
-	line->line_number = 0;
 	line->max_size = 2;
 	line->line = ft_memalloc(sizeof(char));
 }
