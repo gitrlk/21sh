@@ -57,8 +57,6 @@ void ft_insert(char *buf, t_edit *line)
 			tputs(tgetstr("le", NULL), 1, ft_pointchar);
 			i++;
 		}
-
-
 	}
 	else
 	{
@@ -84,8 +82,14 @@ void ft_delete(t_edit *line)
 	else if ((line->cursor_pos != line->max_size) && (line->cursor_pos > 2))
 	{
   	tmp = ft_strndup(line->line, (line->cursor_pos - 3));
-		tmp2 = ft_strsub(line->line, (line->cursor_pos - 2), (ft_strlen(line->line) - line->cursor_pos) + 1);
+		tmp2 = ft_strsub(line->line, (line->cursor_pos - 2), (ft_strlen(line->line) - line->cursor_pos) + 3);
 		free (line->line);
+		ft_putchar('\n');
+		ft_putstr("tmp1->");
+		ft_putstr(tmp);
+		ft_putchar('\n');
+		ft_putstr("tmp2->");
+		ft_putstr(tmp2);
 		line->line = ft_strjoin(tmp, tmp2);
 		free (tmp);
 		free (tmp2);
