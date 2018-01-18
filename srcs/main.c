@@ -38,15 +38,27 @@ void ft_insert(char *buf, t_edit *line)
 	char *tmp;
 	char *tmp2;
 	char *tmp3;
+	size_t i;
 
+	i = 0;
 	if (line->cursor_pos)
 	{
-		tmp = ft_strndup(line->line, line->cursor_pos - 1);
-		tmp2 = ft_strsub(line->line, line->cursor_pos - 1 , line->max_size);
+		tmp = ft_strndup(line->line, line->cursor_pos - 3);
+		tmp2 = ft_strsub(line->line, line->cursor_pos - 3 , line->max_size);
+		ft_putchar(buf[0]);
 		tmp3 = ft_freejoinstr(tmp, buf);
 		free (line->line);
 		line->line = ft_freejoinstr(tmp3, tmp2);
 		free (tmp2);
+		tputs(tgetstr("cd", NULL), 1, ft_pointchar);
+		ft_putstr(tmp2);
+		while (i < ft_strlen(tmp2))
+		{
+			tputs(tgetstr("le", NULL), 1, ft_pointchar);
+			i++;
+		}
+
+
 	}
 	else
 	{
@@ -71,7 +83,9 @@ void handle_key(char *buf, t_edit *line)
 		ft_putchar(buf[0]);
 	}
 	else if ((line->cursor_pos != line->max_size) && (ft_isprint(buf[0])))
+	{
 		ft_insert(buf, line);
+	}
 }
 
 void			ft_line_reset(t_edit *line)

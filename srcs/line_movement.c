@@ -12,12 +12,6 @@ void ft_left_arrow(char *buf, t_edit *line)
 	}
 }
 
-
-// IF Max_size % WS_COL == 0 = RETURN line
-// max_size incrementer a chaque caractere
-// cursor_pos == max
-
-
 void ft_right_arrow(char *buf, t_edit *line)
 {
 	if (buf[2] == 67)
