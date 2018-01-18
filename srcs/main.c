@@ -41,8 +41,8 @@ void ft_insert(char *buf, t_edit *line)
 
 	if (line->cursor_pos)
 	{
-		tmp = ft_strndup(line->line, line->cursor_pos - 1);
-		tmp2 = ft_strsub(line->line, line->cursor_pos - 1 , line->max_size);
+		tmp = ft_strndup(line->line, line->cursor_pos - 3);
+		tmp2 = ft_strsub(line->line, line->cursor_pos - 3 , line->max_size);
 		tmp3 = ft_freejoinstr(tmp, buf);
 		free (line->line);
 		line->line = ft_freejoinstr(tmp3, tmp2);
@@ -55,6 +55,28 @@ void ft_insert(char *buf, t_edit *line)
 		tmp3 = NULL;
 	}
 }
+void ft_delete(t_edit *line)
+{
+	char *tmp;
+	char *tmp2;
+
+	if (line->cursor_pos == line->max_size)
+	{
+		tmp = ft_strndup(line->line, ft_strlen(line->line) - 1);
+		free (line->line);
+		line->line = tmp;
+	}
+	else if (line->cursor_pos != line->max_size)
+	{
+  	tmp = ft_strndup(line->line, (line->cursor_pos - 3));
+		tmp2 = ft_strsub(line->line, (line->cursor_pos - 2), (ft_strlen(line->line) - line->cursor_pos) + 1);
+		free (line->line);
+		line->line = ft_strjoin(tmp, tmp2);
+		free (tmp);
+		free (tmp2);
+	}
+}
+
 
 void handle_key(char *buf, t_edit *line)
 {
@@ -72,6 +94,8 @@ void handle_key(char *buf, t_edit *line)
 	}
 	else if ((line->cursor_pos != line->max_size) && (ft_isprint(buf[0])))
 		ft_insert(buf, line);
+	else if (buf[0] == 127)
+		ft_delete(line);
 }
 
 void			ft_line_reset(t_edit *line)
@@ -99,6 +123,12 @@ int				main(int ac, char **av, char **envp)
 		ft_prompt();
 		while ((ret = read(0, &buf, 3)) && ft_strcmp(buf, "\n"))
 		{
+			// ft_putnbr(buf[0]);
+			// ft_putchar('\n');
+			// ft_putnbr(buf[1]);
+			// ft_putchar('\n');
+			// ft_putnbr(buf[2]);
+			// ft_putchar('\n');
 			buf[ret] = '\0';
 			handle_key(buf, line);
 		}
