@@ -38,32 +38,61 @@ void ft_insert(char *buf, t_edit *line)
 	char *tmp;
 	char *tmp2;
 	char *tmp3;
-	size_t i;
+	int i;
+	// int stock;
 
 	i = 0;
-	if (line->cursor_pos)
+	// stock = line->cursor_pos;
+	tmp = ft_strndup(line->line, line->cursor_pos - 3);
+	tmp2 = ft_strsub(line->line, line->cursor_pos - 3 , line->max_size);
+	ft_putchar(buf[0]);
+	tmp3 = ft_freejoinstr(tmp, buf);
+	free (line->line);
+	line->line = ft_freejoinstr(tmp3, tmp2);
+	tmp2 = ft_strsub(line->line, line->cursor_pos - 2 , line->max_size);
+	while (i < line->max_size)
 	{
-		tmp = ft_strndup(line->line, line->cursor_pos - 3);
-		tmp2 = ft_strsub(line->line, line->cursor_pos - 3 , line->max_size);
-		ft_putchar(buf[0]);
-		tmp3 = ft_freejoinstr(tmp, buf);
-		free (line->line);
-		line->line = ft_freejoinstr(tmp3, tmp2);
-		free (tmp2);
-		tputs(tgetstr("cd", NULL), 1, ft_pointchar);
-		ft_putstr(tmp2);
-		while (i < ft_strlen(tmp2))
-		{
-			tputs(tgetstr("le", NULL), 1, ft_pointchar);
-			i++;
-		}
+		buf[2] = 68;
+		ft_left_arrow(buf, line);
+		i++;
 	}
-	else
+	i = 0;
+	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
+	ft_putstr(line->line);
+	line->cursor_pos = ft_strlen(line->line) + 2;
+	while ((size_t)i < ft_strlen(tmp2))
 	{
-		tmp = NULL;
-		tmp2 = NULL;
-		tmp3 = NULL;
+		buf[2] = 68;
+		ft_left_arrow(buf, line);
+		i++;
 	}
+	// while (i < stock)
+	// {
+	// 	buf[2] = 67;
+	// 	ft_right_arrow(buf, line);
+	// 	i++;
+	// }
+	// 	if ((line->max_size % line->sz.ws_col) == 0)
+	// 	{
+	// 		while ((i + line->cursor_pos) <= line->max_size)
+	// 		{
+	// 			// ft_putchar('\n');
+	// 			// ft_putstr("tmp2->");
+	// 			// ft_putstr(tmp2);
+	// 			// ft_putchar('\n');
+	// 				ft_putchar(tmp2[i]);
+	// 				i++;
+	// 		}
+	// 	}
+	// 	else
+	// 		ft_putstr(tmp2);
+	// 	i = 0;
+	// 	while ((size_t)i < ft_strlen(tmp2))
+	// 	{
+	// 		tputs(tgetstr("le", NULL), 1, ft_pointchar);
+	// 		i++;
+	// 	}
+	// free (tmp2);
 }
 
 void ft_delete(t_edit *line)
@@ -100,13 +129,13 @@ void handle_key(char *buf, t_edit *line)
 		line->cursor_pos++;
 		line->max_size++;
 	}
-	if (buf[0] == 27)
-		ft_isarrow(buf, line);
-	else if ((line->cursor_pos == line->max_size) && (ft_isprint(buf[0])))
+	if ((line->cursor_pos == line->max_size) && (ft_isprint(buf[0])))
 	{
 		line->line = ft_freejoinstr(line->line, buf);
 		ft_putchar(buf[0]);
 	}
+	else if (buf[0] == 27)
+		ft_isarrow(buf, line);
 	else if ((line->cursor_pos != line->max_size) && (ft_isprint(buf[0])))
 		ft_insert(buf, line);
 	else if (buf[0] == 127)
@@ -148,12 +177,21 @@ int				main(int ac, char **av, char **envp)
 			buf[ret] = '\0';
 			handle_key(buf, line);
 		}
-		ft_putchar('\n');
-		ft_putstr(line->line);
+		// ft_putchar('\n');
+		// ft_putstr(line->line);
 		if (ft_strequ(line->line, "clear"))
 			tputs(tgetstr("cl", NULL), 1, ft_pointchar);
 		if (ft_strequ(line->line, "exit"))
 			exit(0);
+		// ft_putchar('\n');
+		// ft_putstr("NBR / max_size / cursor_pos / line");
+		ft_putchar('\n');
+		ft_putnbr(line->max_size);
+		ft_putchar('\n');
+		ft_putnbr(line->cursor_pos);
+		ft_putchar('\n');
+		// ft_putnbr(ft_strlen(line->line) + 2);
+		// ft_putchar('\n');
 		ft_line_reset(line);
 	}
 	return 0;

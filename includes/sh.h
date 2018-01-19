@@ -26,5 +26,7 @@ typedef	struct		s_edit
 }							t_edit;
 
 void ft_isarrow(char *buf, t_edit *line);
+void ft_left_arrow(char *buf, t_edit *line);
+void ft_right_arrow(char *buf, t_edit *line);
 
 #endif
