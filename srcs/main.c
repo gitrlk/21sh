@@ -39,10 +39,8 @@ void ft_insert(char *buf, t_edit *line)
 	char *tmp2;
 	char *tmp3;
 	int i;
-	// int stock;
 
 	i = 0;
-	// stock = line->cursor_pos;
 	tmp = ft_strndup(line->line, line->cursor_pos - 3);
 	tmp2 = ft_strsub(line->line, line->cursor_pos - 3 , line->max_size);
 	ft_putchar(buf[0]);
@@ -66,58 +64,114 @@ void ft_insert(char *buf, t_edit *line)
 		ft_left_arrow(buf, line);
 		i++;
 	}
-	// while (i < stock)
-	// {
-	// 	buf[2] = 67;
-	// 	ft_right_arrow(buf, line);
-	// 	i++;
-	// }
-	// 	if ((line->max_size % line->sz.ws_col) == 0)
-	// 	{
-	// 		while ((i + line->cursor_pos) <= line->max_size)
-	// 		{
-	// 			// ft_putchar('\n');
-	// 			// ft_putstr("tmp2->");
-	// 			// ft_putstr(tmp2);
-	// 			// ft_putchar('\n');
-	// 				ft_putchar(tmp2[i]);
-	// 				i++;
-	// 		}
-	// 	}
-	// 	else
-	// 		ft_putstr(tmp2);
-	// 	i = 0;
-	// 	while ((size_t)i < ft_strlen(tmp2))
-	// 	{
-	// 		tputs(tgetstr("le", NULL), 1, ft_pointchar);
-	// 		i++;
-	// 	}
-	// free (tmp2);
 }
 
-void ft_delete(t_edit *line)
+void ft_delete(char *buf, t_edit *line)
 {
 	char *tmp;
 	char *tmp2;
+	int i;
 
+	i = 0;
 	if ((line->cursor_pos == line->max_size) && (line->cursor_pos > 2))
 	{
+		i = 0;
 		tmp = ft_strndup(line->line, ft_strlen(line->line) - 1);
 		free (line->line);
 		line->line = tmp;
+		while (i < line->max_size)
+		{
+			buf[2] = 68;
+			ft_left_arrow(buf, line);
+			i++;
+		}
 		line->cursor_pos--;
 		line->max_size--;
+		tputs(tgetstr("cd", NULL), 1, ft_pointchar);
+		ft_putstr(line->line);
+		line->cursor_pos = ft_strlen(line->line) + 2;
 	}
 	else if ((line->cursor_pos != line->max_size) && (line->cursor_pos > 2))
 	{
-  	tmp = ft_strndup(line->line, (line->cursor_pos - 3));
-		tmp2 = ft_strsub(line->line, (line->cursor_pos - 2), (ft_strlen(line->line) - line->cursor_pos) + 3);
+  		tmp = ft_strndup(line->line, (line->cursor_pos - 3));
+		tmp2 = ft_strsub(line->line, (line->cursor_pos - 2),
+				(ft_strlen(line->line) - line->cursor_pos) + 3);
 		free (line->line);
 		line->line = ft_strjoin(tmp, tmp2);
 		free (tmp);
 		free (tmp2);
+		while (i < line->max_size)
+		{
+			buf[2] = 68;
+			ft_left_arrow(buf, line);
+			i++;
+		}
 		line->cursor_pos--;
 		line->max_size--;
+		i = 0;
+		tputs(tgetstr("cd", NULL), 1, ft_pointchar);
+		ft_putstr(line->line);
+		line->cursor_pos = ft_strlen(line->line) + 2;
+		while ((size_t)i < ft_strlen(tmp2))
+		{
+			buf[2] = 68;
+			ft_left_arrow(buf, line);
+			i++;
+		}
+	}
+}
+
+void ft_wordleft(char *buf, t_edit *line)
+{
+	int i;
+
+	i = line->cursor_pos - 3;
+	if (ft_isascii(line->line[i]))
+	{
+		if (line->line[i] == ' ')
+			while(line->line[i] == ' ')
+			{
+				buf[0] = 27;
+				buf[1] = 91;
+				buf[2] = 68;
+				i--;
+				ft_left_arrow(buf, line);
+			}
+		while (line->line[i] != ' ')
+		{
+			buf[0] = 27;
+			buf[1] = 91;
+			buf[2] = 68;
+			i--;
+			ft_left_arrow(buf, line);
+		}
+	}
+}
+
+void ft_wordright(char *buf, t_edit *line)
+{
+	int i;
+
+	i = line->cursor_pos - 3;
+	if (ft_isascii(line->line[i]))
+	{
+		if (line->line[i] == ' ')
+			while(line->line[i] == ' ')
+			{
+				buf[0] = 27;
+				buf[1] = 91;
+				buf[2] = 67;
+				i++;
+				ft_right_arrow(buf, line);
+			}
+		while (line->line[i] != ' ')
+		{
+			buf[0] = 27;
+			buf[1] = 91;
+			buf[2] = 67;
+			i++;
+			ft_right_arrow(buf, line);
+		}
 	}
 }
 
@@ -139,8 +193,12 @@ void handle_key(char *buf, t_edit *line)
 	else if ((line->cursor_pos != line->max_size) && (ft_isprint(buf[0])))
 		ft_insert(buf, line);
 	else if (buf[0] == 127)
-		ft_delete(line);
-}
+		ft_delete(buf, line);
+	else if (buf[0] == 5 && buf[1] == 0 && buf[2] == 0)
+		ft_wordleft(buf, line);
+	else if (buf[0] == 18 && buf[1] == 0 && buf[2] == 0)
+		ft_wordright(buf, line);
+	}
 
 void			ft_line_reset(t_edit *line)
 {
@@ -176,6 +234,7 @@ int				main(int ac, char **av, char **envp)
 			// ft_putchar('\n');
 			buf[ret] = '\0';
 			handle_key(buf, line);
+			ft_bzero(buf, sizeof(buf));
 		}
 		// ft_putchar('\n');
 		// ft_putstr(line->line);
@@ -185,8 +244,8 @@ int				main(int ac, char **av, char **envp)
 			exit(0);
 		// ft_putchar('\n');
 		// ft_putstr("NBR / max_size / cursor_pos / line");
-		ft_putchar('\n');
-		ft_putnbr(line->max_size);
+		// ft_putchar('\n');
+		// ft_putnbr(line->max_size);
 		ft_putchar('\n');
 		ft_putnbr(line->cursor_pos);
 		ft_putchar('\n');
