@@ -140,7 +140,7 @@ void ft_wordright(char *buf, t_edit *line)
 {
 	int i;
 
-	i = line->cursor_pos - 3;
+	i = line->cursor_pos - 2;
 	if (ft_isascii(line->line[i]))
 	{
 		if (line->line[i] == ' ')
