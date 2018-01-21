@@ -175,6 +175,27 @@ void ft_wordright(char *buf, t_edit *line)
 	}
 }
 
+void ft_endkey(char *buf, t_edit *line)
+{
+	while (line->cursor_pos < line->max_size)
+	{
+		buf[0] = 27;
+		buf[1] = 91;
+		buf[2] = 67;
+		ft_right_arrow(buf, line);
+	}
+}
+
+void ft_homekey(char *buf, t_edit *line)
+{
+	while (line->cursor_pos > 2)
+	{
+		buf[0] = 27;
+		buf[1] = 91;
+		buf[2] = 68;
+		ft_left_arrow(buf, line);
+	}
+}
 
 void handle_key(char *buf, t_edit *line)
 {
@@ -188,7 +209,7 @@ void handle_key(char *buf, t_edit *line)
 		line->line = ft_freejoinstr(line->line, buf);
 		ft_putchar(buf[0]);
 	}
-	else if (buf[0] == 27)
+	if (buf[0] == 27 && buf[1] == 91 && ((buf[2] == 67) || (buf[2] == 68)))
 		ft_isarrow(buf, line);
 	else if ((line->cursor_pos != line->max_size) && (ft_isprint(buf[0])))
 		ft_insert(buf, line);
@@ -198,7 +219,11 @@ void handle_key(char *buf, t_edit *line)
 		ft_wordleft(buf, line);
 	else if (buf[0] == 18 && buf[1] == 0 && buf[2] == 0)
 		ft_wordright(buf, line);
-	}
+	else if (buf[0] == 27 && buf[1] == 91 && buf[2] == 72)
+		ft_homekey(buf, line);
+	else if (buf[0] == 27 && buf[1] == 91 && buf[2] == 70)
+		ft_endkey(buf, line);
+}
 
 void			ft_line_reset(t_edit *line)
 {
