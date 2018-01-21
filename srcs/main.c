@@ -66,6 +66,21 @@ void ft_insert(char *buf, t_edit *line)
 	}
 }
 
+void ft_move_it(int i, t_edit *line, char *buf)
+{
+	while (i < line->max_size)
+	{
+		buf[2] = 68;
+		ft_left_arrow(buf, line);
+		i++;
+	}
+	line->cursor_pos--;
+	line->max_size--;
+	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
+	ft_putstr(line->line);
+	line->cursor_pos = ft_strlen(line->line) + 2;
+}
+
 void ft_delete(char *buf, t_edit *line)
 {
 	char *tmp;
@@ -79,17 +94,7 @@ void ft_delete(char *buf, t_edit *line)
 		tmp = ft_strndup(line->line, ft_strlen(line->line) - 1);
 		free (line->line);
 		line->line = tmp;
-		while (i < line->max_size)
-		{
-			buf[2] = 68;
-			ft_left_arrow(buf, line);
-			i++;
-		}
-		line->cursor_pos--;
-		line->max_size--;
-		tputs(tgetstr("cd", NULL), 1, ft_pointchar);
-		ft_putstr(line->line);
-		line->cursor_pos = ft_strlen(line->line) + 2;
+		ft_move_it(i, line, buf);
 	}
 	else if ((line->cursor_pos != line->max_size) && (line->cursor_pos > 2))
 	{
@@ -97,21 +102,8 @@ void ft_delete(char *buf, t_edit *line)
 		tmp2 = ft_strsub(line->line, (line->cursor_pos - 2),
 				(ft_strlen(line->line) - line->cursor_pos) + 3);
 		free (line->line);
-		line->line = ft_strjoin(tmp, tmp2);
-		free (tmp);
-		free (tmp2);
-		while (i < line->max_size)
-		{
-			buf[2] = 68;
-			ft_left_arrow(buf, line);
-			i++;
-		}
-		line->cursor_pos--;
-		line->max_size--;
-		i = 0;
-		tputs(tgetstr("cd", NULL), 1, ft_pointchar);
-		ft_putstr(line->line);
-		line->cursor_pos = ft_strlen(line->line) + 2;
+		line->line = ft_freejoinstr(tmp, tmp2);
+		ft_move_it(i, line, buf);
 		while ((size_t)i < ft_strlen(tmp2))
 		{
 			buf[2] = 68;
