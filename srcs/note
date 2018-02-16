@@ -1,0 +1,4 @@
+ctrl k         11/0/0 	select mode
+ctrl u         21/0/0 	cut
+ctrl i         9/0/0   	copy
+ctrl p         16/0/0   paste

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/02 14:21:04 by jecarol           #+#    #+#             */
-/*   Updated: 2016/12/02 15:49:41 by jecarol          ###   ########.fr       */
+/*   Created: 2016/12/01 21:28:15 by rfabre            #+#    #+#             */
+/*   Updated: 2017/08/31 17:40:49 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,24 @@
 
 char		*ft_strjoin(char const *s1, char const *s2)
 {
-	char *joined;
+	char	*rslt;
+	int		i;
+	int		j;
+	int		k;
 
-	if (!s1 || !s2)
-		return (NULL);
-	joined = ft_strnew((ft_strlen(s1) + ft_strlen(s2)));
-	if (!joined)
-		return (NULL);
-	ft_strcpy(joined, s1);
-	ft_strcat(joined, s2);
-	return (joined);
+	i = -1;
+	if (s1 != NULL && s2 != NULL)
+	{
+		j = ft_strlen(s1);
+		k = ft_strlen(s2);
+		if ((rslt = (char*)malloc(sizeof(char) * (j + k + 1))) == NULL)
+			return (NULL);
+		while (*s1 != '\0')
+			rslt[++i] = *s1++;
+		while (*s2 != '\0')
+			rslt[++i] = *s2++;
+		rslt[++i] = '\0';
+		return (rslt);
+	}
+	return (NULL);
 }

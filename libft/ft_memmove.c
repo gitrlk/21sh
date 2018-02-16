@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_memmove.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/29 16:09:09 by jecarol           #+#    #+#             */
-/*   Updated: 2016/12/07 15:22:39 by jecarol          ###   ########.fr       */
+/*   Created: 2016/11/28 21:23:49 by rfabre            #+#    #+#             */
+/*   Updated: 2017/06/17 09:45:15 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,18 @@
 
 void		*ft_memmove(void *dst, const void *src, size_t len)
 {
-	size_t	i;
-	char	*dst2;
-	char	*src2;
+	size_t		i;
+	const char	*csrc;
+	char		*cdst;
 
-	dst2 = (char *)dst;
-	src2 = (char *)src;
-	i = 0;
-	if (src2 < dst2)
-	{
+	cdst = (char *)dst;
+	csrc = (char *)src;
+	i = -1;
+	if (csrc < cdst)
 		while ((int)--len >= 0)
-			dst2[len] = src2[len];
-	}
+			*(cdst + len) = *(csrc + len);
 	else
-		while (i < len)
-		{
-			dst2[i] = src2[i];
-			i++;
-		}
-	return (dst2);
+		while (++i < len)
+			*(cdst + i) = *(csrc + i);
+	return (cdst);
 }

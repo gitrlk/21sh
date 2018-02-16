@@ -3,49 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/12/07 12:24:32 by jecarol           #+#    #+#             */
-/*   Updated: 2016/12/07 15:08:12 by jecarol          ###   ########.fr       */
+/*   Created: 2016/12/02 16:31:19 by rfabre            #+#    #+#             */
+/*   Updated: 2016/12/06 21:38:44 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-static int			ft_how_long(int n)
+static void	itoa_isnegative(int *n, int *isnegative)
 {
-	int		i;
-
-	i = 0;
-	while (n /= 10)
-		i++;
-	return (i);
+	if (*n < 0)
+	{
+		*n *= -1;
+		*isnegative = 1;
+	}
 }
 
-char				*ft_itoa(int n)
+char		*ft_itoa(int n)
 {
-	char	*cnvrt;
-	int		len;
-	int		is_neg;
+	int		temp;
+	int		i;
+	int		isnegative;
+	char	*str;
 
-	is_neg = 0;
 	if (n == -2147483648)
 		return (ft_strdup("-2147483648"));
-	if (n < 0)
-	{
-		is_neg = 1;
-		n = -n;
-	}
-	len = ft_how_long(n) + is_neg + 2;
-	if ((cnvrt = (char*)malloc(sizeof(char) * len)) == NULL)
+	temp = n;
+	i = 2;
+	isnegative = 0;
+	itoa_isnegative(&n, &isnegative);
+	while (temp /= 10)
+		i++;
+	i += isnegative;
+	if ((str = (char*)malloc(sizeof(char) * i)) == NULL)
 		return (NULL);
-	cnvrt[--len] = '\0';
-	while (len--)
+	str[--i] = '\0';
+	while (i--)
 	{
-		cnvrt[len] = n % 10 + 48;
+		str[i] = n % 10 + '0';
 		n = n / 10;
 	}
-	if (is_neg == 1)
-		cnvrt[0] = '-';
-	return (cnvrt);
+	if (isnegative)
+		str[0] = '-';
+	return (str);
 }

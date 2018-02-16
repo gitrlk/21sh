@@ -3,36 +3,38 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strstr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2016/11/26 20:49:49 by jecarol           #+#    #+#             */
-/*   Updated: 2016/11/28 18:18:31 by jecarol          ###   ########.fr       */
+/*   Created: 2016/12/01 10:30:44 by rfabre            #+#    #+#             */
+/*   Updated: 2016/12/06 23:50:54 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char		*ft_strstr(const char *big, const char *little)
+char	*ft_strstr(const char *big, const char *little)
 {
 	int		i;
 	int		j;
-	int		k;
+	char	*big1;
+	char	*little1;
 
 	i = 0;
 	j = 0;
-	k = 0;
-	if (little[j] == '\0')
-		return ((char*)big);
-	while (big[i])
+	little1 = (char *)little;
+	big1 = (char *)big;
+	if (little1[j] == '\0')
+		return (big1);
+	while (big1[i] != '\0')
 	{
-		k = i;
 		j = 0;
-		while (big[k] == little[j])
+		if (big1[i] == little1[j])
 		{
-			k++;
-			j++;
-			if (little[j] == '\0')
-				return ((char*)&big[i]);
+			while (big1[i + j] == little1[j] && big1[i + j])
+			{
+				if (little1[++j] == '\0')
+					return (&big1[i]);
+			}
 		}
 		i++;
 	}
