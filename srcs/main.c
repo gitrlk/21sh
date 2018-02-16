@@ -25,10 +25,7 @@ void			ft_line_reset(t_edit *line)
 int 				ft_what_op_value_to_know_how_to_execute(char *str, int *i)
 {
 	if (str[*i] == ';')
-	{
-		*i += 1;
 		return (SEMICOLON);
-	}
 	else if (str[*i] == '|')
 	{
 		if (str[*i+1] == '|')
@@ -36,7 +33,6 @@ int 				ft_what_op_value_to_know_how_to_execute(char *str, int *i)
 			*i += 1;
 			return (DOUBLEPIPE);
 		}
-		*i += 1;		
 		return (PIPE);
 	}
 	else if (str[*i] == '>')
