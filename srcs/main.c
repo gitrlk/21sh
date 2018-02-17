@@ -12,6 +12,14 @@
 
 #include "../includes/sh.h"
 
+// void 			ft_errors(int code, char *cmd, char *arg)
+// {
+// 	if (code == 1)
+// 	{
+//
+// 	}
+// }
+//
 void			ft_line_reset(t_edit *line)
 {
 	free (line->line);
@@ -109,7 +117,7 @@ void 				ft_tokenize_it(t_edit *line, t_lexit **lexdat)
 					tmp = tmp->next;
 				tmp->next = ft_add_token(line, &i, &j);
 			}
-			j = i;
+			j = i + 1;
 		}
 		i++;
 		if (line->line[i] == '\0')
@@ -125,21 +133,39 @@ void 				ft_tokenize_it(t_edit *line, t_lexit **lexdat)
 					tmp = tmp->next;
 				tmp->next = ft_add_token(line, &i, &j);
 			}
-
 		}
+		while (ft_isspace(line->line[i]))
+			i++;
 	}
 }
 
 void ft_print_lexdat(t_lexit *lexdat)
 {
-	while (lexdat)
+	t_lexit *tmp;
+
+	tmp = lexdat;
+	while (tmp)
 	{
-		ft_putstr(lexdat->input);
+		ft_putstr(tmp->input);
 		ft_putchar('\n');
 		ft_putstr("LEXEM TO COME HAS VALUE : ");
-		ft_putnbr(lexdat->lexem);
+		ft_putnbr(tmp->lexem);
 		ft_putchar('\n');
+		tmp = tmp->next;
+	}
+}
+
+void 				ft_free_lexdat(t_lexit *lexdat)
+{
+	t_lexit *tmp;
+
+	tmp = lexdat;
+	while (lexdat)
+	{
+		tmp = lexdat;
 		lexdat = lexdat->next;
+		ft_strdel(&tmp->input);
+		free(tmp);
 	}
 }
 
@@ -180,7 +206,8 @@ int				main(int ac, char **av, char **envp)
 			handle_key(buf, line);
 			ft_bzero(buf, sizeof(buf));
 		}
-		ft_tokenize_it(line, &lexdat);
+		if (ft_parser(line))
+			ft_tokenize_it(line, &lexdat);
 		ft_add_history(line); //add line to history
 		ft_putchar('\n');
 		ft_putchar('\n');
@@ -193,6 +220,8 @@ int				main(int ac, char **av, char **envp)
 		ft_putchar('\n');
 		ft_putchar('\n');
 		ft_print_lexdat(lexdat);
+		ft_free_lexdat(lexdat);
+		lexdat = NULL;
 		// ft_putstr("--------------------");
 		// ft_putchar('\n');
 		// ft_putstr(line->is_highlight);
