@@ -259,9 +259,11 @@ int 				ft_parser(t_lexit *lexdat)
 	tmp = lexdat;
 	while (tmp)
 	{
-		if (tmp->lexem == 3 || tmp->lexem == 4)
+		if (tmp->lexem == 3 || tmp->lexem == 4 || tmp->lexem == 1)
+		{
 			if (!tmp->next->input)
 				return (4);
+		}
 		tmp = tmp->next;
 	}
 	return (0);
@@ -310,8 +312,6 @@ int				main(int ac, char **av, char **envp)
 
 		}
 		ft_add_history(line); //add line to history
-		ft_putchar('\n');
-		ft_putchar('\n');
 		ft_putchar('\n');
 		ft_putstr("-------");
 		ft_putstr(line->line);
