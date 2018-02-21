@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/01/25 01:34:44 by rfabre            #+#    #+#             */
-/*   Updated: 2018/01/26 08:07:25 by rfabre           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "../includes/sh.h"
 
 int 			ft_errors(int code, char *cmd, char *arg)
@@ -57,9 +45,25 @@ int 			ft_errors(int code, char *cmd, char *arg)
 	return (1);
 }
 
+void			ft_freetab(char **table)
+{
+	int			i;
+
+	i = 0;
+	if (!table)
+		return ;
+	while (table[i])
+	{
+		ft_strdel((&table[i]));
+		i++;
+	}
+	ft_memdel((void **)&table);
+}
+
 void			ft_line_reset(t_edit *line)
 {
-	free (line->line);
+	ft_strdel(&line->line);
+	free(line->line);
 	line->cursor_pos = 2;
 	line->max_size = 2;
 	line->line = ft_memalloc(sizeof(char));
@@ -121,6 +125,24 @@ int 				ft_isstrprint(char *str)
 	return (0);
 }
 
+char				**ft_prep_input(char *str)
+{
+	char **tmp;
+	char *tmp1;
+	int i;
+
+	i = 0;
+	tmp = ft_strsplit(str, ' ');
+	while (tmp[i])
+	{
+		tmp1 = ft_strtrim(tmp[i]);
+		ft_strdel(&tmp[i]);
+		tmp[i] = tmp1;
+		i++;
+	}
+	return (tmp);
+}
+
 t_lexit 			*ft_add_token(t_edit *line, int *i, int *j)
 {
 	t_lexit *tmp;
@@ -130,7 +152,15 @@ t_lexit 			*ft_add_token(t_edit *line, int *i, int *j)
 	tmp->next = NULL;
 	tmp->input = ft_strsub(line->line, *j, *i - *j);
 	if (!ft_isstrprint(tmp->input))
+	{
 		tmp->input = NULL;
+		tmp->to_exec = NULL;
+	}
+	else
+	{
+		tmp->to_exec = ft_prep_input(tmp->input);
+		ft_strdel(&tmp->input);
+	}
 	tmp->lexem = ft_what_op_value_to_know_how_to_execute(line->line, i);
 	return (tmp);
 }
@@ -186,14 +216,21 @@ void 				ft_tokenize_it(t_edit *line, t_lexit **lexdat)
 void ft_print_lexdat(t_lexit *lexdat)
 {
 	t_lexit *tmp;
+	int i;
 
+	i = 0;
 	tmp = lexdat;
 	while (tmp)
 	{
-		if (tmp->input)
+		if (tmp->to_exec)
 		{
-			ft_putstr(tmp->input);
-			ft_putchar('\n');
+			while (tmp->to_exec[i])
+			{
+				ft_putstr(tmp->to_exec[i]);
+				ft_putchar('\n');
+				i++;
+			}
+			i = 0;
 		}
 		ft_putstr("LEXEM TO COME HAS VALUE : ");
 		ft_putnbr(tmp->lexem);
@@ -212,6 +249,7 @@ void 				ft_free_lexdat(t_lexit *lexdat)
 		tmp = lexdat;
 		lexdat = lexdat->next;
 		ft_strdel(&tmp->input);
+		ft_freetab(tmp->to_exec);
 		free(tmp);
 	}
 }
@@ -269,18 +307,129 @@ int 				ft_parser(t_lexit *lexdat)
 	return (0);
 }
 
+char			**ft_fill_envp(t_env *env)
+{
+	char		**ret;
+	t_env		*tmp;
+	int			len;
+	int			i;
+
+	tmp = env;
+	len = 0;
+	while (tmp)
+	{
+		len++;
+		tmp = tmp->next;
+	}
+	ret = ft_memalloc(sizeof(char **) * (len + 1));
+	i = 0;
+	tmp = env;
+	while (i < len)
+	{
+		ret[i] = ft_strdup(tmp->var);
+		tmp = tmp->next;
+		i++;
+	}
+	return (ret);
+}
+
+void			ft_init_all_paths(char **paths)
+{
+	int			i;
+	char		*tmp;
+
+	i = 0;
+	while (paths[i])
+	{
+		tmp = paths[i];
+		paths[i] = ft_strjoin(paths[i], "/");
+		free(tmp);
+		i++;
+	}
+}
+
+char				**ft_set_paths(t_env *env)
+{
+	t_env *tmp;
+	char *tmp1;
+	char **apaths;
+
+	tmp = env;
+	if (!tmp)
+		return (NULL);
+	while (tmp)
+	{
+		if (!ft_strncmp("PATH=", tmp->var, 5))
+		{
+			tmp1 = ft_strdup(tmp->var + 5);
+			apaths = ft_strsplit(tmp1, ':');
+			ft_init_all_paths(apaths);
+			return (apaths);
+		}
+		tmp = tmp->next;
+	}
+	return (NULL);
+}
+
+char				*find_cmd(char **apaths, char *cmd)
+{
+	int	i;
+	char	*tmp_path;
+
+	i = 0;
+	while (apaths[i])
+	{
+		tmp_path = ft_strjoin(apaths[i], cmd);
+		if (!access(tmp_path, F_OK) && !ft_strstr(BUILTIN, cmd))
+		{
+			ft_strdel(&tmp_path);
+			return (ft_strjoin(apaths[i], cmd));
+		}
+		ft_strdel(&tmp_path);
+		i++;
+	}
+	return (NULL);
+}
+
+void				ft_execs(t_lexit *lexdat, t_env *env)
+{
+	char *path;
+	char **allpaths;
+	t_lexit *tmp;
+	int i;
+
+	i = 0;
+	tmp = lexdat;
+	allpaths = ft_set_paths(env);
+	while (tmp)
+	{
+		if ((path = find_cmd(allpaths, tmp->to_exec[0])))
+		{
+			ft_putstr("BANG BANG BANG");
+			ft_putchar('\n');
+		}
+		else
+		{
+			ft_putstr("UN BANG AUSSI PAS LE MEME MAIS BANG QD MM");
+			ft_putchar('\n');
+		}
+		tmp = tmp->next;
+	}
+}
+
 int				main(int ac, char **av, char **envp)
 {
 
 	(void)ac;
 	(void)av;
 
-	char buf[3];
+	int buf;
 	t_edit *line;
 	t_lexit *lexdat;
 	int ret;
 	int i;
 	t_env		*env;
+	buf = 0;
 	i = 0;
 	ret = 0;
 	env = NULL;
@@ -294,48 +443,43 @@ int				main(int ac, char **av, char **envp)
 	while (42)
 	{
 		ft_prompt();
-		while ((ret = read(0, &buf, 3)) && ft_strcmp(buf, "\n"))
+		while ((ret = read(0, &buf, sizeof(int))) && buf != 10)
 		{
-			buf[ret] = '\0';
 			handle_key(buf, line);
-			ft_bzero(buf, sizeof(buf));
+			buf = 0;
 		}
 		if (ft_errors(ft_pre_parser(line), NULL, NULL))
 		{
 			ft_tokenize_it(line, &lexdat);
 			if (ft_errors(ft_parser(lexdat), NULL, NULL))
 			{
-				ft_putchar('\n');
-				ft_putchar('\n');
-				ft_print_lexdat(lexdat);
+				ft_execs(lexdat, env);
+				// ft_putchar('\n');
+				// ft_putchar('\n');
+				// ft_print_lexdat(lexdat);
 			}
-
 		}
 		ft_add_history(line); //add line to history
-		ft_putchar('\n');
-		ft_putstr("-------");
-		ft_putstr(line->line);
-		ft_putstr("-------");
-		if (line->curr)
-			printf("curr = %s, line = %s\n", line->curr->cmd, line->line);
-		ft_putchar('\n');
-		ft_putchar('\n');
+		// ft_putchar('\n');
+		// ft_putstr("-------");
+		// ft_putstr(line->line);
+		// ft_putstr("-------");
+		// if (line->curr)
+		// 	printf("curr = %s, line = %s\n", line->curr->cmd, line->line);
+		// ft_putchar('\n');
+		// ft_putchar('\n');
 		ft_free_lexdat(lexdat);
 		lexdat = NULL;
-		// ft_putstr("--------------------");
-		// ft_putchar('\n');
-		// ft_putstr(line->is_highlight);
-		// while (line->start_select < line->end_select)
-		// {
-		// 	ft_putchar(line->line[line->start_select]);
-		// 	line->start_select++;
-		// }
 		if (ft_strequ(line->line, "clear"))
 			tputs(tgetstr("cl", NULL), 1, ft_pointchar);
 		if (ft_strequ(line->line, "env"))
 			ft_print_env(env);
 		if (ft_strequ(line->line, "exit"))
+		{
+			ft_free_lexdat(lexdat);
+			ft_line_reset(line);
 			exit(0);
+		}
 		ft_line_reset(line);
 	}
 	return 0;

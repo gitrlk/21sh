@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/06 20:16:41 by rfabre            #+#    #+#             */
-/*   Updated: 2018/02/06 15:59:27 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/02/19 20:05:24 by tchapka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,27 @@
 # define PURPLE "\033[35m"
 # define TURQUOISE "\033[36m"
 
+
 # define PRESS_LEFT				4479771
 # define PRESS_RIGHT			4414235
 # define PRESS_UP				4283163
 # define PRESS_DOWN				4348699
-# define PRESS_DEL				2117294875L
+# define PRESS_DEL				2117294875
 # define PRESS_SPACE			32
 # define PRESS_ENTER			10
 # define PRESS_ESCAPE			27
 # define PRESS_BACKSPACE		127
 # define PRESS_STARS			42
 # define PRESS_BACKSLASH		47
+# define PRESS_SHIFT_LEFT		17458
+# define PRESS_SHIFT_RIGHT		17202
+# define PRESS_HOME 			4741915
+# define PRESS_END				4610843
+# define PRESS_ALT_C			42947
+# define PRESS_ALT_V			10127586
+# define PRESS_ALT_X 			8948194
+# define PRESS_ALT_K			39627
+
 
 typedef	struct		s_list
 {
