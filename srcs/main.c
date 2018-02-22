@@ -411,10 +411,14 @@ void				ft_execute_non_binary(char **cmd, t_env *env, t_lexit *lexdat, t_edit *l
 	}
 }
 
+void				ft_execute_binary(char **cmd, t_env *env, int lexem)
+{
+	
+}
+
 void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line)
 {
 	char *path;
-	// char **allpaths;
 	t_lexit *tmp;
 	int i;
 
@@ -426,7 +430,7 @@ void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line)
 		if (!(path = find_cmd(lexdat->allpaths, tmp->to_exec[0])))
 			ft_execute_non_binary(tmp->to_exec, env, lexdat, line);
 		else
-			ft_putchar('\n');
+			ft_execute_binary(tmp->to_exec, env, tmp->lexem);
 		tmp = tmp->next;
 	}
 }
@@ -475,14 +479,6 @@ int				main(int ac, char **av, char **envp)
 			}
 		}
 		ft_add_history(line); //add line to history
-		// ft_putchar('\n');
-		// ft_putstr("-------");
-		// ft_putstr(line->line);
-		// ft_putstr("-------");
-		// if (line->curr)
-		// 	printf("curr = %s, line = %s\n", line->curr->cmd, line->line);
-		// ft_putchar('\n');
-		// ft_putchar('\n');
 		ft_free_lexdat(lexdat);
 		lexdat = NULL;
 		if (ft_strequ(line->line, "clear"))
