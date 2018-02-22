@@ -119,7 +119,7 @@ int 				ft_isstrprint(char *str)
 {
 	int i;
 
-	i = 0;
+	i = -1;
 	while (str[++i])
 		return (ft_isprint(str[i]));
 	return (0);
@@ -250,6 +250,7 @@ void 				ft_free_lexdat(t_lexit *lexdat)
 		lexdat = lexdat->next;
 		ft_strdel(&tmp->input);
 		ft_freetab(tmp->to_exec);
+		ft_freetab(tmp->allpaths);
 		free(tmp);
 	}
 }
@@ -299,7 +300,7 @@ int 				ft_parser(t_lexit *lexdat)
 	{
 		if (tmp->lexem == 3 || tmp->lexem == 4 || tmp->lexem == 1)
 		{
-			if (!tmp->next->input)
+			if (!tmp->next->to_exec)
 				return (4);
 		}
 		tmp = tmp->next;
@@ -363,6 +364,7 @@ char				**ft_set_paths(t_env *env)
 		{
 			tmp1 = ft_strdup(tmp->var + 5);
 			apaths = ft_strsplit(tmp1, ':');
+			ft_strdel(&tmp1);
 			ft_init_all_paths(apaths);
 			return (apaths);
 		}
@@ -391,28 +393,40 @@ char				*find_cmd(char **apaths, char *cmd)
 	return (NULL);
 }
 
-void				ft_execs(t_lexit *lexdat, t_env *env)
+void				ft_env(char **cmd, t_env *env)
+{
+	if (!cmd[1])
+		ft_print_env(env);
+}
+
+void				ft_execute_non_binary(char **cmd, t_env *env, t_lexit *lexdat, t_edit *line)
+{
+	if (!ft_strcmp(cmd[0], "env"))
+		ft_env(cmd, env);
+	if (ft_strequ(cmd[0], "exit"))
+	{
+		ft_free_lexdat(lexdat);
+		ft_line_reset(line);
+		exit(0);
+	}
+}
+
+void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line)
 {
 	char *path;
-	char **allpaths;
+	// char **allpaths;
 	t_lexit *tmp;
 	int i;
 
 	i = 0;
 	tmp = lexdat;
-	allpaths = ft_set_paths(env);
+	lexdat->allpaths = ft_set_paths(env);
 	while (tmp)
 	{
-		if ((path = find_cmd(allpaths, tmp->to_exec[0])))
-		{
-			ft_putstr("BANG BANG BANG");
-			ft_putchar('\n');
-		}
+		if (!(path = find_cmd(lexdat->allpaths, tmp->to_exec[0])))
+			ft_execute_non_binary(tmp->to_exec, env, lexdat, line);
 		else
-		{
-			ft_putstr("UN BANG AUSSI PAS LE MEME MAIS BANG QD MM");
 			ft_putchar('\n');
-		}
 		tmp = tmp->next;
 	}
 }
@@ -453,7 +467,8 @@ int				main(int ac, char **av, char **envp)
 			ft_tokenize_it(line, &lexdat);
 			if (ft_errors(ft_parser(lexdat), NULL, NULL))
 			{
-				ft_execs(lexdat, env);
+				ft_putchar('\n');
+				ft_execs(lexdat, env, line);
 				// ft_putchar('\n');
 				// ft_putchar('\n');
 				// ft_print_lexdat(lexdat);
@@ -472,14 +487,6 @@ int				main(int ac, char **av, char **envp)
 		lexdat = NULL;
 		if (ft_strequ(line->line, "clear"))
 			tputs(tgetstr("cl", NULL), 1, ft_pointchar);
-		if (ft_strequ(line->line, "env"))
-			ft_print_env(env);
-		if (ft_strequ(line->line, "exit"))
-		{
-			ft_free_lexdat(lexdat);
-			ft_line_reset(line);
-			exit(0);
-		}
 		ft_line_reset(line);
 	}
 	return 0;

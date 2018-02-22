@@ -73,6 +73,7 @@ typedef struct			s_lexit
 {
 	char					*input;
 	char					**to_exec;
+	char					**allpaths;
 	int					lexem;			//0 = input / 1 = operator
 	struct s_lexit		*next;
 }							t_lexit;
