@@ -102,14 +102,10 @@ int 				ft_what_op_value_to_know_how_to_execute(char *str, int *i)
 		}
 		return (CHEVRONLEFT);
 	}
-	else if (str[*i] == '&')
+	else if (str[*i] == '&' && str[*i+1] == '&')
 	{
-		if (str[*i+1] == '&')
-		{
-			*i += 1;
-			return (DOUBLESPER);
-		}
-		return (ESPER);
+		*i += 1;
+		return (DOUBLESPER);
 	}
 	else
 		return (-1);
@@ -399,7 +395,8 @@ void				ft_env(char **cmd, t_env *env)
 		ft_print_env(env);
 }
 
-void				ft_execute_non_binary(char **cmd, t_env *env, t_lexit *lexdat, t_edit *line)
+void				ft_execute_non_binary(char **cmd, t_env *env, t_lexit *lexdat,
+					t_edit *line)
 {
 	if (!ft_strcmp(cmd[0], "env"))
 		ft_env(cmd, env);
@@ -424,8 +421,6 @@ void				ft_execute_binary(char **cmd, t_env *env, int lexem, char *path)
 	else if (pid > 0)
 		wait(NULL);
 	ft_freetab(newenvp);
-	// ft_freetab(cmd);
-	// ft_strdel(&path);
 }
 
 void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line)
