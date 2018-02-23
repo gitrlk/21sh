@@ -16,19 +16,22 @@ void ft_wordleft(t_edit *line)
 {
 	int i;
 
-	i = line->cursor_pos - 3;
-	if (ft_isascii(line->line[i]))
+	i = line->cursor_pos - 2;
+	if (i > 0)
 	{
-		if (line->line[i] == ' ')
-			while(line->line[i] == ' ')
+		if (ft_isascii(line->line[i]))
+		{
+			if (line->line[i] == ' ')
+				while(line->line[i] == ' ')
+				{
+					i--;
+					ft_left_arrow(line);
+				}
+			while (line->line[i] != ' ' && i > 0)
 			{
 				i--;
 				ft_left_arrow(line);
 			}
-		while (line->line[i] != ' ')
-		{
-			i--;
-			ft_left_arrow(line);
 		}
 	}
 }
@@ -46,7 +49,7 @@ void ft_wordright(t_edit *line)
 				i++;
 				ft_right_arrow(line);
 			}
-		while (line->line[i] != ' ')
+		while (line->line[i] != ' ' && line->line[i])
 		{
 			i++;
 			ft_right_arrow(line);
