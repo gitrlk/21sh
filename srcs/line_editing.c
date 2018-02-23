@@ -104,7 +104,7 @@ void ft_move_it(t_edit *line, int check)
 	line->cursor_pos = ft_strlen(line->line) + 2;
 }
 
-static void			print_cpy(int buf)
+static void			print_cpy(int buf, t_edit *line)
 {
 	char		str[5];
 	char		tmp[2];
@@ -119,7 +119,7 @@ static void			print_cpy(int buf)
 	{
 		tmp[0] = str[i];
 		tmp[1] = '\0';
-		ft_putstr(tmp);
+		add_to_line(line, (int)str[i]);
 		i++;
 	}
 }
@@ -147,7 +147,7 @@ static int				check_copy(int buf)
 void handle_key(int buf, t_edit *line)
 {
 	if (check_copy(buf))
-		print_cpy(buf);
+		print_cpy(buf, line);
 	else
 	{
 		if (buf == PRESS_LEFT)

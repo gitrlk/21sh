@@ -50,8 +50,8 @@ void add_to_line(t_edit *line, int buf)
 	line->cursor_pos++;
 	if (line->cursor_pos == line->max_size)
 	{
-	line->line = ft_freejoinstr(line->line, buf2);
-	ft_putchar(buf);
+		line->line = ft_freejoinstr(line->line, buf2);
+		ft_putchar(buf);
 	}
 	else if (line->cursor_pos != line->max_size)
 		ft_insert(buf, line);
