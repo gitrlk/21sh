@@ -411,9 +411,21 @@ void				ft_execute_non_binary(char **cmd, t_env *env, t_lexit *lexdat, t_edit *l
 	}
 }
 
-void				ft_execute_binary(char **cmd, t_env *env, int lexem)
+void				ft_execute_binary(char **cmd, t_env *env, int lexem, char *path)
 {
-	
+	pid_t		pid;
+	char		**newenvp;
+
+	(void)lexem;
+	newenvp = ft_fill_envp(env);
+	pid = fork();
+	if (!pid)
+		execve(path, cmd, newenvp);
+	else if (pid > 0)
+		wait(NULL);
+	ft_freetab(newenvp);
+	// ft_freetab(cmd);
+	// ft_strdel(&path);
 }
 
 void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line)
@@ -424,14 +436,18 @@ void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line)
 
 	i = 0;
 	tmp = lexdat;
-	lexdat->allpaths = ft_set_paths(env);
-	while (tmp)
+	if (tmp)
 	{
-		if (!(path = find_cmd(lexdat->allpaths, tmp->to_exec[0])))
-			ft_execute_non_binary(tmp->to_exec, env, lexdat, line);
-		else
-			ft_execute_binary(tmp->to_exec, env, tmp->lexem);
-		tmp = tmp->next;
+		lexdat->allpaths = ft_set_paths(env);
+		while (tmp)
+		{
+			if (!(path = find_cmd(lexdat->allpaths, tmp->to_exec[0])))
+				ft_execute_non_binary(tmp->to_exec, env, lexdat, line);
+			else
+				ft_execute_binary(tmp->to_exec, env, tmp->lexem, path);
+			ft_strdel(&path);
+			tmp = tmp->next;
+		}
 	}
 }
 
