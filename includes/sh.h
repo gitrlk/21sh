@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/02/19 19:11:25 by tchapka          ###   ########.fr       */
+/*   Updated: 2018/02/26 20:24:28 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,13 @@ enum
 	DOUBLECHEVRONRIGHT,
 	DOUBLESPER
 };
+
+typedef struct			s_norm
+{
+	int					buf;
+	int					ret;
+	int					i;
+}							t_norm;
 
 typedef	struct		s_edit
 {
@@ -95,6 +102,16 @@ void select_copy_cut(t_edit *line, int buf);
 void ft_prompt(void);
 void add_to_line(t_edit *line, int buf);
 void handle_key(int buf, t_edit *line);
+void ft_tokenize_it(t_edit *line, t_lexit **lexdat);
+int 				ft_pre_parser(t_edit *line);
+int 				ft_parser(t_lexit *lexdat);
+void			ft_freetab(char **table);
+void 				ft_free_lexdat(t_lexit *lexdat);
+void				ft_env(char **cmd, t_env *env);
+void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line);
+char				**ft_set_paths(t_env *env);
+int 			ft_errors(int code, char *cmd, char *arg);
+
 
 void			ft_print_env(t_env *env);
 t_env			*add_env(char *var);
