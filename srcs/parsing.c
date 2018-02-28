@@ -45,7 +45,12 @@ int 				ft_parser(t_lexit *lexdat)
 	{
 		if (tmp->lexem == 3 || tmp->lexem == 4 || tmp->lexem == 1)
 		{
-			if (!tmp->next->to_exec)
+			if (tmp->next)
+			{
+				if (!tmp->next->to_exec)
+					return (4);
+			}
+			else
 				return (4);
 		}
 		tmp = tmp->next;
