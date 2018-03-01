@@ -74,19 +74,51 @@ void				ft_execute_non_binary(char **cmd, t_env *env, t_lexit *lexdat,
 	}
 }
 
-void				ft_execute_binary(char **cmd, t_env *env, int lexem, char *path)
+void redir_test(t_lexit *tmp, int out, int in)
+{
+	if (tmp->lexem == 4)
+	{
+		out = open(*tmp->next->to_exec, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR);
+		dup2(out, 1);
+		close(out);
+	}
+	if (tmp->lexem == 5)
+	{
+		in = open(*tmp->next->to_exec, O_RDONLY);
+		dup2(in, 0);
+		close(in);
+	}
+
+}
+
+
+void				ft_execute_binary(t_lexit *tmp, t_env *env, char *path)
 {
 	pid_t		pid;
 	char		**newenvp;
+	int 		out;
+	int     in;
+	int     save_out;
+	int     save_in;
 
-	(void)lexem;
+	out = 0;
+	in = 0;
+	save_out = dup(STDOUT_FILENO);
+	save_in = dup(STDIN_FILENO);
+	if (tmp->lexem == 4 || tmp->lexem == 5)
+		redir_test(tmp, out, in);
 	newenvp = ft_fill_envp(env);
 	pid = fork();
-	if (!pid)
-		execve(path, cmd, newenvp);
-	else if (pid > 0)
+	if (pid < 0)
+		ft_putstr("fork error");
+	if (pid == 0)
+		execve(path, tmp->to_exec, newenvp);
+	else
 		wait(NULL);
+	dup2(save_out, STDOUT_FILENO);
+	dup2(save_in, STDIN_FILENO);
 	ft_freetab(newenvp);
+
 }
 
 void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line)
@@ -107,7 +139,7 @@ void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line)
 				if (!(path = find_cmd(lexdat->allpaths, tmp->to_exec[0])))
 					ft_execute_non_binary(tmp->to_exec, env, lexdat, line);
 				else
-					ft_execute_binary(tmp->to_exec, env, tmp->lexem, path);
+					ft_execute_binary(tmp, env, path);
 				ft_strdel(&path);
 			}
 			tmp = tmp->next;

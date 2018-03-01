@@ -25,6 +25,7 @@ void					ft_print_lexdat(t_lexit *lexdat)
 		{
 			while (tmp->to_exec[i])
 			{
+				ft_putstr("commands-> ");
 				ft_putstr(tmp->to_exec[i]);
 				ft_putchar('\n');
 				i++;

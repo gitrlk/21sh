@@ -24,6 +24,7 @@
 # include <sys/ioctl.h>
 # include <curses.h>
 # include <term.h>
+# include <fcntl.h>
 
 enum
 {
@@ -47,11 +48,11 @@ typedef struct			s_norm
 typedef	struct		s_edit
 {
 	struct winsize 	sz;
-	int					cursor_pos;
-	int					max_size;
+	int						cursor_pos;
+	int						max_size;
 	char 					*line;
 	int 					select_mode;
-	int           		start_select;
+	int           start_select;
 	int	           	end_select;
 	char 					*is_highlight;
 	struct s_hstr *hstr; //pointer to the last element added
@@ -80,9 +81,29 @@ typedef struct			s_lexit
 	char					*input;
 	char					**to_exec;
 	char					**allpaths;
-	int					lexem;			//0 = input / 1 = operator
+	int						lexem;
 	struct s_lexit		*next;
 }							t_lexit;
+
+
+/*
+
+ REFLEXION FUTURE STRUCTURE POUR execution
+
+typedef struct			s_lexit
+{
+	char					*input;
+	char					**to_exec;
+	char					**env;
+	int           exit_return;
+	int           priorite_lexem;
+	int						lexem;
+	struct s_lexit		*left;
+	struct s_lexit		*right;
+}							t_lexit;
+
+*/
+
 
 struct winsize		ft_init(t_edit *line);
 int					ft_pointchar(int c);
