@@ -6,37 +6,37 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/02/28 17:45:37 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/02 22:52:05 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-void					ft_print_lexdat(t_lexit *lexdat)
-{
-	t_lexit			*tmp;
-	int				i;
-
-	i = 0;
-	tmp = lexdat;
-	while (tmp)
-	{
-		if (tmp->to_exec)
-		{
-			while (tmp->to_exec[i])
-			{
-				ft_putstr(tmp->to_exec[i]);
-				ft_putchar('\n');
-				i++;
-			}
-			i = 0;
-		}
-		ft_putstr("LEXEM TO COME HAS VALUE : ");
-		ft_putnbr(tmp->lexem);
-		ft_putchar('\n');
-		tmp = tmp->next;
-	}
-}
+// void					ft_print_lexdat(t_lexit *lexdat)
+// {
+// 	t_lexit			*tmp;
+// 	int				i;
+//
+// 	i = 0;
+// 	tmp = lexdat;
+// 	while (tmp)
+// 	{
+// 		if (tmp->to_exec)
+// 		{
+// 			while (tmp->to_exec[i])
+// 			{
+// 				ft_putstr(tmp->to_exec[i]);
+// 				ft_putchar('\n');
+// 				i++;
+// 			}
+// 			i = 0;
+// 		}
+// 		ft_putstr("LEXEM TO COME HAS VALUE : ");
+// 		ft_putnbr(tmp->lexem);
+// 		ft_putchar('\n');
+// 		tmp = tmp->next;
+// 	}
+// }
 
 void					ft_setvalues(t_edit *line, t_norm *values)
 {
@@ -54,9 +54,11 @@ int					main(int ac, char **av, char **envp)
 	t_lexit			*lexdat;
 	t_env				*env;
 	t_norm			*values;
+	int				prio;
 
 	(void)ac;
 	(void)av;
+	prio = 0;
 	env = NULL;
 	lexdat = NULL;
 	line = ft_memalloc(sizeof(t_edit));
@@ -75,15 +77,17 @@ int					main(int ac, char **av, char **envp)
 		}
 		if (ft_errors(ft_pre_parser(line), NULL, NULL))
 		{
-			ft_tokenize_it(line, &lexdat);
-			if (ft_errors(ft_parser(lexdat), NULL, NULL))
-			{
+			lexdat = ft_tree_it(lexdat, line, prio);
+			if (lexdat)
+			// if (ft_errors(ft_parser(lexdat), NULL, NULL))
+			// {
+				// ft_putchar('\n');
+				// ft_final_parsing(lexdat);
+				// ft_execs(lexdat, env, line);
 				ft_putchar('\n');
-				ft_execs(lexdat, env, line);
-				// ft_putchar('\n');
-				// ft_putchar('\n');
+				ft_putchar('\n');
 				// ft_print_lexdat(lexdat);
-			}
+			// }
 		}
 		ft_add_history(line); //add line to history
 		ft_free_lexdat(lexdat);

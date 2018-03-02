@@ -1,5 +1,6 @@
 #include "../includes/sh.h"
 
+
 int 				ft_pre_parser(t_edit *line)
 {
 	int i;
@@ -33,27 +34,28 @@ int 				ft_pre_parser(t_edit *line)
 		}
 		i++;
 	}
+	line->line_split = ft_prep_input(line->line);
 	return (0);
 }
 
-int 				ft_parser(t_lexit *lexdat)
-{
-	t_lexit *tmp;
-
-	tmp = lexdat;
-	while (tmp)
-	{
-		if (tmp->lexem == 3 || tmp->lexem == 4 || tmp->lexem == 1)
-		{
-			if (tmp->next)
-			{
-				if (!tmp->next->to_exec)
-					return (4);
-			}
-			else
-				return (4);
-		}
-		tmp = tmp->next;
-	}
-	return (0);
-}
+// int 				ft_parser(t_lexit *lexdat)
+// {
+// 	t_lexit *tmp;
+//
+// 	tmp = lexdat;
+// 	while (tmp)
+// 	{
+// 		if (tmp->lexem == 3 || tmp->lexem == 4 || tmp->lexem == 1)
+// 		{
+// 			if (tmp->next)
+// 			{
+// 				if (!tmp->next->to_exec)
+// 					return (4);
+// 			}
+// 			else
+// 				return (4);
+// 		}
+// 		tmp = tmp->next;
+// 	}
+// 	return (0);
+// }

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/02/26 20:24:28 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/02 22:53:57 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,16 @@
 # include <curses.h>
 # include <term.h>
 
-enum
+enum operator
 {
 	SEMICOLON,
-	PIPE,
 	DOUBLEPIPE,
+	DOUBLESPER,
+	PIPE,
 	CHEVRONLEFT,
 	CHEVRONRIGHT,
 	DOUBLECHEVRONLEFT,
-	DOUBLECHEVRONRIGHT,
-	DOUBLESPER
+	DOUBLECHEVRONRIGHT
 };
 
 typedef struct			s_norm
@@ -50,19 +50,22 @@ typedef	struct		s_edit
 	int					cursor_pos;
 	int					max_size;
 	char 					*line;
+	char					**line_split;
 	int 					select_mode;
 	int           		start_select;
 	int	           	end_select;
 	char 					*is_highlight;
-	struct s_hstr *hstr; //pointer to the last element added
-	struct s_hstr *curr; //pointer to current element of the history
+	char					*left;
+	char					*right;
+	struct s_hstr		*hstr; //pointer to the last element added
+	struct s_hstr		*curr; //pointer to current element of the history
 }							t_edit;
 
 typedef struct 	s_hstr
 {
 	char 					*cmd;
-	struct s_hstr *up;
-	struct s_hstr *down;
+	struct s_hstr		*up;
+	struct s_hstr		*down;
 } 							t_hstr;
 
 void ft_add_history(t_edit *line);
@@ -78,10 +81,8 @@ typedef struct			s_env
 typedef struct			s_lexit
 {
 	char					*input;
-	char					**to_exec;
-	char					**allpaths;
-	int					lexem;			//0 = input / 1 = operator
-	struct s_lexit		*next;
+	struct s_lexit		*left;
+	struct s_lexit		*right;
 }							t_lexit;
 
 struct winsize		ft_init(t_edit *line);
@@ -111,10 +112,12 @@ void				ft_env(char **cmd, t_env *env);
 void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line);
 char				**ft_set_paths(t_env *env);
 int 			ft_errors(int code, char *cmd, char *arg);
-
+char				**ft_prep_input(char *str);
 
 void			ft_print_env(t_env *env);
 t_env			*add_env(char *var);
 void			ft_push_env(t_env **lst, char *var);
+t_lexit 			*ft_tree_it(t_lexit *lexdat, char **line, int prio);
+
 
 #endif
