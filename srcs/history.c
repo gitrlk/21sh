@@ -24,11 +24,12 @@ void ft_arrow_up(t_edit *line)
     line->curr = line->hstr;
   else if (line->curr->up)
     line->curr = line->curr->up;
-  while (cnt < line->max_size - 2)
-  {
-    ft_putstr("\b \b");
-    cnt++;
-  }
+    while (cnt < line->max_size)
+  	{
+  		ft_left_arrow(line);
+  		cnt++;
+  	}
+  	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
   ft_putstr(line->curr->cmd);
   free(line->line);
   line->line = ft_strdup(line->curr->cmd);
@@ -43,11 +44,12 @@ void ft_arrow_down(t_edit *line)
   cnt = 0;
   if (line->cursor_pos == line->max_size && line->curr)
   {
-    while (cnt < line->max_size - 2)
+    while (cnt < line->max_size)
     {
-      ft_putstr("\b \b");
+      ft_left_arrow(line);
       cnt++;
     }
+    tputs(tgetstr("cd", NULL), 1, ft_pointchar);
     if (line->curr->down)
     {
       line->curr = line->curr->down;

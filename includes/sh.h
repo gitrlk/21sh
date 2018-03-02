@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/02 22:53:57 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/02 23:57:19 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <sys/ioctl.h>
 # include <curses.h>
 # include <term.h>
+# include <fcntl.h>
 
 enum operator
 {
@@ -47,12 +48,12 @@ typedef struct			s_norm
 typedef	struct		s_edit
 {
 	struct winsize 	sz;
-	int					cursor_pos;
-	int					max_size;
+	int						cursor_pos;
+	int						max_size;
 	char 					*line;
 	char					**line_split;
 	int 					select_mode;
-	int           		start_select;
+	int           start_select;
 	int	           	end_select;
 	char 					*is_highlight;
 	char					*left;
@@ -84,6 +85,26 @@ typedef struct			s_lexit
 	struct s_lexit		*left;
 	struct s_lexit		*right;
 }							t_lexit;
+
+
+/*
+
+ REFLEXION FUTURE STRUCTURE POUR execution
+
+typedef struct			s_lexit
+{
+	char					*input;
+	char					**to_exec;
+	char					**env;
+	int           exit_return;
+	int           priorite_lexem;
+	int						lexem;
+	struct s_lexit		*left;
+	struct s_lexit		*right;
+}							t_lexit;
+
+*/
+
 
 struct winsize		ft_init(t_edit *line);
 int					ft_pointchar(int c);

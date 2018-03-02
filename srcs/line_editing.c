@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:58 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/02 21:53:10 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/02 23:57:58 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,6 @@ void handle_key(int buf, t_edit *line)
 			ft_arrow_up(line);
 		else if (buf == PRESS_DOWN)
 			ft_arrow_down(line);
-		// ft_putstr("OYO");
 		if (!line->select_mode)
 		{
 			if (ft_isprint(buf))
