@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/02/26 20:24:28 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/05 18:41:13 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,18 @@ typedef struct			s_norm
 	int					i;
 }							t_norm;
 
+typedef struct		s_data
+{
+	int							win_col;
+	int							win_line;
+	struct termios	term;
+	struct termios	save_term;
+	char						*name_term;
+	char            *line;
+}									t_data;
+
+t_data						*g_data;
+
 typedef	struct		s_edit
 {
 	struct winsize 	sz;
@@ -72,11 +84,11 @@ void ft_arrow_down(t_edit *line);
 
 typedef struct			s_env
 {
-	char					*var;
+	char						*var;
 	struct s_env		*next;
 }							t_env;
 
-typedef struct			s_lexit
+typedef struct		s_lexit
 {
 	char					*input;
 	char					**to_exec;
@@ -86,26 +98,26 @@ typedef struct			s_lexit
 }							t_lexit;
 
 
-/*
-
- REFLEXION FUTURE STRUCTURE POUR execution
-
-typedef struct			s_lexit
-{
-	char					*input;
-	char					**to_exec;
-	char					**env;
-	int           exit_return;
-	int           priorite_lexem;
-	int						lexem;
-	struct s_lexit		*left;
-	struct s_lexit		*right;
-}							t_lexit;
-
-*/
 
 
-struct winsize		ft_init(t_edit *line);
+// REFLEXION FUTURE STRUCTURE POUR execution
+//
+// typedef struct			s_ast
+// {
+// 	char					*content;
+// 	char					**to_exec;
+// 	char					**env;
+// 	int           exit_return;
+// 	int           priorite_lexem;
+// 	int						lexem;
+// 	struct s_ast		*left;
+// 	struct s_ast		*right;
+// }							t_ast;
+
+
+
+int search_input(char **input, int prio);
+void ft_init();
 int					ft_pointchar(int c);
 void ft_left_arrow(t_edit *line);
 void ft_right_arrow(t_edit *line);
@@ -137,5 +149,10 @@ int 			ft_errors(int code, char *cmd, char *arg);
 void			ft_print_env(t_env *env);
 t_env			*add_env(char *var);
 void			ft_push_env(t_env **lst, char *var);
+void				ft_signal(void);
+void				set_termm_back(int i);
+void				set_termm_clear(int i);
+void				set_termm_quit(int i);
+void				ft_resize(int i);
 
 #endif

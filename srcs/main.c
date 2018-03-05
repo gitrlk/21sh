@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/02/28 17:45:37 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/05 18:43:14 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,48 @@ void					ft_setvalues(t_edit *line, t_norm *values)
 {
 	line->hstr = NULL;
 	ft_line_reset(line);
-	line->sz = ft_init(line);
 	values->buf = 0;
 	values->i = 0;
 	values->ret = 0;
+	line->select_mode = 0;
+	line->start_select = 0;
+	line->end_select = 0;
+	line->is_highlight = ft_strnew(0);
+}
+
+
+
+t_ast build_leaf(char **input, int index_input)
+{
+	leaf = ft_memalloc(sizeof(t_ast));
+	leaf->content = input[index_input];
+	leaf->to_exec = *input;
+	leaf->
+}
+
+int search_input(char **input, int prio)
+{
+  int i;
+  char *search;
+  i = 0;
+
+  if (prio == 1)
+    search = ft_strdup(";");
+  if (prio == 2)
+    search = ft_strdup("&&");
+  if (prio == 3)
+    search = ft_strdup("|");
+  while (input[i])
+  {
+
+    if (ft_strequ(input[i], search))
+		{
+			return (i);
+		}
+
+    i++;
+  }
+  return (-1);
 }
 
 int					main(int ac, char **av, char **envp)
@@ -60,9 +98,13 @@ int					main(int ac, char **av, char **envp)
 	(void)av;
 	env = NULL;
 	lexdat = NULL;
+	g_data = ft_memalloc(sizeof(t_data));
 	line = ft_memalloc(sizeof(t_edit));
 	values = ft_memalloc(sizeof(t_norm));
 	ft_setvalues(line, values);
+	ft_init();
+	ft_signal();
+	tputs(tgetstr("cl", NULL), 1, ft_pointchar);
 	while (envp[values->i])
 		ft_push_env(&env, envp[values->i++]);
 	while (42)

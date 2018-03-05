@@ -12,9 +12,9 @@
 NAME = 21sh
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 
-SRCS_LIST = main.c line_movement.c line_editing.c copy_paste.c term.c line_edit2.c env.c history.c tokenizer.c parsing.c freesets.c execution.c path_mngmnt.c errors.c
+SRCS_LIST = main.c line_movement.c line_editing.c copy_paste.c term.c line_edit2.c env.c history.c tokenizer.c parsing.c freesets.c execution.c path_mngmnt.c errors.c signal.c
 
 SRCS_DIR = srcs/
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LIST))

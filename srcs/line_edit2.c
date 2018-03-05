@@ -29,6 +29,7 @@ void ft_insert(int buf, t_edit *line)
 	tmp3 = ft_freejoinstr(tmp, buf2);
 	free(line->line);
 	line->line = ft_freejoinstr(tmp3, tmp2);
+	g_data->line = ft_strdup(line->line);
 	free(tmp2);
 	tmp2 = ft_strsub(line->line, line->cursor_pos - 2 , line->max_size);
 	ft_move_it(line, 1);
@@ -52,6 +53,7 @@ void add_to_line(t_edit *line, int buf)
 	{
 		line->line = ft_freejoinstr(line->line, buf2);
 		ft_putchar(buf);
+		g_data->line = ft_strdup(line->line);
 	}
 	else if (line->cursor_pos != line->max_size)
 		ft_insert(buf, line);

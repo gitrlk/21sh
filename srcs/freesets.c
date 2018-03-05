@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:03 by jecarol           #+#    #+#             */
-/*   Updated: 2018/02/26 20:16:27 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/05 18:41:23 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,11 @@ void			ft_line_reset(t_edit *line)
 {
 	ft_strdel(&line->line);
 	free(line->line);
+	ft_strdel(&g_data->line);
 	line->cursor_pos = 2;
 	line->max_size = 2;
 	line->line = ft_memalloc(sizeof(char));
+	g_data->line = ft_memalloc(sizeof(char));
 	line->select_mode = 0;
 	line->curr = NULL;
 }
