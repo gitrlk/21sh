@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/06 16:26:14 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/06 17:01:10 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -253,6 +253,8 @@ t_lexit 			*ft_tree_it(t_lexit *lexdat, char **line, int prio)
 	i = 0;
 	input_left = NULL;
 	input_right = NULL;
+	if (prio == 8 || !line)
+		return (NULL);
 	index_input = find_input(line, prio);
 	if (index_input)
 	{
@@ -278,21 +280,13 @@ t_lexit 			*ft_tree_it(t_lexit *lexdat, char **line, int prio)
 		}
 		lexdat->left = ft_tree_it(lexdat->left, input_left, prio + 1);
 		lexdat->right = ft_tree_it(lexdat->right, input_right, prio);
+		return (lexdat);
 	}
-	ft_putstr("okok");
-	ft_putchar('\n');
-	if (prio == 8)
-	{
-		ft_putstr("coucou");
-		return (NULL);
-	}
+	// ft_putstr("okok");
+	// ft_putchar('\n');
 	else
-	{
-		lexdat = ft_memalloc(sizeof(lexdat));
-		lexdat->left = ft_tree_it(lexdat->left, line, prio + 1);
+		return(ft_tree_it(lexdat, line, prio + 1));
 	}
-	return (lexdat);
-}
 // //
 // //
 // //

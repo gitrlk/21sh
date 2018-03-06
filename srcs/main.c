@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/06 16:20:52 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/06 17:07:23 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ void				ft_print_tree(t_lexit *lexdat)
 {
 	if (lexdat)
 	{
-		ft_putstr(lexdat->input);
-		ft_putchar('\n');
 		if (lexdat->left)
 			ft_print_tree(lexdat->left);
+		ft_putstr(lexdat->input);
+		ft_putchar('\n');
 		if (lexdat->right)
 			ft_print_tree(lexdat->right);
 	}
@@ -92,7 +92,7 @@ int					main(int ac, char **av, char **envp)
 		{
 			ft_putchar('\n');
 			lexdat = ft_tree_it(lexdat, line->line_split, prio);
-			// ft_print_tree(lexdat);
+			ft_print_tree(lexdat);
 			// if (lexdat)
 			// if (ft_errors(ft_parser(lexdat), NULL, NULL))
 			// {
@@ -105,7 +105,8 @@ int					main(int ac, char **av, char **envp)
 			// }
 		}
 		ft_add_history(line); //add line to history
-		ft_free_lexdat(lexdat);
+		// ft_putstr("segfault ici");
+		// ft_free_lexdat(lexdat);
 		lexdat = NULL;
 		if (ft_strequ(line->line, "clear"))
 			tputs(tgetstr("cl", NULL), 1, ft_pointchar);
