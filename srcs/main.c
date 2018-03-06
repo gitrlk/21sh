@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/06 15:58:16 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/06 16:20:52 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int					main(int ac, char **av, char **envp)
 		{
 			ft_putchar('\n');
 			lexdat = ft_tree_it(lexdat, line->line_split, prio);
-			ft_print_tree(lexdat);
+			// ft_print_tree(lexdat);
 			// if (lexdat)
 			// if (ft_errors(ft_parser(lexdat), NULL, NULL))
 			// {

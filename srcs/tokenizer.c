@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/06 15:57:39 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/06 16:26:14 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,22 +256,26 @@ t_lexit 			*ft_tree_it(t_lexit *lexdat, char **line, int prio)
 	index_input = find_input(line, prio);
 	if (index_input)
 	{
+		ft_putstr("I'M IN BAWS");
+		ft_putchar('\n');
 		lexdat = insert_tree(lexdat, line[index_input]);
 		input_left = cut_input(line, index_input);
-		input_right = cut_input_right(line, index_input);
-		// while (input_left[i])
-		// {
-		// 	ft_putstr(input_left[i]);
-		// 	ft_putchar('\n');
-		// 	i++;
-		// }
-		// i = 0;
-		// while (input_right[i])
-		// {
-		// 	ft_putstr(input_right[i]);
-		// 	ft_putchar('\n');
-		// 	i++;
-		// }
+		input_right = cut_input_right(line, index_input + 1);
+		while (input_left[i])
+		{
+			ft_putstr("left : ");
+			ft_putstr(input_left[i]);
+			ft_putchar('\n');
+			i++;
+		}
+		i = 0;
+		while (input_right[i])
+		{
+			ft_putstr("right : ");
+			ft_putstr(input_right[i]);
+			ft_putchar('\n');
+			i++;
+		}
 		lexdat->left = ft_tree_it(lexdat->left, input_left, prio + 1);
 		lexdat->right = ft_tree_it(lexdat->right, input_right, prio);
 	}
