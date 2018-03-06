@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/02 23:51:20 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/06 15:57:39 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,25 +128,29 @@ char				**ft_prep_input(char *str)
 int				find_input(char **input, int prio)
 {
 	int i;
-	static char *operators[9];
+	static char *operators[8];
 	operators[0] = ";";
 	operators[1] = "||";
 	operators[2] = "&&";
 	operators[3] = "|";
 	operators[4] = ">";
 	operators[5] = "<";
-	operators[7] = ">>";
-	operators[8] = "<<";
+	operators[6] = ">>";
+	operators[7] = "<<";
 
 	i = 0;
-	ft_putstr("PRIO IS :");
+	ft_putstr("PRIO IS : ");
 	ft_putnbr(prio);
 	ft_putchar('\n');
-	while (input[i])
+	if (input)
 	{
-		if (!ft_strcmp(input[i], operators[prio]))
-			return (i);
-		i++;
+		while (input[i])
+		{
+			// ft_putstr(input[i]);
+			if (!(ft_strcmp(input[i], operators[prio])))
+				return (i);
+			i++;
+		}
 	}
 	return (0);
 }
@@ -174,49 +178,114 @@ t_lexit			*insert_tree(t_lexit *lexdat, char *leaf)
 	return (node);
 }
 
-void				cut_input(char **origin, char **left, char **right, int index)
+char				**cut_input(char **origin, int index)
 {
 	int i;
 	int j;
+	char **left;
+
+	i = 0;
+	j = 0;
+	// while (origin[j])
+	// 	j++;
+	if(!(left = (char **)malloc(sizeof(*left) * index + 1)))
+		return (NULL);
+	while (i < index)
+	{
+		left[i] = ft_strdup(origin[i]);
+		i++;
+	}
+	return (left);
+	// i = 0;
+	// if(!(right = (char **)malloc(sizeof(*right) * (j - index) + 1)))
+	// 	return ;
+	// while (i < index)
+	// {
+	// 	left[i] = ft_strdup(origin[i]);
+	// 	i++;
+	// }
+
+}
+
+char				**cut_input_right(char **origin, int index)
+{
+	int i;
+	int j;
+	int k;
+	char **right;
 
 	i = 0;
 	j = 0;
 	while (origin[j])
 		j++;
-	if(!(left = (char **)malloc(sizeof(*left) * index + 1)
-		return ;
-	while (i < index)
+	k = j - index;
+	// ft_putnbr(k);
+	// ft_putchar('\n');
+	if(!(right = (char **)malloc(sizeof(*right) * k + 1)))
+		return (NULL);
+	while (i < k)
 	{
-		left[i] = ft_strdup(origin[i]);
+		right[i] = ft_strdup(origin[index]);
+		index++;
 		i++;
 	}
-	if(!(right = (char **)malloc(sizeof(*right) * index + 1)
-		return ;
-	while (i < index)
-	{
-		left[i] = ft_strdup(origin[i]);
-		i++;
-	}
-
+	return (right);
 }
 
-ls | grep toto ; ls > toto1
+
+
+
+// ls | grep toto ; ls > toto1
 
 t_lexit 			*ft_tree_it(t_lexit *lexdat, char **line, int prio)
 {
 	int index_input;
 	char **input_left;
 	char **input_right;
+	int i;
 
+
+	// if (checker)
+	// {
+	// 	ft_putstr("BAWEEee");
+	// 	ft_putchar('\n');
+	// }
+	i = 0;
 	input_left = NULL;
 	input_right = NULL;
 	index_input = find_input(line, prio);
 	if (index_input)
 	{
 		lexdat = insert_tree(lexdat, line[index_input]);
-		cut_input(line, &input_left, &input_right, index_input);
+		input_left = cut_input(line, index_input);
+		input_right = cut_input_right(line, index_input);
+		// while (input_left[i])
+		// {
+		// 	ft_putstr(input_left[i]);
+		// 	ft_putchar('\n');
+		// 	i++;
+		// }
+		// i = 0;
+		// while (input_right[i])
+		// {
+		// 	ft_putstr(input_right[i]);
+		// 	ft_putchar('\n');
+		// 	i++;
+		// }
 		lexdat->left = ft_tree_it(lexdat->left, input_left, prio + 1);
 		lexdat->right = ft_tree_it(lexdat->right, input_right, prio);
+	}
+	ft_putstr("okok");
+	ft_putchar('\n');
+	if (prio == 8)
+	{
+		ft_putstr("coucou");
+		return (NULL);
+	}
+	else
+	{
+		lexdat = ft_memalloc(sizeof(lexdat));
+		lexdat->left = ft_tree_it(lexdat->left, line, prio + 1);
 	}
 	return (lexdat);
 }

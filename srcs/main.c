@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/02 23:57:07 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/06 15:58:16 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,19 @@ void					ft_setvalues(t_edit *line, t_norm *values)
 	values->ret = 0;
 }
 
+void				ft_print_tree(t_lexit *lexdat)
+{
+	if (lexdat)
+	{
+		ft_putstr(lexdat->input);
+		ft_putchar('\n');
+		if (lexdat->left)
+			ft_print_tree(lexdat->left);
+		if (lexdat->right)
+			ft_print_tree(lexdat->right);
+	}
+}
+
 int					main(int ac, char **av, char **envp)
 {
 	t_edit			*line;
@@ -77,8 +90,10 @@ int					main(int ac, char **av, char **envp)
 		}
 		if (ft_errors(ft_pre_parser(line), NULL, NULL))
 		{
-			lexdat = ft_tree_it(lexdat, line, prio);
-			if (lexdat)
+			ft_putchar('\n');
+			lexdat = ft_tree_it(lexdat, line->line_split, prio);
+			ft_print_tree(lexdat);
+			// if (lexdat)
 			// if (ft_errors(ft_parser(lexdat), NULL, NULL))
 			// {
 				// ft_putchar('\n');
