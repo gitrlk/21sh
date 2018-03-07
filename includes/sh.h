@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/06 13:44:45 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/07 22:59:28 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,17 +26,18 @@
 # include <term.h>
 # include <fcntl.h>
 
-enum operator
+typedef enum 		e_priorities
 {
 	SEMICOLON,
-	DOUBLEPIPE,
-	DOUBLESPER,
+	AND_OR,
 	PIPE,
-	CHEVRONLEFT,
-	CHEVRONRIGHT,
-	DOUBLECHEVRONLEFT,
-	DOUBLECHEVRONRIGHT
-};
+	COMMAND,
+	REDIR
+	// CHEVRONLEFT,
+	// CHEVRONRIGHT,
+	// DOUBLECHEVRONLEFT,
+	// DOUBLECHEVRONRIGHT
+}						t_priorities;
 
 typedef struct			s_norm
 {
@@ -82,9 +83,18 @@ typedef struct			s_env
 typedef struct			s_lexit
 {
 	char					*input;
+	int					prio;
 	struct s_lexit		*left;
 	struct s_lexit		*right;
+	struct s_lexit		*next;
 }							t_lexit;
+
+// typedef struct				s_arglist
+// {
+// 	char						*input;
+// 	int						prio;
+// 	struct s_arglist		*next;
+// }								t_arglist;
 
 
 /*
@@ -138,7 +148,7 @@ char				**ft_prep_input(char *str);
 void			ft_print_env(t_env *env);
 t_env			*add_env(char *var);
 void			ft_push_env(t_env **lst, char *var);
-t_lexit 			*ft_tree_it(t_lexit *lexdat, char **line, int prio);
+t_lexit 			*ft_tree_it(t_lexit *lexdat, t_lexit *list, int prio);
 
 
 #endif

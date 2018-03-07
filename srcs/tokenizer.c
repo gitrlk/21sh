@@ -6,51 +6,51 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/06 17:01:10 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/07 22:59:42 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
 //
-int 				ft_what_op_value_to_know_how_to_execute(char *str, int *i)
-{
-	if (str[*i] == ';')
-		return (SEMICOLON);
-	else if (str[*i] == '|')
-	{
-		if (str[*i+1] == '|')
-		{
-			*i += 1;
-			return (DOUBLEPIPE);
-		}
-		return (PIPE);
-	}
-	else if (str[*i] == '>')
-	{
-		if (str[*i+1] == '>')
-		{
-			*i += 1;
-			return(DOUBLECHEVRONRIGHT);
-		}
-		return (CHEVRONRIGHT);
-	}
-	else if (str[*i] == '<')
-	{
-		if (str[*i+1] == '<')
-		{
-			*i += 1;
-			return(DOUBLECHEVRONLEFT);
-		}
-		return (CHEVRONLEFT);
-	}
-	else if (str[*i] == '&' && str[*i+1] == '&')
-	{
-		*i += 1;
-		return (DOUBLESPER);
-	}
-	else
-		return (-1);
-}
+// int 				ft_what_op_value_to_know_how_to_execute(char *str, int *i)
+// {
+// 	if (str[*i] == ';')
+// 		return (SEMICOLON);
+// 	else if (str[*i] == '|')
+// 	{
+// 		if (str[*i+1] == '|')
+// 		{
+// 			*i += 1;
+// 			return (DOUBLEPIPE);
+// 		}
+// 		return (PIPE);
+// 	}
+// 	else if (str[*i] == '>')
+// 	{
+// 		if (str[*i+1] == '>')
+// 		{
+// 			*i += 1;
+// 			return(DOUBLECHEVRONRIGHT);
+// 		}
+// 		return (CHEVRONRIGHT);
+// 	}
+// 	else if (str[*i] == '<')
+// 	{
+// 		if (str[*i+1] == '<')
+// 		{
+// 			*i += 1;
+// 			return(DOUBLECHEVRONLEFT);
+// 		}
+// 		return (CHEVRONLEFT);
+// 	}
+// 	else if (str[*i] == '&' && str[*i+1] == '&')
+// 	{
+// 		*i += 1;
+// 		return (DOUBLESPER);
+// 	}
+// 	else
+// 		return (-1);
+// }
 
 int 				ft_isstrprint(char *str)
 {
@@ -125,35 +125,36 @@ char				**ft_prep_input(char *str)
 
 
 
-int				find_input(char **input, int prio)
-{
-	int i;
-	static char *operators[8];
-	operators[0] = ";";
-	operators[1] = "||";
-	operators[2] = "&&";
-	operators[3] = "|";
-	operators[4] = ">";
-	operators[5] = "<";
-	operators[6] = ">>";
-	operators[7] = "<<";
-
-	i = 0;
-	ft_putstr("PRIO IS : ");
-	ft_putnbr(prio);
-	ft_putchar('\n');
-	if (input)
-	{
-		while (input[i])
-		{
-			// ft_putstr(input[i]);
-			if (!(ft_strcmp(input[i], operators[prio])))
-				return (i);
-			i++;
-		}
-	}
-	return (0);
-}
+// char 				*find_input(char **input, int prio)
+// {
+// 	char *input;
+// 	int i;
+// 	static char *operators[8];
+// 	operators[0] = ";";
+// 	operators[1] = "||";
+// 	operators[2] = "&&";
+// 	operators[3] = "|";
+// 	operators[4] = ">";
+// 	operators[5] = "<";
+// 	operators[6] = ">>";
+// 	operators[7] = "<<";
+//
+// 	i = 0;
+// 	ft_putstr("PRIO IS : ");
+// 	ft_putnbr(prio);
+// 	ft_putchar('\n');
+// 	if (input)
+// 	{
+// 		while (input[i])
+// 		{
+// 			// ft_putstr(input[i]);
+// 			if (!(ft_strcmp(input[i], operators[prio])))
+// 				return (i);
+// 			i++;
+// 		}
+// 	}
+// 	return (0);
+// }
 
 
 t_lexit			*insert_tree(t_lexit *lexdat, char *leaf)
@@ -165,9 +166,10 @@ t_lexit			*insert_tree(t_lexit *lexdat, char *leaf)
 	{
 		if (!(node = malloc(sizeof(t_lexit))))
 			return (NULL);
-		node->left = 0;
-		node->right = 0;
+		node->left = NULL;
+		node->right = NULL;
 		node->input = ft_strdup(leaf);
+		ft_putstr(leaf);
 	}
 	else
 	{
@@ -233,60 +235,113 @@ char				**cut_input_right(char **origin, int index)
 }
 
 
-
-
-// ls | grep toto ; ls > toto1
-
-t_lexit 			*ft_tree_it(t_lexit *lexdat, char **line, int prio)
-{
-	int index_input;
-	char **input_left;
-	char **input_right;
-	int i;
-
-
-	// if (checker)
-	// {
-	// 	ft_putstr("BAWEEee");
-	// 	ft_putchar('\n');
-	// }
-	i = 0;
-	input_left = NULL;
-	input_right = NULL;
-	if (prio == 8 || !line)
-		return (NULL);
-	index_input = find_input(line, prio);
-	if (index_input)
+	t_lexit 			*ft_tree_it(t_lexit *list, t_lexit *compare, int prio)
 	{
-		ft_putstr("I'M IN BAWS");
-		ft_putchar('\n');
-		lexdat = insert_tree(lexdat, line[index_input]);
-		input_left = cut_input(line, index_input);
-		input_right = cut_input_right(line, index_input + 1);
-		while (input_left[i])
+		t_lexit	*keep;
+		t_lexit	*tmp;
+
+
+		// if (checker)
+		// {
+		// 	ft_putstr("BAWEEee");
+		// 	ft_putchar('\n');
+		// }
+		keep = NULL;
+		tmp = list;
+		if (prio == REDIR || !list)
+			return (NULL);
+		while (tmp != compare)
 		{
-			ft_putstr("left : ");
-			ft_putstr(input_left[i]);
-			ft_putchar('\n');
-			i++;
+			if (tmp->prio == prio)
+				keep = tmp;
+			tmp = tmp->next;
 		}
-		i = 0;
-		while (input_right[i])
+		if (keep)
 		{
-			ft_putstr("right : ");
-			ft_putstr(input_right[i]);
-			ft_putchar('\n');
-			i++;
+			keep->left = ft_tree_it(list, keep, prio);
+			keep->right = ft_tree_it(keep->next, compare, prio + 1);
+			return (keep);
+			// ft_putstr("I'M IN BAWS");
+			// ft_putchar('\n');
+			// lexdat = insert_tree(lexdat, line[index_input]);
+			// input_left = cut_input(line, index_input);
+			// input_right = cut_input_right(line, index_input + 1);
+			// while (input_left[i])
+			// {
+			// 	ft_putstr("left : ");
+			// 	ft_putstr(input_left[i]);
+			// 	ft_putchar('\n');
+			// 	i++;
+			// }
+			// i = 0;
+			// while (input_right[i])
+			// {
+			// 	ft_putstr("right : ");
+			// 	ft_putstr(input_right[i]);
+			// 	ft_putchar('\n');
+			// 	i++;
+			// }
+			// lexdat->left = ft_tree_it(lexdat->left, input_left, prio + 1);
+			// lexdat->right = ft_tree_it(lexdat->right, input_right, prio);
+			// return (lexdat);
 		}
-		lexdat->left = ft_tree_it(lexdat->left, input_left, prio + 1);
-		lexdat->right = ft_tree_it(lexdat->right, input_right, prio);
-		return (lexdat);
-	}
-	// ft_putstr("okok");
-	// ft_putchar('\n');
-	else
-		return(ft_tree_it(lexdat, line, prio + 1));
-	}
+		// ft_putstr("okok");
+		// ft_putchar('\n');
+		else
+			return(ft_tree_it(list, compare, prio + 1));
+		}
+
+
+// t_lexit 			*ft_tree_it(t_lexit *lexdat, char **line, int prio)
+// {
+// 	int index_input;
+// 	char **input_left;
+// 	char **input_right;
+// 	int i;
+//
+//
+// 	// if (checker)
+// 	// {
+// 	// 	ft_putstr("BAWEEee");
+// 	// 	ft_putchar('\n');
+// 	// }
+// 	i = 0;
+// 	input_left = NULL;
+// 	input_right = NULL;
+// 	if (prio == 8 || !line)
+// 		return (NULL);
+// 	index_input = find_input(line, prio);
+// 	if (index_input)
+// 	{
+// 		// ft_putstr("I'M IN BAWS");
+// 		// ft_putchar('\n');
+// 		lexdat = insert_tree(lexdat, line[index_input]);
+// 		input_left = cut_input(line, index_input);
+// 		input_right = cut_input_right(line, index_input + 1);
+// 		// while (input_left[i])
+// 		// {
+// 		// 	ft_putstr("left : ");
+// 		// 	ft_putstr(input_left[i]);
+// 		// 	ft_putchar('\n');
+// 		// 	i++;
+// 		// }
+// 		// i = 0;
+// 		// while (input_right[i])
+// 		// {
+// 		// 	ft_putstr("right : ");
+// 		// 	ft_putstr(input_right[i]);
+// 		// 	ft_putchar('\n');
+// 		// 	i++;
+// 		// }
+// 		lexdat->left = ft_tree_it(lexdat->left, input_left, prio + 1);
+// 		lexdat->right = ft_tree_it(lexdat->right, input_right, prio);
+// 		return (lexdat);
+// 	}
+// 	// ft_putstr("okok");
+// 	// ft_putchar('\n');
+// 	else
+// 		return(ft_tree_it(lexdat, line, prio + 1));
+// 	}
 // //
 // //
 // //

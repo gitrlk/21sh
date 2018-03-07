@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/06 17:07:23 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/07 22:56:28 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,63 @@ void				ft_print_tree(t_lexit *lexdat)
 	}
 }
 
+int				get_prio(char *str)
+{
+	if (!ft_strcmp(str, ";"))
+		return (SEMICOLON);
+	else if (!ft_strcmp(str, "&&") ||	!ft_strcmp(str, "||"))
+		return (AND_OR);
+	else if (!ft_strcmp(str, "|"))
+		return (PIPE);
+	else
+		return (COMMAND);
+}
+
+t_lexit				*add_node(char *input)
+{
+	t_lexit *tmp;
+
+	if (!(tmp = ft_memalloc(sizeof(t_lexit))))
+		return (NULL);
+	tmp->next = NULL;
+	tmp->left = 0;
+	tmp->right = 0;
+	tmp->input = ft_strdup(input);
+	tmp->prio = get_prio(input);
+	return (tmp);
+}
+
+void					create_list(t_lexit **list, char **input)
+{
+	int i;
+	t_lexit *tmp;
+
+	i = 0;
+	tmp = *list;
+	while (input[i])
+	{
+		if (!tmp)
+		{
+			*list = add_node(input[i]);
+			tmp = *list;
+		}
+		else
+		{
+			while (tmp->next)
+				tmp = tmp->next;
+			tmp->next = add_node(input[i]);
+		}
+		i++;
+	}
+}
+
 int					main(int ac, char **av, char **envp)
 {
 	t_edit			*line;
 	t_lexit			*lexdat;
 	t_env				*env;
 	t_norm			*values;
+	t_lexit			*list;
 	int				prio;
 
 	(void)ac;
@@ -74,6 +125,7 @@ int					main(int ac, char **av, char **envp)
 	prio = 0;
 	env = NULL;
 	lexdat = NULL;
+	list = NULL;
 	line = ft_memalloc(sizeof(t_edit));
 	values = ft_memalloc(sizeof(t_norm));
 	ft_setvalues(line, values);
@@ -91,7 +143,8 @@ int					main(int ac, char **av, char **envp)
 		if (ft_errors(ft_pre_parser(line), NULL, NULL))
 		{
 			ft_putchar('\n');
-			lexdat = ft_tree_it(lexdat, line->line_split, prio);
+			create_list(&list, line->line_split);
+			lexdat = ft_tree_it(list, NULL, prio);
 			ft_print_tree(lexdat);
 			// if (lexdat)
 			// if (ft_errors(ft_parser(lexdat), NULL, NULL))
