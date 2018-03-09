@@ -38,24 +38,16 @@ int 				ft_pre_parser(t_edit *line)
 	return (0);
 }
 
-// int 				ft_parser(t_lexit *lexdat)
+// int 				parse_list(t_lexit *list)
 // {
 // 	t_lexit *tmp;
 //
-// 	tmp = lexdat;
+// 	tmp = list;
 // 	while (tmp)
 // 	{
-// 		if (tmp->lexem == 3 || tmp->lexem == 4 || tmp->lexem == 1)
-// 		{
-// 			if (tmp->next)
-// 			{
-// 				if (!tmp->next->to_exec)
-// 					return (4);
-// 			}
-// 			else
-// 				return (4);
-// 		}
+// 		if (tmp->prio == AND_OR || tmp->prio == PIPE)
+// 			if (tmp->prev->prio != COMMAND && tmp->next->prio != COMMAND)
+// 			 	return ()
 // 		tmp = tmp->next;
 // 	}
-// 	return (0);
 // }

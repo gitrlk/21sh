@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/07 22:59:28 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/09 18:28:32 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,9 @@ typedef enum 		e_priorities
 	AND_OR,
 	PIPE,
 	COMMAND,
-	REDIR
+	REDIR,
+	ERROR,
+	ARG
 	// CHEVRONLEFT,
 	// CHEVRONRIGHT,
 	// DOUBLECHEVRONLEFT,
@@ -83,10 +85,12 @@ typedef struct			s_env
 typedef struct			s_lexit
 {
 	char					*input;
+	char					**allpaths;
 	int					prio;
 	struct s_lexit		*left;
 	struct s_lexit		*right;
 	struct s_lexit		*next;
+	struct s_lexit		*prev;
 }							t_lexit;
 
 // typedef struct				s_arglist
@@ -136,7 +140,7 @@ void add_to_line(t_edit *line, int buf);
 void handle_key(int buf, t_edit *line);
 void ft_tokenize_it(t_edit *line, t_lexit **lexdat);
 int 				ft_pre_parser(t_edit *line);
-int 				ft_parser(t_lexit *lexdat);
+int 				parse_list(t_lexit *list);
 void			ft_freetab(char **table);
 void 				ft_free_lexdat(t_lexit *lexdat);
 void				ft_env(char **cmd, t_env *env);
@@ -149,6 +153,9 @@ void			ft_print_env(t_env *env);
 t_env			*add_env(char *var);
 void			ft_push_env(t_env **lst, char *var);
 t_lexit 			*ft_tree_it(t_lexit *lexdat, t_lexit *list, int prio);
+int 				ft_isstrprint(char *str);
+char				*find_cmd(char **apaths, char *cmd);
+
 
 
 #endif

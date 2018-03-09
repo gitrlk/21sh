@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:03 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/02 21:50:08 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/08 20:35:50 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,6 @@ void 				ft_free_lexdat(t_lexit *lexdat)
 	ft_free_lexdat(lexdat->left);
 	ft_free_lexdat(lexdat->right);
 	ft_strdel(&lexdat->input);
+	free(lexdat->next);
 	free(lexdat);
 }

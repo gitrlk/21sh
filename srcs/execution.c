@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:03 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/06 12:45:59 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/08 21:47:09 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,17 +132,17 @@ void				ft_execute_non_binary(char **cmd, t_env *env, t_lexit *lexdat,
 // 	if (tmp)
 // 	{
 // 		lexdat->allpaths = ft_set_paths(env);
-// 		while (tmp)
-// 		{
-// 			if (tmp->to_exec)
-// 			{
-// 				if (!(path = find_cmd(lexdat->allpaths, tmp->to_exec[0])))
-// 					ft_execute_non_binary(tmp->to_exec, env, lexdat, line);
-// 				else
-// 					ft_execute_binary(tmp, env, path);
-// 				ft_strdel(&path);
-// 			}
-// 			tmp = tmp->next;
+		// while (tmp)
+		// {
+		// 	if (tmp->to_exec)
+		// 	{
+		// 		if (!(path = find_cmd(lexdat->allpaths, tmp->to_exec[0])))
+		// 			ft_execute_non_binary(tmp->to_exec, env, lexdat, line);
+		// 		else
+		// 			ft_execute_binary(tmp, env, path);
+		// 		ft_strdel(&path);
+		// 	}
+		// 	tmp = tmp->next;
 // 		}
 // 	}
 // }

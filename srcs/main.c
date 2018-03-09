@@ -6,37 +6,11 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/07 22:56:28 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/09 18:44:23 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
-
-// void					ft_print_lexdat(t_lexit *lexdat)
-// {
-// 	t_lexit			*tmp;
-// 	int				i;
-//
-// 	i = 0;
-// 	tmp = lexdat;
-// 	while (tmp)
-// 	{
-// 		if (tmp->to_exec)
-// 		{
-// 			while (tmp->to_exec[i])
-// 			{
-// 				ft_putstr(tmp->to_exec[i]);
-// 				ft_putchar('\n');
-// 				i++;
-// 			}
-// 			i = 0;
-// 		}
-// 		ft_putstr("LEXEM TO COME HAS VALUE : ");
-// 		ft_putnbr(tmp->lexem);
-// 		ft_putchar('\n');
-// 		tmp = tmp->next;
-// 	}
-// }
 
 void					ft_setvalues(t_edit *line, t_norm *values)
 {
@@ -50,30 +24,50 @@ void					ft_setvalues(t_edit *line, t_norm *values)
 
 void				ft_print_tree(t_lexit *lexdat)
 {
+	int i;
+
+	i = 1;
 	if (lexdat)
 	{
 		if (lexdat->left)
+		{
+			ft_putstr("GOING LEFT\n");
 			ft_print_tree(lexdat->left);
+		}
 		ft_putstr(lexdat->input);
 		ft_putchar('\n');
 		if (lexdat->right)
+		{
+			ft_putstr("GOING RIGHT\n");
 			ft_print_tree(lexdat->right);
+		}
 	}
 }
 
-int				get_prio(char *str)
+int				get_prio(char *str, t_env *env)
 {
+	char **apaths;
+	char *path;
+
+	apaths = ft_set_paths(env);
 	if (!ft_strcmp(str, ";"))
 		return (SEMICOLON);
-	else if (!ft_strcmp(str, "&&") ||	!ft_strcmp(str, "||"))
+	else if (!ft_strcmp(str, "&&") || !ft_strcmp(str, "||"))
 		return (AND_OR);
 	else if (!ft_strcmp(str, "|"))
 		return (PIPE);
-	else
+	else if ((path = find_cmd(apaths, str)))
 		return (COMMAND);
+	else if (!ft_strcmp(str, ">") || !ft_strcmp(str, ">>") ||
+	!ft_strcmp(str, "<") || !ft_strcmp(str, "<<"))
+		return (REDIR);
+	else if (ft_isstrprint(str))
+		return (ARG);
+	else
+		return (-1);
 }
 
-t_lexit				*add_node(char *input)
+t_lexit				*add_node(char *input, t_env *env)
 {
 	t_lexit *tmp;
 
@@ -83,11 +77,11 @@ t_lexit				*add_node(char *input)
 	tmp->left = 0;
 	tmp->right = 0;
 	tmp->input = ft_strdup(input);
-	tmp->prio = get_prio(input);
+	tmp->prio = get_prio(input, env);
 	return (tmp);
 }
 
-void					create_list(t_lexit **list, char **input)
+void					create_list(t_lexit **list, char **input, t_env *env)
 {
 	int i;
 	t_lexit *tmp;
@@ -98,14 +92,15 @@ void					create_list(t_lexit **list, char **input)
 	{
 		if (!tmp)
 		{
-			*list = add_node(input[i]);
+			*list = add_node(input[i], env);
 			tmp = *list;
 		}
 		else
 		{
 			while (tmp->next)
 				tmp = tmp->next;
-			tmp->next = add_node(input[i]);
+			tmp->next = add_node(input[i], env);
+			tmp->next->prev = tmp;
 		}
 		i++;
 	}
@@ -118,6 +113,7 @@ int					main(int ac, char **av, char **envp)
 	t_env				*env;
 	t_norm			*values;
 	t_lexit			*list;
+	char				**apaths;
 	int				prio;
 
 	(void)ac;
@@ -143,8 +139,10 @@ int					main(int ac, char **av, char **envp)
 		if (ft_errors(ft_pre_parser(line), NULL, NULL))
 		{
 			ft_putchar('\n');
-			create_list(&list, line->line_split);
+			create_list(&list, line->line_split, env);
+			// parse_list(list);
 			lexdat = ft_tree_it(list, NULL, prio);
+			apaths = ft_set_paths(env);
 			ft_print_tree(lexdat);
 			// if (lexdat)
 			// if (ft_errors(ft_parser(lexdat), NULL, NULL))
@@ -152,17 +150,18 @@ int					main(int ac, char **av, char **envp)
 				// ft_putchar('\n');
 				// ft_final_parsing(lexdat);
 				// ft_execs(lexdat, env, line);
-				ft_putchar('\n');
-				ft_putchar('\n');
 				// ft_print_lexdat(lexdat);
 			// }
 		}
 		ft_add_history(line); //add line to history
-		// ft_putstr("segfault ici");
 		// ft_free_lexdat(lexdat);
-		lexdat = NULL;
+		// ft_free_lexdat(list);
+		// lexdat = NULL;
+		// list = NULL;''
 		if (ft_strequ(line->line, "clear"))
 			tputs(tgetstr("cl", NULL), 1, ft_pointchar);
+		if (ft_strequ(line->line, "exit"))
+			exit(0);
 		ft_line_reset(line);
 	}
 	return (0);

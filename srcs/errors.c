@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:00 by jecarol           #+#    #+#             */
-/*   Updated: 2018/02/28 17:42:09 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/08 22:37:21 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,14 @@ int 			ft_errors(int code, char *cmd, char *arg)
 	{
 		ft_putchar('\n');
 		ft_putstr_fd("21sh: parse error near `;'\n", 2);
+		return (0);
+	}
+	if (code == 7)
+	{
+		ft_putchar('\n');
+		ft_putstr_fd("21sh: ", 2);
+		ft_putstr(cmd);
+		ft_putstr_fd(" command not found.\n", 2);
 		return (0);
 	}
 	return (1);
