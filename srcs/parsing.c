@@ -34,7 +34,14 @@ int 				ft_pre_parser(t_edit *line)
 		}
 		i++;
 	}
-	line->line_split = ft_prep_input(line->line);
+	i = 0;
+	// line->line_split = ft_prep_input(line->line);
+	// while (line->line_split[i])
+	// {
+	// 	ft_putstr(line->line_split[i]);
+	// 	ft_putchar('\n');
+	// 	i++;
+	// }
 	return (0);
 }
 

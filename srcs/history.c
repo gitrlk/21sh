@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:40 by jecarol           #+#    #+#             */
-/*   Updated: 2018/02/26 20:15:42 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/11 14:04:10 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void ft_arrow_up(t_edit *line)
   		ft_left_arrow(line);
   		cnt++;
   	}
-  	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
+	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
   ft_putstr(line->curr->cmd);
   free(line->line);
   line->line = ft_strdup(line->curr->cmd);

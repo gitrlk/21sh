@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/09 18:29:05 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/10 21:13:15 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,27 @@ int 				ft_isstrprint(char *str)
 	return (0);
 }
 
+// void				separate_op(char *str, int *index, char **tmp)
+// {
+// 	// tmp[*index] = str;
+// 	// *index += 1;
+// 	int i;
+// 	char **new;
+//
+// 	i = 0;
+// 	new = NULL;
+// 	while (str[i])
+// 	{
+// 		if (ft_strchr(OPERATOR, str[i]))
+// 			new = ft_strsplit(str, str[i]);
+// 		i++;
+// 	}
+// 	if (new)
+// 	{
+//
+// 	}
+// }
+//
 char				**ft_prep_input(char *str)
 {
 	char			**tmp;
@@ -35,8 +56,9 @@ char				**ft_prep_input(char *str)
 	{
 		tmp1 = ft_strtrim(tmp[i]);
 		ft_strdel(&tmp[i]);
-		tmp[i] = tmp1;
-		i++;
+		// separate_op(tmp1, &i, tmp);
+		// tmp[i] = tmp1;
+		// i++;
 	}
 	return (tmp);
 }

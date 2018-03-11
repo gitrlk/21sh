@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/09 18:28:32 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/11 20:21:28 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ typedef	struct		s_edit
 	int						cursor_pos;
 	int						max_size;
 	char 					*line;
-	char					**line_split;
+	// char					**line_split;
 	int 					select_mode;
 	int           start_select;
 	int	           	end_select;
@@ -93,6 +93,23 @@ typedef struct			s_lexit
 	struct s_lexit		*prev;
 }							t_lexit;
 
+typedef struct			s_parsing
+{
+	int					index;
+	int					anex;
+	int					quote_checker;
+	int					simpleq;
+	int					doubleq;
+	int					checker;
+	int					redir_c;
+	int					latest;
+	int					subber;
+	char					*to_node1;
+	char					*to_node2;
+	char					to_node_op[2];
+	char					*ptr;
+	char					*ptr2;
+}							t_parsing;
 // typedef struct				s_arglist
 // {
 // 	char						*input;
