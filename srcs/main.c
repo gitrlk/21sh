@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/11 20:58:03 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/12 18:18:33 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,14 +125,10 @@ void				get_full_op(t_parsing *data, char *input)
 
 }
 
-void				create_list(t_lexit **list, char *input, t_env *env)
+t_parsing		*init_data(void)
 {
-	t_parsing	*data;
-	t_lexit		*tmp;
+	t_parsing *data;
 
-	(void)env;
-
-	tmp = *list;
 	data = ft_memalloc(sizeof(t_parsing));
 	data->index = 0;
 	data->simpleq = 0;
@@ -141,82 +137,131 @@ void				create_list(t_lexit **list, char *input, t_env *env)
 	data->latest = 0;
 	data->subber = 0;
 	data->to_node1 = NULL;
-	// data->to_node_op = NULL;
 	data->to_node2 = NULL;
+	return (data);
+}
+
+int				check_first_node(t_parsing *data, char *input)
+{
+	data->anex = data->latest;
+	while ((!ft_strchr(OPERATOR, input[data->anex])) && input[data->anex])
+		data->anex++;
+	data->subber = data->anex - data->latest;
+	data->to_node_op[0] = data->ptr[0];
+	data->checker = 1;
+	if (!ft_isstrprint(ft_strtrim(data->to_node1 =
+	(ft_strsub(input, data->latest, data->subber)))) && (data->ptr[0] != ';'))
+	{
+		ft_strdel(&data->to_node1);
+		data->to_node1 = NULL;
+		ft_errors(1, data->ptr, NULL);
+		return (0);
+	}
+	return (1);
+}
+
+void				func(t_lexit *tmp, t_env *env, t_parsing *data, int node)
+{
+	if (node == 1)
+	{
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = add_node(data->to_node1, env);
+		tmp->next->prev = tmp;
+	}
+	if (node == 2)
+	{
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = add_node(data->to_node_op, env);
+		tmp->next->prev = tmp;
+		data->index += 1;
+	}
+	if (node == 3)
+	{
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = add_node(data->to_node2, env);
+		tmp->next->prev = tmp;
+	}
+}
+
+int				parsing_error(t_parsing *data, char *input, int code)
+{
+	if (code == 1)
+	{
+		if (((data->ptr2 = ft_strchr(OPERATOR, input[data->index]))) &&
+		data->ptr2[0] != '\0')
+		{
+			ft_strdel(&data->to_node1);
+			data->to_node1 = NULL;
+			ft_errors(1, data->ptr2, NULL);
+			return (0);
+		}
+	}
+	if (code == 2)
+	{
+		if (((!ft_isstrprint(data->to_node2 =
+		ft_strtrim(ft_strsub(input, data->index, data->subber)))) &&
+		(data->ptr[0] != ';')) || (ft_strchr(OPERATOR, data->to_node2[0]) &&
+		data->ptr[0] != ';'))
+		{
+			ft_strdel(&data->to_node2);
+			data->to_node2 = NULL;
+			ft_errors(1, data->ptr, NULL);
+			return (0);
+		}
+	}
+	return (1);
+}
+
+void				index_juggle(t_parsing *data, char *input)
+{
+	data->latest = data->index;
+	data->anex = data->index;
+	while ((!ft_strchr(OPERATOR, input[data->anex])) && input[data->anex])
+		data->anex++;
+	data->subber = data->anex - data->latest;
+}
+
+void				create_list(t_lexit **list, char *input, t_env *env)
+{
+	t_parsing	*data;
+	t_lexit		*tmp;
+
+	tmp = *list;
+	data = init_data();
 	if (quote_checker(data, input))
 	{
 		while (input[data->index])
 		{
 			if ((data->ptr = ft_strchr(OPERATOR, input[data->index])))
 			{
-				data->anex = data->latest;
-				while ((!ft_strchr(OPERATOR, input[data->anex])) && input[data->anex])
-					data->anex++;
-				ft_putnbr(data->anex);
-				data->subber = data->anex - data->latest;
-				data->to_node_op[0] = data->ptr[0];
-				data->checker = 1;
-				if (!ft_isstrprint(ft_strtrim(data->to_node1 = (ft_strsub(input, data->latest, data->subber)))) && (data->ptr[0] != ';'))
-				{
-					ft_strdel(&data->to_node1);
-					data->to_node1 = NULL;
-					ft_errors(1, data->ptr, NULL);
+				if (!check_first_node(data, input))
 					break ;
-				}
 				get_full_op(data, input);
-				ft_putstr("THIS IS TO_NODE1 : ");
-				ft_putstr(data->to_node1);
-				ft_putchar('\n');
-				ft_putstr("THIS IS TO_NODE_OP : ");
-				ft_putstr(data->to_node_op);
-				ft_putchar('\n');
-				data->index += 1;
+				if (!tmp)
+				{
+					*list = add_node(data->to_node1, env);
+					tmp = *list;
+				}
+				else
+					func(tmp, env, data, 1);
+				func(tmp, env, data, 2);
 				while (ft_isspace(input[data->index]))
 					data->index++;
 				if (data->checker)
-					if (((data->ptr2 = ft_strchr(OPERATOR, input[data->index]))) && data->ptr2[0] != '\0')
-					{
-						ft_strdel(&data->to_node1);
-						data->to_node1 = NULL;
-						ft_errors(1, data->ptr2, NULL);
+					if (!parsing_error(data, input, 1))
 						break ;
-					}
-				data->latest = data->index;
-				data->anex = data->index;
-				while ((!ft_strchr(OPERATOR, input[data->anex])) && input[data->anex])
-					data->anex++;
-				data->subber = data->anex - data->latest;
-				if (((!ft_isstrprint(data->to_node2 = ft_strtrim(ft_strsub(input, data->index, data->subber)))) && (data->ptr[0] != ';')) || (ft_strchr(OPERATOR, data->to_node2[0]) && data->ptr[0] != ';'))
-				{
-					ft_strdel(&data->to_node2);
-					data->to_node2 = NULL;
-					ft_errors(1, data->ptr, NULL);
+				index_juggle(data, input);
+				if (!parsing_error(data, input, 2))
 					break ;
-				}
 				else
 					data->checker = 0;
 			}
 			if (input[data->index + 1] == '\0' && data->to_node2)
-			{
-				ft_putstr("THIS IS TO_NODE2 : ");
-				ft_putstr(data->to_node2);
-				ft_putchar('\n');
-			}
+				func(tmp, env, data, 3);
 			data->index++;
-			// if (!tmp)
-			// {
-			// 	*list = add_node(input[data->index], env);
-			// 	tmp = *list;
-			// }
-			// else
-			// {
-			// 	while (tmp->next)
-			// 		tmp = tmp->next;
-			// 	tmp->next = add_node(input[data->index], env);
-			// 	tmp->next->prev = tmp;
-			// }
-			// if ()
-			// data->index++;
 		}
 	}
 }
@@ -228,7 +273,6 @@ int				main(int ac, char **av, char **envp)
 	t_env			*env;
 	t_norm		*values;
 	t_lexit		*list;
-	char			**apaths;
 	int			prio;
 
 	(void)ac;
@@ -251,23 +295,17 @@ int				main(int ac, char **av, char **envp)
 			handle_key(values->buf, line);
 			values->buf = 0;
 		}
-		// if (ft_errors(ft_pre_parser(line), NULL, NULL))
-		// {
 			ft_putchar('\n');
 			create_list(&list, line->line, env);
-			// parse_list(list);
-			// lexdat = ft_tree_it(list, NULL, prio);
-			apaths = ft_set_paths(env);
+			while (list)
+			{
+				ft_putstr("THIS IS LIST->INPUT : ");
+				ft_putstr(list->input);
+				ft_putchar('\n');
+				list = list->next;
+			}
+			// apaths = ft_set_paths(env);
 			// ft_print_tree(lexdat);
-			// if (lexdat)
-			// if (ft_errors(ft_parser(lexdat), NULL, NULL))
-			// {
-				// ft_putchar('\n');
-				// ft_final_parsing(lexdat);
-				// ft_execs(lexdat, env, line);
-				// ft_print_lexdat(lexdat);
-			// }
-		// }
 		ft_add_history(line); //add line to history
 		// ft_free_lexdat(lexdat);
 		// ft_free_lexdat(list);

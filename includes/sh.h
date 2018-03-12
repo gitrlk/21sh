@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/11 20:21:28 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/12 16:54:40 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ typedef struct			s_lexit
 {
 	char					*input;
 	char					**allpaths;
+	char					**args;
 	int					prio;
 	struct s_lexit		*left;
 	struct s_lexit		*right;
