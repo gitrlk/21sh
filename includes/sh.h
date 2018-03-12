@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/12 18:30:23 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/12 20:33:18 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ typedef enum 		e_priorities
 	PIPE,
 	COMMAND,
 	REDIR,
-	ERROR,
-	ARG
+	ARG,
+	ERROR
 	// CHEVRONLEFT,
 	// CHEVRONRIGHT,
 	// DOUBLECHEVRONLEFT,

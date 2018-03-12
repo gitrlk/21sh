@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/12 19:47:30 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/12 21:02:02 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,8 @@ int				get_prio(char *str, t_env *env)
 	char			*path;
 
 	apaths = ft_set_paths(env);
+	if (!str)
+		return (ERROR);
 	if (!ft_strcmp(str, ";"))
 		return (SEMICOLON);
 	else if (!ft_strcmp(str, "&&") || !ft_strcmp(str, "||"))
@@ -73,7 +75,8 @@ t_lexit			*add_node(char *input, t_env *env)
 	tmp->left = 0;
 	tmp->right = 0;
 	tmp->input = ft_strdup(input);
-	tmp->prio = get_prio(input, env);
+	tmp->args = ft_prep_input(input);
+	tmp->prio = get_prio(tmp->args[0], env);
 	return (tmp);
 }
 
@@ -304,22 +307,19 @@ int				main(int ac, char **av, char **envp)
 			handle_key(values->buf, line);
 			values->buf = 0;
 		}
+		ft_putchar('\n');
+		parsing_listing(&list, line->line, env);
+		while (list)
+		{
+			ft_putstr("THIS IS INPUT : ");
+			ft_putstr(list->input);
 			ft_putchar('\n');
-			parsing_listing(&list, line->line, env);
-			while (list)
-			{
-				ft_putstr("THIS IS LIST->INPUT : ");
-				ft_putstr(list->input);
-				ft_putchar('\n');
-				list = list->next;
-			}
-			// apaths = ft_set_paths(env);
-			// ft_print_tree(lexdat);
+			ft_putstr("THIS IS PRIO : ");
+			ft_putnbr(list->prio);
+			ft_putchar('\n');
+			list = list->next;
+		}
 		ft_add_history(line); //add line to history
-		// ft_free_lexdat(lexdat);
-		// ft_free_lexdat(list);
-		// lexdat = NULL;
-		// list = NULL;''
 		if (ft_strequ(line->line, "clear"))
 			tputs(tgetstr("cl", NULL), 1, ft_pointchar);
 		if (ft_strequ(line->line, "exit"))

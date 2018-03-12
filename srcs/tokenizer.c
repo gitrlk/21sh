@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/10 21:13:15 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/12 20:26:38 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,9 +56,8 @@ char				**ft_prep_input(char *str)
 	{
 		tmp1 = ft_strtrim(tmp[i]);
 		ft_strdel(&tmp[i]);
-		// separate_op(tmp1, &i, tmp);
-		// tmp[i] = tmp1;
-		// i++;
+		tmp[i] = tmp1;
+		i++;
 	}
 	return (tmp);
 }
