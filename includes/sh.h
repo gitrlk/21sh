@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/12 16:54:40 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/12 18:30:23 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,7 @@ typedef struct			s_parsing
 	int					redir_c;
 	int					latest;
 	int					subber;
+	int					breaker;
 	char					*to_node1;
 	char					*to_node2;
 	char					to_node_op[2];

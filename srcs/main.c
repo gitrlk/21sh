@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/12 18:18:33 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/12 19:47:30 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,8 @@ t_lexit			*add_node(char *input, t_env *env)
 {
 	t_lexit		*tmp;
 
+	if (!input)
+		return (NULL);
 	if (!(tmp = ft_memalloc(sizeof(t_lexit))))
 		return (NULL);
 	tmp->next = NULL;
@@ -130,12 +132,13 @@ t_parsing		*init_data(void)
 	t_parsing *data;
 
 	data = ft_memalloc(sizeof(t_parsing));
-	data->index = 0;
+	data->index = -1;
 	data->simpleq = 0;
 	data->doubleq = 0;
 	data->checker = 0;
 	data->latest = 0;
 	data->subber = 0;
+	data->breaker = 1;
 	data->to_node1 = NULL;
 	data->to_node2 = NULL;
 	return (data);
@@ -148,7 +151,6 @@ int				check_first_node(t_parsing *data, char *input)
 		data->anex++;
 	data->subber = data->anex - data->latest;
 	data->to_node_op[0] = data->ptr[0];
-	data->checker = 1;
 	if (!ft_isstrprint(ft_strtrim(data->to_node1 =
 	(ft_strsub(input, data->latest, data->subber)))) && (data->ptr[0] != ';'))
 	{
@@ -157,6 +159,7 @@ int				check_first_node(t_parsing *data, char *input)
 		ft_errors(1, data->ptr, NULL);
 		return (0);
 	}
+	data->checker = 1;
 	return (1);
 }
 
@@ -171,11 +174,14 @@ void				func(t_lexit *tmp, t_env *env, t_parsing *data, int node)
 	}
 	if (node == 2)
 	{
-		while (tmp->next)
-			tmp = tmp->next;
-		tmp->next = add_node(data->to_node_op, env);
-		tmp->next->prev = tmp;
-		data->index += 1;
+		if (tmp)
+		{
+			while (tmp->next)
+				tmp = tmp->next;
+			tmp->next = add_node(data->to_node_op, env);
+			tmp->next->prev = tmp;
+			data->index += 1;
+		}
 	}
 	if (node == 3)
 	{
@@ -201,6 +207,8 @@ int				parsing_error(t_parsing *data, char *input, int code)
 	}
 	if (code == 2)
 	{
+		if (!data->breaker)
+			return (0);
 		if (((!ft_isstrprint(data->to_node2 =
 		ft_strtrim(ft_strsub(input, data->index, data->subber)))) &&
 		(data->ptr[0] != ';')) || (ft_strchr(OPERATOR, data->to_node2[0]) &&
@@ -224,7 +232,19 @@ void				index_juggle(t_parsing *data, char *input)
 	data->subber = data->anex - data->latest;
 }
 
-void				create_list(t_lexit **list, char *input, t_env *env)
+t_lexit 			*init_node(t_lexit *tmp, t_lexit **list, t_env *env, t_parsing *data)
+{
+	if (!tmp)
+	{
+		*list = add_node(data->to_node1, env);
+		tmp = *list;
+	}
+	else
+		func(tmp, env, data, 1);
+	return (tmp);
+}
+
+void				parsing_listing(t_lexit **list, char *input, t_env *env)
 {
 	t_parsing	*data;
 	t_lexit		*tmp;
@@ -233,35 +253,24 @@ void				create_list(t_lexit **list, char *input, t_env *env)
 	data = init_data();
 	if (quote_checker(data, input))
 	{
-		while (input[data->index])
+		while (input[++data->index] && data->breaker)
 		{
 			if ((data->ptr = ft_strchr(OPERATOR, input[data->index])))
 			{
-				if (!check_first_node(data, input))
-					break ;
+				data->breaker = check_first_node(data, input);
 				get_full_op(data, input);
-				if (!tmp)
-				{
-					*list = add_node(data->to_node1, env);
-					tmp = *list;
-				}
-				else
-					func(tmp, env, data, 1);
+				tmp = init_node(tmp, list, env, data);
 				func(tmp, env, data, 2);
 				while (ft_isspace(input[data->index]))
 					data->index++;
 				if (data->checker)
-					if (!parsing_error(data, input, 1))
-						break ;
+					data->breaker = parsing_error(data, input, 1);
 				index_juggle(data, input);
-				if (!parsing_error(data, input, 2))
-					break ;
-				else
-					data->checker = 0;
+				data->breaker = parsing_error(data, input, 2);
+				data->checker = 0;
 			}
 			if (input[data->index + 1] == '\0' && data->to_node2)
 				func(tmp, env, data, 3);
-			data->index++;
 		}
 	}
 }
@@ -296,7 +305,7 @@ int				main(int ac, char **av, char **envp)
 			values->buf = 0;
 		}
 			ft_putchar('\n');
-			create_list(&list, line->line, env);
+			parsing_listing(&list, line->line, env);
 			while (list)
 			{
 				ft_putstr("THIS IS LIST->INPUT : ");
