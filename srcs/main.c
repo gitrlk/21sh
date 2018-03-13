@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/12 21:02:02 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/13 20:30:50 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void				ft_print_tree(t_lexit *lexdat)
 	}
 }
 
-int				get_prio(char *str, t_env *env)
+int				get_prio(char *str, t_env *env, char **command)
 {
 	char			**apaths;
 	char			*path;
@@ -53,7 +53,10 @@ int				get_prio(char *str, t_env *env)
 	else if (!ft_strcmp(str, "|"))
 		return (PIPE);
 	else if ((path = find_cmd(apaths, str)))
+	{
+		*command = ft_strdup(path);
 		return (COMMAND);
+	}
 	else if (!ft_strcmp(str, ">") || !ft_strcmp(str, ">>") ||
 	!ft_strcmp(str, "<") || !ft_strcmp(str, "<<"))
 		return (REDIR);
@@ -67,6 +70,8 @@ t_lexit			*add_node(char *input, t_env *env)
 {
 	t_lexit		*tmp;
 
+	int i;
+	i = 0;
 	if (!input)
 		return (NULL);
 	if (!(tmp = ft_memalloc(sizeof(t_lexit))))
@@ -76,7 +81,12 @@ t_lexit			*add_node(char *input, t_env *env)
 	tmp->right = 0;
 	tmp->input = ft_strdup(input);
 	tmp->args = ft_prep_input(input);
-	tmp->prio = get_prio(tmp->args[0], env);
+
+	//
+	// update env si necessaire
+	//
+
+	tmp->prio = get_prio(tmp->args[0], env, &tmp->command);
 	return (tmp);
 }
 
@@ -278,6 +288,32 @@ void				parsing_listing(t_lexit **list, char *input, t_env *env)
 	}
 }
 
+void				execute_binary(t_lexit *list, t_env *env)
+{
+	char			**newenv;
+	pid_t			pid;
+
+	newenv = ft_fill_envp(env);
+	pid = fork();
+	if (pid == 0)
+		execve(list->command, list->args, newenv);
+	else if (pid > 0)
+		wait (NULL);
+}
+
+void				execs(t_lexit *list, t_env *env)
+{
+	if (list)
+	{
+		if (list->left)
+			execs(list->left, env);
+		if (list->prio == 3)
+			execute_binary(list, env);
+		if (list->right)
+			execs(list->right, env);
+	}
+}
+
 int				main(int ac, char **av, char **envp)
 {
 	t_edit		*line;
@@ -285,11 +321,9 @@ int				main(int ac, char **av, char **envp)
 	t_env			*env;
 	t_norm		*values;
 	t_lexit		*list;
-	int			prio;
 
 	(void)ac;
 	(void)av;
-	prio = 0;
 	env = NULL;
 	lexdat = NULL;
 	list = NULL;
@@ -309,16 +343,8 @@ int				main(int ac, char **av, char **envp)
 		}
 		ft_putchar('\n');
 		parsing_listing(&list, line->line, env);
-		while (list)
-		{
-			ft_putstr("THIS IS INPUT : ");
-			ft_putstr(list->input);
-			ft_putchar('\n');
-			ft_putstr("THIS IS PRIO : ");
-			ft_putnbr(list->prio);
-			ft_putchar('\n');
-			list = list->next;
-		}
+		lexdat = ft_tree_it(list, NULL, 0);
+		execs(lexdat, env);
 		ft_add_history(line); //add line to history
 		if (ft_strequ(line->line, "clear"))
 			tputs(tgetstr("cl", NULL), 1, ft_pointchar);

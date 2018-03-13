@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/12 20:33:18 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/13 18:40:56 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,7 @@ typedef struct			s_lexit
 	char					*input;
 	char					**allpaths;
 	char					**args;
+	char					*command;
 	int					prio;
 	struct s_lexit		*left;
 	struct s_lexit		*right;
@@ -167,6 +168,7 @@ void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line);
 char				**ft_set_paths(t_env *env);
 int 			ft_errors(int code, char *cmd, char *arg);
 char				**ft_prep_input(char *str);
+char			**ft_fill_envp(t_env *env);
 
 void			ft_print_env(t_env *env);
 t_env			*add_env(char *var);
