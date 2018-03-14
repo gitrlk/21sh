@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/13 20:30:50 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/14 15:53:33 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,11 @@ void				ft_print_tree(t_lexit *lexdat)
 		if (lexdat->left)
 			ft_print_tree(lexdat->left);
 		ft_putstr(lexdat->input);
+		ft_putchar('\n');
+		ft_putnbr(lexdat->prio);
+		ft_putchar('\n');
+		if (lexdat->command)
+			ft_putstr(lexdat->command);
 		ft_putchar('\n');
 		if (lexdat->right)
 			ft_print_tree(lexdat->right);
@@ -298,16 +303,70 @@ void				execute_binary(t_lexit *list, t_env *env)
 	if (pid == 0)
 		execve(list->command, list->args, newenv);
 	else if (pid > 0)
-		wait (NULL);
+		wait (0);
 }
+
+void				exec_no_fork(t_lexit *list, t_env *env)
+{
+  char			**newenv;
+
+  newenv = ft_fill_envp(env);
+  if (list->input)
+  {
+	  execve(list->command, list->args, newenv);
+	  wait(0);
+  }
+}
+
+
+void  			handle_redir(char *redirection, t_env *env, t_lexit *list)
+{
+	int			file;
+	int			in;
+	pid_t			pid;
+
+	if ((pid = fork()) == -1)
+      exit(EXIT_FAILURE);
+  else if (pid == 0)
+  {
+		if (ft_strequ(redirection, ">"))
+		{
+
+			if ((file = open(list->right->input, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
+				ft_putstr("OPEN ERROR");
+			if (dup2(file, STDOUT_FILENO) == -1)
+				ft_putstr("ERROR DUP");
+			close(file);
+			wait(0);
+			exec_no_fork(list->left, env);
+		}
+		else if (ft_strequ(redirection, "<"))
+		{
+			in = open(list->left->input, O_RDONLY);
+			dup2(in, 0);
+			close(in);
+		}
+    else
+      exit(0);
+  }
+}
+
 
 void				execs(t_lexit *list, t_env *env)
 {
+	int			redir;
+
+	redir = 0;
 	if (list)
 	{
+		if (list->prio == REDIR)
+		{
+			redir = 1;
+			handle_redir(list->input, env, list);
+		}
 		if (list->left)
 			execs(list->left, env);
-		if (list->prio == 3)
+		if (list->prio == 4 && !redir)
 			execute_binary(list, env);
 		if (list->right)
 			execs(list->right, env);
@@ -344,6 +403,7 @@ int				main(int ac, char **av, char **envp)
 		ft_putchar('\n');
 		parsing_listing(&list, line->line, env);
 		lexdat = ft_tree_it(list, NULL, 0);
+		// ft_print_tree(lexdat);
 		execs(lexdat, env);
 		ft_add_history(line); //add line to history
 		if (ft_strequ(line->line, "clear"))

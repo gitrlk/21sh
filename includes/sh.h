@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/13 18:40:56 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/14 15:50:57 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,8 @@ typedef enum 		e_priorities
 	SEMICOLON,
 	AND_OR,
 	PIPE,
-	COMMAND,
 	REDIR,
+	COMMAND,
 	ARG,
 	ERROR
 	// CHEVRONLEFT,
@@ -113,6 +113,18 @@ typedef struct			s_parsing
 	char					*ptr;
 	char					*ptr2;
 }							t_parsing;
+
+typedef struct			s_redir
+{
+	int					save_in;
+	int					save_out;
+	int					file;
+}							t_redir;
+
+
+
+
+
 // typedef struct				s_arglist
 // {
 // 	char						*input;
