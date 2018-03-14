@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/14 20:14:27 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/14 20:54:47 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,15 @@ void				ft_print_tree(t_lexit *lexdat)
 	}
 }
 
-int				get_prio(char *str, t_env *env, char **command)
+int				get_prio(char *str, char **command, char **apaths)
 {
-	char			**apaths;
 	char			*path;
 
-	apaths = ft_set_paths(env);
 	if (!str)
+	{
+		ft_freetab(apaths);
 		return (ERROR);
+	}
 	if (!ft_strcmp(str, ";"))
 		return (SEMICOLON);
 	else if (!ft_strcmp(str, "&&") || !ft_strcmp(str, "||"))
@@ -56,6 +57,7 @@ int				get_prio(char *str, t_env *env, char **command)
 	else if ((path = find_cmd(apaths, str)))
 	{
 		*command = ft_strdup(path);
+		ft_strdel(&path);
 		return (COMMAND);
 	}
 	else if (!ft_strcmp(str, ">") || !ft_strcmp(str, ">>") ||
@@ -70,7 +72,9 @@ int				get_prio(char *str, t_env *env, char **command)
 t_lexit			*add_node(char *input, t_env *env)
 {
 	t_lexit		*tmp;
+	char			**apaths;
 
+	apaths = ft_set_paths(env);
 	if (!input)
 		return (NULL);
 	if (!(tmp = ft_memalloc(sizeof(t_lexit))))
@@ -85,7 +89,8 @@ t_lexit			*add_node(char *input, t_env *env)
 	// update env si necessaire
 	//
 
-	tmp->prio = get_prio(tmp->args[0], env, &tmp->command);
+	tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
+	ft_freetab(apaths);
 	return (tmp);
 }
 
@@ -158,19 +163,23 @@ t_parsing		*init_data(void)
 
 int				check_first_node(t_parsing *data, char *input)
 {
+	char *tmp;
+
 	data->anex = data->latest;
 	while ((!ft_strchr(OPERATOR, input[data->anex])) && input[data->anex])
 		data->anex++;
 	data->subber = data->anex - data->latest;
 	data->to_node_op[0] = data->ptr[0];
-	if (!ft_isstrprint(ft_strtrim(data->to_node1 =
-	(ft_strsub(input, data->latest, data->subber)))) && (data->ptr[0] != ';'))
+	if (!ft_isstrprint((tmp = ft_strtrim(data->to_node1 =
+	(ft_strsub(input, data->latest, data->subber))))) && (data->ptr[0] != ';'))
 	{
 		ft_strdel(&data->to_node1);
 		data->to_node1 = NULL;
+		ft_strdel(&tmp);
 		ft_errors(1, data->ptr, NULL);
 		return (0);
 	}
+	ft_strdel(&tmp);
 	data->checker = 1;
 	return (1);
 }
@@ -186,6 +195,7 @@ void				execute_binary(t_lexit *list, t_env *env)
 		execve(list->command, list->args, newenv);
 	else if (pid > 0)
 		wait (0);
+	ft_freetab(newenv);
 }
 
 void				exec_no_fork(t_lexit *list, t_env *env)
@@ -197,7 +207,8 @@ void				exec_no_fork(t_lexit *list, t_env *env)
   {
 	  execve(list->command, list->args, newenv);
 	  wait(0);
-  }
+	}
+	ft_freetab(newenv);
 }
 
 
@@ -257,11 +268,19 @@ void				execs(t_lexit *list, t_env *env)
 
 void				free_tree(t_lexit *lexdat)
 {
-	if (lexdat->left)
-		free_tree(lexdat->left);
-	if (lexdat->right)
-		free_tree(lexdat->right);
-	
+	if (lexdat)
+	{
+		if (lexdat->left)
+			free_tree(lexdat->left);
+		if (lexdat->right)
+			free_tree(lexdat->right);
+		ft_strdel(&lexdat->input);
+		ft_strdel(&lexdat->command);
+		if (lexdat->args[1])
+			ft_freetab(lexdat->args);
+		else
+			ft_strdel(&lexdat->args[0]);
+	}
 }
 
 int				main(int ac, char **av, char **envp)

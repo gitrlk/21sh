@@ -31,6 +31,9 @@ void				func(t_lexit *tmp, t_env *env, t_parsing *data, int node)
 
 int				parsing_error(t_parsing *data, char *input, int code)
 {
+	char			*tmp;
+
+	tmp = NULL;
 	if (code == 1)
 	{
 		if (((data->ptr2 = ft_strchr(OPERATOR, input[data->index]))) &&
@@ -47,15 +50,19 @@ int				parsing_error(t_parsing *data, char *input, int code)
 		if (!data->breaker)
 			return (0);
 		if (((!ft_isstrprint(data->to_node2 =
-		ft_strtrim(ft_strsub(input, data->index, data->subber)))) &&
+		ft_strtrim(tmp = ft_strsub(input, data->index, data->subber)))) &&
 		(data->ptr[0] != ';')) || (ft_strchr(OPERATOR, data->to_node2[0]) &&
 		data->ptr[0] != ';'))
 		{
+			ft_strdel(&tmp);
 			ft_strdel(&data->to_node2);
 			data->to_node2 = NULL;
 			ft_errors(1, data->ptr, NULL);
 			return (0);
 		}
+		ft_strdel(&tmp);
+		// ft_strdel(&data->to_node2);
+		// data->to_node2 = NULL;
 	}
 	return (1);
 }
@@ -74,6 +81,7 @@ t_lexit 			*init_node(t_lexit *tmp, t_lexit **list, t_env *env, t_parsing *data)
 	if (!tmp)
 	{
 		*list = add_node(data->to_node1, env);
+		ft_strdel(&data->to_node1);
 		tmp = *list;
 	}
 	else
@@ -107,7 +115,11 @@ void				parsing_listing(t_lexit **list, char *input, t_env *env)
 				data->checker = 0;
 			}
 			if (input[data->index + 1] == '\0' && data->to_node2)
+			{
 				func(tmp, env, data, 3);
+				ft_strdel(&data->to_node2);
+			}
 		}
 	}
+	ft_memdel((void **)&data);
 }
