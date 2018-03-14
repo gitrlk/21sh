@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/14 20:54:47 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/14 21:39:12 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,7 @@ int				get_prio(char *str, char **command, char **apaths)
 	char			*path;
 
 	if (!str)
-	{
-		ft_freetab(apaths);
 		return (ERROR);
-	}
 	if (!ft_strcmp(str, ";"))
 		return (SEMICOLON);
 	else if (!ft_strcmp(str, "&&") || !ft_strcmp(str, "||"))
@@ -247,9 +244,8 @@ void  			handle_redir(char *redirection, t_env *env, t_lexit *list)
 
 void				execs(t_lexit *list, t_env *env)
 {
-	int			redir;
+	static int	redir = 0;
 
-	redir = 0;
 	if (list)
 	{
 		if (list->prio == REDIR)
@@ -276,10 +272,10 @@ void				free_tree(t_lexit *lexdat)
 			free_tree(lexdat->right);
 		ft_strdel(&lexdat->input);
 		ft_strdel(&lexdat->command);
-		if (lexdat->args[1])
-			ft_freetab(lexdat->args);
-		else
-			ft_strdel(&lexdat->args[0]);
+		// if (lexdat->args[1])
+		// 	ft_freetab(lexdat->args);
+		// else
+		// 	ft_strdel(&lexdat->args[0]);
 	}
 }
 
@@ -315,7 +311,8 @@ int				main(int ac, char **av, char **envp)
 		lexdat = ft_tree_it(list, NULL, 0);
 		// ft_print_tree(lexdat);
 		execs(lexdat, env);
-		free_tree(lexdat);
+		if (lexdat)
+			free_tree(lexdat);
 		ft_add_history(line); //add line to history
 		if (ft_strequ(line->line, "clear"))
 			tputs(tgetstr("cl", NULL), 1, ft_pointchar);

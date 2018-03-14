@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:03 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/14 19:32:38 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/14 21:21:11 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ void			ft_freetab(char **table)
 		ft_strdel((&table[i]));
 		i++;
 	}
-	ft_memdel((void **)&table);
+	if (table)
+		ft_memdel((void **)&table);
 }
 
 void			ft_line_reset(t_edit *line)

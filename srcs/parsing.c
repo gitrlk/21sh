@@ -7,6 +7,7 @@ void				func(t_lexit *tmp, t_env *env, t_parsing *data, int node)
 		while (tmp->next)
 			tmp = tmp->next;
 		tmp->next = add_node(data->to_node1, env);
+		ft_strdel(&data->to_node1);
 		tmp->next->prev = tmp;
 	}
 	if (node == 2)
@@ -61,8 +62,8 @@ int				parsing_error(t_parsing *data, char *input, int code)
 			return (0);
 		}
 		ft_strdel(&tmp);
-		// ft_strdel(&data->to_node2);
-		// data->to_node2 = NULL;
+		ft_strdel(&data->to_node2);
+		data->to_node2 = NULL;
 	}
 	return (1);
 }
