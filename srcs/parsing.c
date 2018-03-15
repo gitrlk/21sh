@@ -91,6 +91,13 @@ t_lexit 			*init_node(t_lexit *tmp, t_lexit **list,
 	return (tmp);
 }
 
+t_lexit			*single_node(t_lexit *tmp, t_lexit **list, t_env *env, char *input)
+{
+	*list = add_node(input, env);
+	tmp = *list;
+	return (tmp);
+}
+
 void				parsing_listing(t_lexit **list, char *input, t_env *env)
 {
 	t_parsing	*data;
@@ -99,10 +106,10 @@ void				parsing_listing(t_lexit **list, char *input, t_env *env)
 
 	tmp = *list;
 	empty_string = ft_strtrim(input);
-	if (empty_string[0] == '\0')
-		list = NULL;
 	data = init_data();
-	if (quote_checker(data, input) && list)
+	if (empty_string[0] == '\0')
+		data->empty = 1;
+	if (quote_checker(data, input) && !data->empty)
 	{
 		while (input[++data->index] && data->breaker)
 		{
@@ -126,8 +133,8 @@ void				parsing_listing(t_lexit **list, char *input, t_env *env)
 				ft_strdel(&data->to_node2);
 			}
 		}
-		if (input && !(*list))
-			tmp = init_node(tmp, list, env, data);
+		if (input && !*(list))
+			tmp = single_node(tmp, list, env, input);
 	}
 	ft_strdel(&empty_string);
 	ft_memdel((void **)&data);

@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/15 16:58:33 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/15 18:29:39 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ t_lexit			*add_node(char *input, t_env *env)
 {
 	t_lexit		*tmp;
 	char			**apaths;
+	char			*tmp1;
 
 	apaths = ft_set_paths(env);
 	if (!input)
@@ -79,7 +80,7 @@ t_lexit			*add_node(char *input, t_env *env)
 	tmp->next = NULL;
 	tmp->left = 0;
 	tmp->right = 0;
-	tmp->input = ft_strdup(input);
+	tmp->input = (tmp1 = ft_strtrim(ft_strdup(input)));
 	tmp->args = ft_prep_input(input);
 
 	//
@@ -87,6 +88,7 @@ t_lexit			*add_node(char *input, t_env *env)
 	//
 
 	tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
+	// ft_strdel(&tmp1);
 	ft_freetab(apaths);
 	return (tmp);
 }
@@ -153,6 +155,7 @@ t_parsing		*init_data(void)
 	data->latest = 0;
 	data->subber = 0;
 	data->breaker = 1;
+	data->empty = 0;
 	data->to_node1 = NULL;
 	data->to_node2 = NULL;
 	return (data);
@@ -279,6 +282,22 @@ void				free_tree(t_lexit *lexdat)
 	}
 }
 
+void				free_list(t_lexit *list)
+{
+	t_lexit		*tmp;
+
+	tmp = list;
+	while(list)
+	{
+		tmp = list;
+		list = list->next;
+		if (tmp->input)
+			ft_strdel(&tmp->input);
+		if (tmp)
+			free(tmp);
+	}
+}
+
 int				main(int ac, char **av, char **envp)
 {
 	t_edit		*line;
@@ -307,11 +326,19 @@ int				main(int ac, char **av, char **envp)
 			values->buf = 0;
 		}
 		ft_putchar('\n');
-		parsing_listing(&list, line->line, env);
-		lexdat = ft_tree_it(list, NULL, 0);
-		execs(lexdat, env);
+		if (line->line)
+		{
+			parsing_listing(&list, line->line, env);
+			lexdat = ft_tree_it(list, NULL, 0);
+			execs(lexdat, env);
+		}
 		if (lexdat)
 			free_tree(lexdat);
+		if (list)
+		{
+			free_list(list);
+			list = NULL;
+		}
 		ft_add_history(line); //add line to history
 		if (ft_strequ(line->line, "clear"))
 			tputs(tgetstr("cl", NULL), 1, ft_pointchar);
