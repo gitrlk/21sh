@@ -62,8 +62,8 @@ int				parsing_error(t_parsing *data, char *input, int code)
 			return (0);
 		}
 		ft_strdel(&tmp);
-		ft_strdel(&data->to_node2);
-		data->to_node2 = NULL;
+		// ft_strdel(&data->to_node2);
+		// data->to_node2 = NULL;
 	}
 	return (1);
 }
@@ -129,13 +129,14 @@ void				parsing_listing(t_lexit **list, char *input, t_env *env)
 			}
 			if (input[data->index + 1] == '\0' && data->to_node2)
 			{
-				func(tmp, env, data, 3);
+ 				func(tmp, env, data, 3);
 				ft_strdel(&data->to_node2);
 			}
 		}
 		if (input && !*(list))
 			tmp = single_node(tmp, list, env, input);
 	}
+	ft_strdel(&data->to_node2);
 	ft_strdel(&empty_string);
 	ft_memdel((void **)&data);
 }

@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/15 18:29:39 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/15 19:20:37 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ t_lexit			*add_node(char *input, t_env *env)
 {
 	t_lexit		*tmp;
 	char			**apaths;
-	char			*tmp1;
+	char			*tmp2;
 
 	apaths = ft_set_paths(env);
 	if (!input)
@@ -80,7 +80,7 @@ t_lexit			*add_node(char *input, t_env *env)
 	tmp->next = NULL;
 	tmp->left = 0;
 	tmp->right = 0;
-	tmp->input = (tmp1 = ft_strtrim(ft_strdup(input)));
+	tmp->input = ft_strtrim(tmp2 = ft_strdup(input));
 	tmp->args = ft_prep_input(input);
 
 	//
@@ -88,8 +88,8 @@ t_lexit			*add_node(char *input, t_env *env)
 	//
 
 	tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
-	// ft_strdel(&tmp1);
 	ft_freetab(apaths);
+	ft_strdel(&tmp2);
 	return (tmp);
 }
 
@@ -218,6 +218,7 @@ void  			handle_redir(char *redirection, t_env *env, t_lexit *list)
 	int			in;
 	pid_t			pid;
 
+	(void)env;
 	if ((pid = fork()) == -1)
       exit(EXIT_FAILURE);
   else if (pid == 0)
@@ -259,7 +260,10 @@ void				execs(t_lexit *list, t_env *env)
 		if (list->left)
 			execs(list->left, env);
 		if (list->prio == 4 && !redir)
+		{
 			execute_binary(list, env);
+			redir = 0;
+		}
 		if (list->right)
 			execs(list->right, env);
 	}
@@ -293,6 +297,10 @@ void				free_list(t_lexit *list)
 		list = list->next;
 		if (tmp->input)
 			ft_strdel(&tmp->input);
+		if (tmp->args)
+			ft_freetab(tmp->args);
+		if (tmp->command)
+			ft_strdel(&tmp->command);
 		if (tmp)
 			free(tmp);
 	}
