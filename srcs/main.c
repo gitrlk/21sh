@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/15 19:20:37 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/15 19:30:48 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,6 @@ t_lexit			*add_node(char *input, t_env *env)
 {
 	t_lexit		*tmp;
 	char			**apaths;
-	char			*tmp2;
 
 	apaths = ft_set_paths(env);
 	if (!input)
@@ -80,7 +79,7 @@ t_lexit			*add_node(char *input, t_env *env)
 	tmp->next = NULL;
 	tmp->left = 0;
 	tmp->right = 0;
-	tmp->input = ft_strtrim(tmp2 = ft_strdup(input));
+	tmp->input = ft_strtrim(input);
 	tmp->args = ft_prep_input(input);
 
 	//
@@ -89,7 +88,6 @@ t_lexit			*add_node(char *input, t_env *env)
 
 	tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
 	ft_freetab(apaths);
-	ft_strdel(&tmp2);
 	return (tmp);
 }
 
