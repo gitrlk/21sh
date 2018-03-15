@@ -77,7 +77,8 @@ void				index_juggle(t_parsing *data, char *input)
 	data->subber = data->anex - data->latest;
 }
 
-t_lexit 			*init_node(t_lexit *tmp, t_lexit **list, t_env *env, t_parsing *data)
+t_lexit 			*init_node(t_lexit *tmp, t_lexit **list,
+					t_env *env, t_parsing *data)
 {
 	if (!tmp)
 	{
@@ -94,10 +95,14 @@ void				parsing_listing(t_lexit **list, char *input, t_env *env)
 {
 	t_parsing	*data;
 	t_lexit		*tmp;
+	char			*empty_string;
 
 	tmp = *list;
+	empty_string = ft_strtrim(input);
+	if (empty_string[0] == '\0')
+		list = NULL;
 	data = init_data();
-	if (quote_checker(data, input))
+	if (quote_checker(data, input) && list)
 	{
 		while (input[++data->index] && data->breaker)
 		{
@@ -121,6 +126,9 @@ void				parsing_listing(t_lexit **list, char *input, t_env *env)
 				ft_strdel(&data->to_node2);
 			}
 		}
+		if (input && !(*list))
+			tmp = init_node(tmp, list, env, data);
 	}
+	ft_strdel(&empty_string);
 	ft_memdel((void **)&data);
 }
