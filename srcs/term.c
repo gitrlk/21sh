@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:16:14 by jecarol           #+#    #+#             */
-/*   Updated: 2018/02/26 20:16:25 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/16 17:27:34 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ int				ft_pointchar(int c)
 
 void			ft_prompt(void)
 {
-	ft_putstr(TURQUOISE);
-	ft_putstr("$>");
-	ft_putstr(DEFAULT);
+	ft_putstr_fd(TURQUOISE, STDOUT_FILENO);
+	ft_putstr_fd("$>", STDOUT_FILENO);
+	ft_putstr_fd(DEFAULT, STDOUT_FILENO);
 }

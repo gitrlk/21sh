@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/16 14:24:59 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/16 17:48:11 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -206,22 +206,24 @@ void  			handle_redir(char *redirection, t_env *env, t_lexit *list, int *saved)
 	file = 0;
 		if (ft_strequ(redirection, ">"))
 		{
-			if ((file = open(list->right->input, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
+			if ((saved[3] = open(list->right->input, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
 				ft_putstr("OPEN ERROR");
+			// ft_putstr("MAILLON RIGHT : ");
+			// ft_putstr(list->right->input);
 			saved[0] = dup(STDIN_FILENO);
 			saved[1] = dup(STDOUT_FILENO);
-			if ((dupped = dup2(file, STDOUT_FILENO)) == -1)
+			if ((saved[2] = dup2(saved[3], STDOUT_FILENO)) == -1)
 				ft_putstr("ERROR DUP");
 		}
-    else
-      exit(0);
+    	else
+      	exit(0);
 }
 
 
 void				execs(t_lexit *list, t_env *env)
 {
 	static int	redir = 0;
-	int saved[2];
+	static int	saved[4];
 
 	if (list)
 	{
@@ -229,7 +231,7 @@ void				execs(t_lexit *list, t_env *env)
 		{
 			redir = 1;
 			handle_redir(list->input, env, list, saved);
-			ft_putchar('\n');
+			close(saved[3]);
 		}
 		if (list->left)
 			execs(list->left, env);
@@ -238,10 +240,11 @@ void				execs(t_lexit *list, t_env *env)
 			execute_binary(list, env);
 			if (redir)
 			{
+				ft_putstr_fd("OUESHEU", STDOUT_FILENO);
 				dup2(STDIN_FILENO, saved[0]);
 				dup2(STDOUT_FILENO, saved[1]);
-				// ft_putchar('\n');
-				// close(saved[1]);
+				// close(saved[3]);
+				redir = 0;
 			}
 		}
 		if (list->right)
