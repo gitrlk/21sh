@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:16:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/02/26 20:16:05 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/16 19:23:41 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void ft_left_arrow(t_edit *line)
 	if (line->cursor_pos >= 3)
 	{
 		line->cursor_pos--;
-		ft_putstr("\033[1D");
+		ft_putstr_fd("\033[1D", STDOUT_FILENO);
 	}
 }
 
@@ -26,7 +26,7 @@ void ft_right_arrow(t_edit *line)
 	if (line->cursor_pos < line->max_size)
 	{
 		line->cursor_pos++;
-		ft_putstr("\033[1C");
+		ft_putstr_fd("\033[1C", STDOUT_FILENO);
 	}
 	if (((line->cursor_pos) % line->sz.ws_col) == 0)
 	{

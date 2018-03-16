@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:27 by jecarol           #+#    #+#             */
-/*   Updated: 2018/02/26 20:16:23 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/16 19:26:49 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,16 +29,16 @@ void ft_highlight(t_edit *line)
 
 	i = 0;
 	tmp = ft_strndup(line->line, line->start_select);
-	ft_putstr(tmp);
-	ft_putstr(tgetstr("mr", NULL));
+	ft_putstr_fd(tmp, STDOUT_FILENO);
+	ft_putstr_fd(tgetstr("mr", NULL), STDOUT_FILENO);
     if (line->start_select > line->end_select)
       swap_norme(line); // remplacer par un ternaire
 	tmp2 = ft_strsub(line->line, line->start_select , (line->end_select - line->start_select));
-	ft_putstr(tmp2);
+	ft_putstr_fd(tmp2, STDOUT_FILENO);
 	free(tmp);
-	ft_putstr(tgetstr("me", NULL));
+	ft_putstr_fd(tgetstr("me", NULL), STDOUT_FILENO);
 	tmp = ft_strsub(line->line, line->end_select , (line->max_size - 3));
-	ft_putstr(tmp);
+	ft_putstr_fd(tmp, STDOUT_FILENO);
 	line->cursor_pos = line->max_size;
 	while ((size_t)++i <= ft_strlen(tmp))
 		ft_left_arrow(line);
@@ -74,7 +74,7 @@ void ft_go_start(t_edit *line)
    tmp = ft_strsub(line->line, line->cursor_pos - 2 , line->max_size);
    line->line = ft_freejoinstr(tmp2, tmp);
    ft_go_start(line);
- 	 ft_putstr(line->line);
+ 	 ft_putstr_fd(line->line, STDOUT_FILENO);
    line->max_size += ft_strlen(line->is_highlight);
    line->cursor_pos = ft_strlen(line->line) + 2;
    while ((size_t)i < ft_strlen(tmp))
@@ -94,9 +94,9 @@ void ft_cut(t_edit *line)
 
     i = 0;
     tmp = ft_strndup(line->line, line->start_select);
-    ft_putstr(tmp);
+    ft_putstr_fd(tmp, STDOUT_FILENO);
     tmp2 = ft_strsub(line->line, line->end_select , (line->max_size - 3));
-    ft_putstr(tmp2);
+    ft_putstr_fd(tmp2, STDOUT_FILENO);
     free(line->line);
     line->max_size -= ft_strlen(line->is_highlight);
     line->line = ft_freejoinstr(tmp, tmp2);
@@ -115,7 +115,7 @@ void select_copy_cut(t_edit *line, int buf)
 	{
 		line->select_mode = 0;
     ft_go_start(line);
-    ft_putstr(line->line);
+    ft_putstr_fd(line->line, STDOUT_FILENO);
     line->cursor_pos = (ft_strlen(line->line) + 2);
 	}
 	else if (line->select_mode && buf == PRESS_ALT_X)

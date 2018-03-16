@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/02/26 20:16:30 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/16 19:25:35 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void			ft_print_env(t_env *env)
 {
 	while (env)
 	{
-		ft_putendl(env->var);
+		ft_putendl_fd(env->var, STDOUT_FILENO);
 		env = env->next;
 	}
 }

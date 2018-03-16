@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/16 18:17:02 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/16 20:49:33 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,23 +196,23 @@ void				execute_binary(t_lexit *list, t_env *env)
 	ft_freetab(newenv);
 }
 
-void  			handle_redir(char *redirection, t_env *env, t_lexit *list, int *saved)
+void  			handle_redir(char *redirection, t_env *env, t_lexit *list, t_fday *cpy)
 {
-	int			file;
+	// int			file;
 	int 		dupped;
 
 	(void)env;
-	dupped = 0;
-	file = 0;
+	dupped = STDOUT_FILENO;
+	// file = 0;
 		if (ft_strequ(redirection, ">"))
 		{
-			if ((saved[3] = open(list->right->input, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
+			if ((cpy->saved_file = open(list->right->input, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
 				ft_putstr("OPEN ERROR");
 			// ft_putstr("MAILLON RIGHT : ");
 			// ft_putstr(list->right->input);
-			saved[0] = dup(STDIN_FILENO);
-			saved[1] = dup(STDOUT_FILENO);
-			if ((saved[2] = dup2(saved[3], STDOUT_FILENO)) == -1)
+			// cpy->saved_in = dup(STDIN_FILENO);
+			// cpy->saved_out = dup(STDOUT_FILENO);
+			if ((dup2(cpy->saved_file, dupped)) == -1)
 				ft_putstr("ERROR DUP");
 		}
     	else
@@ -223,15 +223,22 @@ void  			handle_redir(char *redirection, t_env *env, t_lexit *list, int *saved)
 void				execs(t_lexit *list, t_env *env)
 {
 	static int	redir = 0;
-	int saved[4];
+	t_fday		cpy;
 
 	if (list)
 	{
 		if (list->prio == REDIR)
 		{
 			redir = 1;
-			handle_redir(list->input, env, list, saved);
-			close(saved[3]);
+			handle_redir(list->input, env, list, &cpy);
+			close(cpy.saved_file);
+			// if (cpy.saved_out == -1)
+			// {
+			// 	close(STDOUT_FILENO);
+			// 	cpy.saved_out = 1;
+			// }
+			// else if (cpy.saved_out != 1)
+			// 	dup2(cpy.saved_out, STDOUT_FILENO);
 		}
 		if (list->left)
 			execs(list->left, env);
@@ -240,9 +247,27 @@ void				execs(t_lexit *list, t_env *env)
 			execute_binary(list, env);
 			if (redir)
 			{
-				ft_putstr_fd("OUESHEU", STDOUT_FILENO);
-				dup2(STDIN_FILENO, saved[0]);
-				dup2(STDOUT_FILENO, saved[2]);
+				// if (cpy.saved_in != 0)
+				// 	close(cpy.saved_in);
+					// cpy.saved_in = 0;
+
+					// cpy.saved_out = 1;
+				// ft_putstr_fd("OUESHEU", STDOUT_FILENO);
+				dup2(STDIN_FILENO, cpy.saved_in);
+				dup2(STDOUT_FILENO, cpy.saved_out);
+				if (cpy.saved_out == -1)
+				{
+					close(STDOUT_FILENO);
+					cpy.saved_out = 1;
+				}
+				else if (cpy.saved_out != 1)
+					dup2(cpy.saved_out, STDOUT_FILENO);
+// ft_putstr_fd("AWEEE", STDOUT_FILENO);
+				// if (cpy.saved_err == -1)
+				// {
+				// 	close(cpy.saved_err);
+				// 	cpy.saved_err = 2;
+				// }
 				redir = 0;
 			}
 		}
