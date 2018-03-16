@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/16 02:38:44 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/03/16 14:24:59 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,89 +190,46 @@ void				execute_binary(t_lexit *list, t_env *env)
 	newenv = ft_fill_envp(env);
 	pid = fork();
 	if (pid == 0)
-	{
-		// ft_putstr("JSUIS LA 1");
 		execve(list->command, list->args, newenv);
-	}
 	else if (pid > 0)
-	{
-		// ft_putstr("JSUIS LA 2");
-		// ft_putchar('\n');
-		// ft_putstr("PID : ");
-		// ft_putnbr((int)pid);
 		wait (0);
-	}
 	ft_freetab(newenv);
 }
 
-// void				exec_no_fork(t_lexit *list, t_env *env)
-// {
-//   char			**newenv;
-//
-//   newenv = ft_fill_envp(env);
-//   if (list->input)
-//   {
-// 	  execve(list->command, list->args, newenv);
-// 	  // wait(0);
-// 	}
-// 	ft_freetab(newenv);
-// }
-
-
-int  			handle_redir(char *redirection, t_env *env, t_lexit *list)
+void  			handle_redir(char *redirection, t_env *env, t_lexit *list, int *saved)
 {
 	int			file;
-	int			in;
 	int 		dupped;
-	int 		saved_stdout;
-	// pid_t		pid;
 
 	(void)env;
 	dupped = 0;
 	file = 0;
-	saved_stdout = 0;
-// if ((pid = fork()) == -1)
-      // exit(EXIT_FAILURE);
-  // if (pid == 0)
-  // {
 		if (ft_strequ(redirection, ">"))
 		{
 			if ((file = open(list->right->input, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
 				ft_putstr("OPEN ERROR");
-			saved_stdout = dup(1);
-			if ((dupped = dup2(file, 1)) == -1)
+			saved[0] = dup(STDIN_FILENO);
+			saved[1] = dup(STDOUT_FILENO);
+			if ((dupped = dup2(file, STDOUT_FILENO)) == -1)
 				ft_putstr("ERROR DUP");
-			// ft_putnbr(file);
-			// close(file);
-			// wait(0);
-			// exec_no_fork(list->left, env);
-		}
-		else if (ft_strequ(redirection, "<"))
-		{
-			in = open(list->left->input, O_RDONLY);
-			dup2(in, 0);
-			close(in);
 		}
     else
       exit(0);
-  // }
-  return (saved_stdout);
-  // else if (pid > 0 )
-  // 	wait (0);
 }
 
 
 void				execs(t_lexit *list, t_env *env)
 {
 	static int	redir = 0;
-	int dupped = 0;
+	int saved[2];
 
 	if (list)
 	{
 		if (list->prio == REDIR)
 		{
 			redir = 1;
-			dupped = handle_redir(list->input, env, list);
+			handle_redir(list->input, env, list, saved);
+			ft_putchar('\n');
 		}
 		if (list->left)
 			execs(list->left, env);
@@ -281,8 +238,10 @@ void				execs(t_lexit *list, t_env *env)
 			execute_binary(list, env);
 			if (redir)
 			{
-				dup2(dupped, 1);
-				close(dupped);
+				dup2(STDIN_FILENO, saved[0]);
+				dup2(STDOUT_FILENO, saved[1]);
+				// ft_putchar('\n');
+				// close(saved[1]);
 			}
 		}
 		if (list->right)
@@ -300,10 +259,6 @@ void				free_tree(t_lexit *lexdat)
 			free_tree(lexdat->right);
 		ft_strdel(&lexdat->input);
 		ft_strdel(&lexdat->command);
-		// if (lexdat->args[1])
-		// 	ft_freetab(lexdat->args);
-		// else
-		// 	ft_strdel(&lexdat->args[0]);
 	}
 }
 
