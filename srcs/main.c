@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/16 17:48:11 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/16 18:17:02 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,7 +223,7 @@ void  			handle_redir(char *redirection, t_env *env, t_lexit *list, int *saved)
 void				execs(t_lexit *list, t_env *env)
 {
 	static int	redir = 0;
-	static int	saved[4];
+	int saved[4];
 
 	if (list)
 	{
@@ -242,8 +242,7 @@ void				execs(t_lexit *list, t_env *env)
 			{
 				ft_putstr_fd("OUESHEU", STDOUT_FILENO);
 				dup2(STDIN_FILENO, saved[0]);
-				dup2(STDOUT_FILENO, saved[1]);
-				// close(saved[3]);
+				dup2(STDOUT_FILENO, saved[2]);
 				redir = 0;
 			}
 		}
