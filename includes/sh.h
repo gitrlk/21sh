@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/16 20:16:09 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/18 22:33:45 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,10 +123,23 @@ typedef struct			s_redir
 
 typedef struct			s_fday
 {
+	int					in;
+	int					out;
+	int					saved_file;
 	int					saved_in;
 	int					saved_out;
-	int					saved_file;
+	int					saved_err;
 }							t_fday;
+
+typedef struct			s_sh
+{
+	t_env					*env;
+	t_lexit				*list;
+	t_lexit				*lexdat;
+	t_edit				*line;
+	t_norm				*values;
+	t_fday				fd;
+}							t_sh;
 
 
 

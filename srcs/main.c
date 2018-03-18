@@ -6,13 +6,13 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/16 20:49:33 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/18 23:27:46 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-void					ft_setvalues(t_edit *line, t_norm *values)
+void					init_structs(t_edit *line, t_norm *values, t_fday *fd)
 {
 	line->hstr = NULL;
 	ft_line_reset(line);
@@ -20,6 +20,12 @@ void					ft_setvalues(t_edit *line, t_norm *values)
 	values->buf = 0;
 	values->i = 0;
 	values->ret = 0;
+	// copies = ft_memalloc(sizeof(t_fday));
+	fd->saved_in = STDIN_FILENO;
+	fd->saved_out = STDOUT_FILENO;
+	fd->saved_err = STDERR_FILENO;
+	fd->in = 0;
+	fd->out = 1;
 }
 
 void				ft_print_tree(t_lexit *lexdat)
@@ -182,97 +188,122 @@ int				check_first_node(t_parsing *data, char *input)
 	return (1);
 }
 
-void				execute_binary(t_lexit *list, t_env *env)
+void				execute_binary(t_lexit *list, t_env *env, t_fday *fd)
 {
 	char			**newenv;
 	pid_t			pid;
 
 	newenv = ft_fill_envp(env);
 	pid = fork();
+	// dup2(fd->in, 0);
+	// close(fd->out);
 	if (pid == 0)
+	{
+		dup2(fd->saved_file, 1);
+		close(fd->saved_file);
 		execve(list->command, list->args, newenv);
+	}
 	else if (pid > 0)
-		wait (0);
+	{
+		// close(fd->in);
+		// dup2(fd->saved_in, fd->in);
+		// close(fd->out);
+		// dup2(fd->saved_out, fd->out);
+		waitpid(pid, NULL, 0);
+	}
+	// close(fd->in);
+	// dup2(fd->saved_out, fd->out);
 	ft_freetab(newenv);
 }
 
-void  			handle_redir(char *redirection, t_env *env, t_lexit *list, t_fday *cpy)
+void  			handle_redir(char *redirection, t_sh *sh, t_lexit *lexdat)
 {
-	// int			file;
-	int 		dupped;
-
-	(void)env;
-	dupped = STDOUT_FILENO;
-	// file = 0;
 		if (ft_strequ(redirection, ">"))
 		{
-			if ((cpy->saved_file = open(list->right->input, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
+			if ((sh->fd.saved_file = open(lexdat->right->input, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
 				ft_putstr("OPEN ERROR");
-			// ft_putstr("MAILLON RIGHT : ");
-			// ft_putstr(list->right->input);
-			// cpy->saved_in = dup(STDIN_FILENO);
-			// cpy->saved_out = dup(STDOUT_FILENO);
-			if ((dup2(cpy->saved_file, dupped)) == -1)
-				ft_putstr("ERROR DUP");
+			// dup2(sh->fd.in, 0);
+			// close(sh->fd.out);
+			// ft_putnbr(sh->fd.saved_file);
+			// if ((dup2(sh->fd.saved_file, sh->fd.saved_out)) == -1)
+			// 	ft_putstr("ERROR DUP");
+			// ft_putstr("saved fd in : ");
+			// ft_putnbr(sh->fd.saved_in);
+			// ft_putchar('\n');
+			// ft_putstr("saved fd out : ");
+			// ft_putnbr(sh->fd.saved_out);
+			// ft_putchar('\n');
+			// ft_putstr("saved fd er : ");
+			// ft_putnbr(sh->fd.saved_err);
+			// ft_putchar('\n');
+			// close(sh->fd.saved_file);
 		}
     	else
       	exit(0);
 }
 
 
-void				execs(t_lexit *list, t_env *env)
+void				execs(t_lexit *list, t_env *env, t_sh *sh)
 {
 	static int	redir = 0;
-	t_fday		cpy;
 
 	if (list)
 	{
 		if (list->prio == REDIR)
 		{
 			redir = 1;
-			handle_redir(list->input, env, list, &cpy);
-			close(cpy.saved_file);
-			// if (cpy.saved_out == -1)
-			// {
-			// 	close(STDOUT_FILENO);
-			// 	cpy.saved_out = 1;
-			// }
-			// else if (cpy.saved_out != 1)
-			// 	dup2(cpy.saved_out, STDOUT_FILENO);
+			handle_redir(list->input, sh, list);
+			// close(sh->fd.saved_out);
 		}
 		if (list->left)
-			execs(list->left, env);
+			execs(list->left, env, sh);
 		if (list->prio == COMMAND)
 		{
-			execute_binary(list, env);
-			if (redir)
-			{
-				// if (cpy.saved_in != 0)
-				// 	close(cpy.saved_in);
-					// cpy.saved_in = 0;
-
-					// cpy.saved_out = 1;
-				// ft_putstr_fd("OUESHEU", STDOUT_FILENO);
-				dup2(STDIN_FILENO, cpy.saved_in);
-				dup2(STDOUT_FILENO, cpy.saved_out);
-				if (cpy.saved_out == -1)
-				{
-					close(STDOUT_FILENO);
-					cpy.saved_out = 1;
-				}
-				else if (cpy.saved_out != 1)
-					dup2(cpy.saved_out, STDOUT_FILENO);
-// ft_putstr_fd("AWEEE", STDOUT_FILENO);
-				// if (cpy.saved_err == -1)
-				// {
-				// 	close(cpy.saved_err);
-				// 	cpy.saved_err = 2;
-				// }
+			execute_binary(list, env, &sh->fd);
+			// if (redir == 1)
+			// {
+				// close(sh->fd.in);
+				// close(sh->fd.out);
+				// sh->fd.in = dup(sh->fd.saved_in);
+				// sh->fd.in = dup(sh->fd.saved_out);
+			// }
+			// ft_putstr("saved fd in : ");
+			// ft_putnbr(sh->fd.saved_in);
+			// ft_putchar('\n');
+			// ft_putstr("saved fd out : ");
+			// ft_putnbr(sh->fd.saved_out);
+			// ft_putchar('\n');
+			// ft_putstr("saved fd er : ");
+			// ft_putnbr(sh->fd.saved_err);
+			// ft_putchar('\n');
+			// if (redir)
+			// {
+			// 	// ft_putstr("saved file fd : ");
+			// 	// ft_putnbr(sh->fd.saved_file);
+			// 	// ft_putchar('\n');
+			// 	// dup2(sh->fd.saved_out, fd);
+			// 	// close(sh->fd.saved_file);
+			// 	// close(STDOUT_FILENO);
+			// 	dup2(sh->fd.saved_out, sh->fd.saved_file);
+			// 	// dup2(sh->fd.saved_out, STDOUT_FILENO);
+			// 	// close(sh->fd.saved_out);
+			// 	// if()
+			// 	// ft_putnbr(sh->fd.saved_out);
+			// 	// dup2(sh->fd.)
+			// 	// dup2(STDIN_FILENO, sh->fd.saved_in);
+			// 	// dup2(STDOUT_FILENO, sh->fd.saved_out);
+			// 	// if (sh->fd.saved_out == -1)
+			// 	// {
+			// 	// 	close(STDOUT_FILENO);
+			// 	// 	sh->fd.saved_out = 1;
+			// 	// }
+			// 	// else if (sh->fd.saved_out != 1)
+			// 	// 	dup2(sh->fd.saved_out, STDOUT_FILENO);
 				redir = 0;
-			}
+			// }
 		}
 		if (list->right)
-			execs(list->right, env);
+			execs(list->right, env, sh);
 	}
 }
 
@@ -309,53 +340,56 @@ void				free_list(t_lexit *list)
 	}
 }
 
+void				do_magic(t_sh *sh)
+{
+	if (sh->line->line[0])
+	{
+		parsing_listing(&sh->list, sh->line->line, sh->env);
+		sh->lexdat = ft_tree_it(sh->list, NULL, 0);
+		execs(sh->lexdat	, sh->env, sh);
+	}
+	if (sh->lexdat)
+		free_tree(sh->lexdat);
+	if (sh->list)
+	{
+		free_list(sh->list);
+		sh->list = NULL;
+	}
+}
+
+void				do_work(t_sh *sh, t_norm *values)
+{
+	ft_prompt();
+	while ((values->ret = read(0, &values->buf, sizeof(int))) &&
+	values->buf != '\n')
+	{
+		handle_key(values->buf, sh->line);
+		values->buf = 0;
+	}
+	ft_putchar('\n');
+	do_magic(sh);
+	ft_add_history(sh->line); //add line to history
+	if (ft_strequ(sh->line->line, "clear"))
+		tputs(tgetstr("cl", NULL), 1, ft_pointchar);
+	if (ft_strequ(sh->line->line, "exit"))
+		exit(0);
+	ft_line_reset(sh->line);
+}
+
 int				main(int ac, char **av, char **envp)
 {
-	t_edit		*line;
-	t_lexit		*lexdat;
-	t_env			*env;
 	t_norm		*values;
-	t_lexit		*list;
+	t_sh			*sh;
 
 	(void)ac;
 	(void)av;
-	env = NULL;
-	lexdat = NULL;
-	list = NULL;
-	line = ft_memalloc(sizeof(t_edit));
+	sh = ft_memalloc(sizeof(t_sh));
+	sh->line = ft_memalloc(sizeof(t_edit));
 	values = ft_memalloc(sizeof(t_norm));
-	ft_setvalues(line, values);
+	init_structs(sh->line, values, &sh->fd);
 	while (envp[values->i])
-		ft_push_env(&env, envp[values->i++]);
+		ft_push_env(&sh->env, envp[values->i++]);
 	while (42)
-	{
-		ft_prompt();
-		while ((values->ret = read(0, &values->buf, sizeof(int))) &&
-		values->buf != '\n')
-		{
-			handle_key(values->buf, line);
-			values->buf = 0;
-		}
-		ft_putchar('\n');
-		if (line->line)
-		{
-			parsing_listing(&list, line->line, env);
-			lexdat = ft_tree_it(list, NULL, 0);
-			execs(lexdat, env);
-		}
-		if (lexdat)
-			free_tree(lexdat);
-		if (list)
-		{
-			free_list(list);
-			list = NULL;
-		}
-		ft_add_history(line); //add line to history
-		if (ft_strequ(line->line, "clear"))
-			tputs(tgetstr("cl", NULL), 1, ft_pointchar);
-		if (ft_strequ(line->line, "exit"))
-			exit(0);
-		ft_line_reset(line);
-	}
+		do_work(sh, values);
 	return (0);
 }
