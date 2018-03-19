@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/18 23:27:46 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/19 17:32:10 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -188,7 +188,7 @@ int				check_first_node(t_parsing *data, char *input)
 	return (1);
 }
 
-void				execute_binary(t_lexit *list, t_env *env, t_fday *fd)
+void				execute_binary(t_lexit *list, t_env *env, t_fday *fd, int redir)
 {
 	char			**newenv;
 	pid_t			pid;
@@ -199,8 +199,11 @@ void				execute_binary(t_lexit *list, t_env *env, t_fday *fd)
 	// close(fd->out);
 	if (pid == 0)
 	{
-		dup2(fd->saved_file, 1);
-		close(fd->saved_file);
+		if (redir == 1)
+		{
+			dup2(fd->saved_file, 1);
+			close(fd->saved_file);
+		}
 		execve(list->command, list->args, newenv);
 	}
 	else if (pid > 0)
@@ -259,7 +262,7 @@ void				execs(t_lexit *list, t_env *env, t_sh *sh)
 			execs(list->left, env, sh);
 		if (list->prio == COMMAND)
 		{
-			execute_binary(list, env, &sh->fd);
+			execute_binary(list, env, &sh->fd, redir);
 			// if (redir == 1)
 			// {
 				// close(sh->fd.in);
