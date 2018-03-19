@@ -62,8 +62,6 @@ int				parsing_error(t_parsing *data, char *input, int code)
 			return (0);
 		}
 		ft_strdel(&tmp);
-		// ft_strdel(&data->to_node2);
-		// data->to_node2 = NULL;
 	}
 	return (1);
 }
@@ -109,6 +107,7 @@ void				parsing_listing(t_lexit **list, char *input, t_env *env)
 	data = init_data();
 	if (empty_string[0] == '\0')
 		data->empty = 1;
+	ft_strdel(&empty_string);
 	if (quote_checker(data, input) && !data->empty)
 	{
 		while (input[++data->index] && data->breaker)
@@ -131,12 +130,18 @@ void				parsing_listing(t_lexit **list, char *input, t_env *env)
 			{
  				func(tmp, env, data, 3);
 				ft_strdel(&data->to_node2);
+				data->to_node2 = NULL;
 			}
+			// else if (data->to_node2 && data->to_node2[0])
+			// {
+			// 	ft_strdel(&data->to_node2);
+			// 	data->to_node2 = NULL;
+			// }
 		}
 		if (input && !*(list))
 			tmp = single_node(tmp, list, env, input);
 	}
 	ft_strdel(&data->to_node2);
-	ft_strdel(&empty_string);
+	data->to_node2 = NULL;
 	ft_memdel((void **)&data);
 }
