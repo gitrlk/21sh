@@ -96,6 +96,13 @@ t_lexit			*single_node(t_lexit *tmp, t_lexit **list, t_env *env, char *input)
 	return (tmp);
 }
 
+int				end_line_checker(t_parsing *data, char *input)
+{
+	if (input[data->index + (ft_strlen(data->to_node2) + 1)] != '\0')
+		return(1);
+	return (0);
+}
+
 void				parsing_listing(t_lexit **list, char *input, t_env *env)
 {
 	t_parsing	*data;
@@ -125,6 +132,9 @@ void				parsing_listing(t_lexit **list, char *input, t_env *env)
 				index_juggle(data, input);
 				data->breaker = parsing_error(data, input, 2);
 				data->checker = 0;
+				if (end_line_checker(data, input))
+					if (data->to_node2 && data->to_node2[0])
+						ft_strdel(&data->to_node2);
 			}
 			if (input[data->index + 1] == '\0' && data->to_node2)
 			{
@@ -132,11 +142,6 @@ void				parsing_listing(t_lexit **list, char *input, t_env *env)
 				ft_strdel(&data->to_node2);
 				data->to_node2 = NULL;
 			}
-			// else if (data->to_node2 && data->to_node2[0])
-			// {
-			// 	ft_strdel(&data->to_node2);
-			// 	data->to_node2 = NULL;
-			// }
 		}
 		if (input && !*(list))
 			tmp = single_node(tmp, list, env, input);
