@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/18 22:33:45 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/20 15:07:42 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,7 +207,7 @@ void			ft_push_env(t_env **lst, char *var);
 t_lexit 			*ft_tree_it(t_lexit *lexdat, t_lexit *list, int prio);
 int 				ft_isstrprint(char *str);
 char				*find_cmd(char **apaths, char *cmd);
-void				parsing_listing(t_lexit **list, char *input, t_env *env);
+int				parsing_listing(t_lexit **list, char *input, t_env *env);
 t_lexit			*add_node(char *input, t_env *env);
 t_parsing		*init_data(void);
 int				quote_checker(t_parsing *data, char *input);

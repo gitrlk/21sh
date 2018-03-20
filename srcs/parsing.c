@@ -56,11 +56,10 @@ int				parsing_error(t_parsing *data, char *input, int code)
 		data->ptr[0] != ';'))
 		{
 			ft_strdel(&tmp);
-			ft_strdel(&data->to_node2);
-			data->to_node2 = NULL;
 			ft_errors(1, data->ptr, NULL);
 			return (0);
 		}
+		data->checker = 0;
 		ft_strdel(&tmp);
 	}
 	return (1);
@@ -98,16 +97,17 @@ t_lexit			*single_node(t_lexit *tmp, t_lexit **list, t_env *env, char *input)
 
 int				end_line_checker(t_parsing *data, char *input)
 {
-	if (input[data->index + (ft_strlen(data->to_node2) + 1)] != '\0')
+	if (input[data->index + (ft_strlen(data->to_node2))] != '\0')
 		return(1);
 	return (0);
 }
 
-void				parsing_listing(t_lexit **list, char *input, t_env *env)
+int				parsing_listing(t_lexit **list, char *input, t_env *env)
 {
 	t_parsing	*data;
 	t_lexit		*tmp;
 	char			*empty_string;
+	int			ok;
 
 	tmp = *list;
 	empty_string = ft_strtrim(input);
@@ -131,22 +131,26 @@ void				parsing_listing(t_lexit **list, char *input, t_env *env)
 					data->breaker = parsing_error(data, input, 1);
 				index_juggle(data, input);
 				data->breaker = parsing_error(data, input, 2);
-				data->checker = 0;
-				if (end_line_checker(data, input))
+				if (!data->breaker)
+					break ;
+				if (end_line_checker(data, input) && data->breaker != 0)
 					if (data->to_node2 && data->to_node2[0])
 						ft_strdel(&data->to_node2);
 			}
-			if (input[data->index + 1] == '\0' && data->to_node2)
+			if (input[data->index + 1] == '\0' && data->to_node2 && data->breaker)
 			{
  				func(tmp, env, data, 3);
 				ft_strdel(&data->to_node2);
-				data->to_node2 = NULL;
 			}
 		}
 		if (input && !*(list))
 			tmp = single_node(tmp, list, env, input);
 	}
-	ft_strdel(&data->to_node2);
-	data->to_node2 = NULL;
+	if (data->breaker)
+		ft_strdel(&data->to_node2);
+	ok = data->breaker;
 	ft_memdel((void **)&data);
+	if (ok)
+		return (1);
+	return (0);
 }

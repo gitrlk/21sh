@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/19 18:58:14 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/20 16:27:44 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -236,7 +236,7 @@ void				execs(t_lexit *list, t_env *env, t_sh *sh)
 		if (list->prio == COMMAND)
 		{
 			execute_binary(list, env, &sh->fd, redir);
-				redir = 0;
+			redir = 0;
 		}
 		if (list->right)
 			execs(list->right, env, sh);
@@ -263,33 +263,36 @@ void				free_list(t_lexit *list)
 	t_lexit		*tmp;
 
 	tmp = list;
-	while(list)
+	if (tmp)
 	{
-		tmp = list;
-		list = list->next;
-		if (tmp->input)
-			ft_strdel(&tmp->input);
-		if (tmp->args)
-			ft_freetab(tmp->args);
-		if (tmp->command)
-			ft_strdel(&tmp->command);
-		if (tmp)
-			free(tmp);
+		while(list)
+		{
+			tmp = list;
+			list = list->next;
+			if (tmp->input)
+				ft_strdel(&tmp->input);
+			if (tmp->args)
+				ft_freetab(tmp->args);
+			if (tmp->command)
+				ft_strdel(&tmp->command);
+			if (tmp)
+				free(tmp);
+		}
 	}
 }
 
 void				do_magic(t_sh *sh)
 {
-	parsing_listing(&sh->list, sh->line->line, sh->env);
-	sh->lexdat = ft_tree_it(sh->list, NULL, 0);
-	execs(sh->lexdat, sh->env, sh);
-	if (sh->lexdat)
-		free_tree(sh->lexdat);
-	if (sh->list)
+	if(parsing_listing(&sh->list, sh->line->line, sh->env))
 	{
-		free_list(sh->list);
-		sh->list = NULL;
+		sh->lexdat = ft_tree_it(sh->list, NULL, 0);
+		execs(sh->lexdat, sh->env, sh);
+		if (sh->lexdat)
+				free_tree(sh->lexdat);
 	}
+	free_list(sh->list);
+	sh->list = NULL;
+
 }
 
 void				do_work(t_sh *sh, t_norm *values)
