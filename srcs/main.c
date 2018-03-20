@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/20 16:27:44 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/20 21:14:48 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ void				ft_print_tree(t_lexit *lexdat)
 	i = 1;
 	if (lexdat)
 	{
+		// ft_putstr("CURRENT INPUT : ");
+		// ft_putstr(lexdat->input);
+		// ft_putchar('\n');
 		if (lexdat->left)
 			ft_print_tree(lexdat->left);
 		ft_putstr("CURRENT INPUT : ");
@@ -187,7 +190,7 @@ int				check_first_node(t_parsing *data, char *input)
 	return (1);
 }
 
-void				execute_binary(t_lexit *list, t_env *env, t_fday *fd, int redir)
+void				execute_binary(t_lexit *list, t_env *env, t_fday *fd, int *redir)
 {
 	char			**newenv;
 	pid_t			pid;
@@ -196,10 +199,17 @@ void				execute_binary(t_lexit *list, t_env *env, t_fday *fd, int redir)
 	pid = fork();
 	if (pid == 0)
 	{
-		if (redir == 1)
+		if (*redir == 1)
 		{
 			dup2(fd->saved_file, 1);
 			close(fd->saved_file);
+			*redir = 0;
+		}
+		if (*redir == 2)
+		{
+			dup2(fd->saved_file, 0);
+			close(fd->saved_file);
+			*redir = 0;
 		}
 		execve(list->command, list->args, newenv);
 	}
@@ -208,12 +218,25 @@ void				execute_binary(t_lexit *list, t_env *env, t_fday *fd, int redir)
 	ft_freetab(newenv);
 }
 
-void  			handle_redir(char *redirection, t_sh *sh, t_lexit *lexdat)
+void  			handle_redir(char *redirection, t_sh *sh, t_lexit *lexdat, int *redir)
 {
 		if (ft_strequ(redirection, ">"))
 		{
 			if ((sh->fd.saved_file = open(lexdat->right->input, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
 				ft_putstr("OPEN ERROR");
+			*redir = 1;
+		}
+		else if (ft_strequ(redirection, "<"))
+		{
+			if ((sh->fd.saved_file = open(lexdat->right->input, O_RDONLY)) == -1)
+				ft_putstr("OPEN ERROR");
+			*redir = 2;
+		}
+		else if (ft_strequ(redirection, ">>"))
+		{
+			if ((sh->fd.saved_file = open(lexdat->right->input, O_WRONLY | O_APPEND)) == -1)
+				ft_putstr("OPEN ERROR");
+			*redir = 1;
 		}
     	else
       	exit(0);
@@ -228,14 +251,14 @@ void				execs(t_lexit *list, t_env *env, t_sh *sh)
 	{
 		if (list->prio == REDIR)
 		{
-			redir = 1;
-			handle_redir(list->input, sh, list);
+			// redir = 1;
+			handle_redir(list->input, sh, list, &redir);
 		}
 		if (list->left)
 			execs(list->left, env, sh);
 		if (list->prio == COMMAND)
 		{
-			execute_binary(list, env, &sh->fd, redir);
+			execute_binary(list, env, &sh->fd, &redir);
 			redir = 0;
 		}
 		if (list->right)
@@ -286,6 +309,7 @@ void				do_magic(t_sh *sh)
 	if(parsing_listing(&sh->list, sh->line->line, sh->env))
 	{
 		sh->lexdat = ft_tree_it(sh->list, NULL, 0);
+		// ft_print_tree(sh->lexdat);
 		execs(sh->lexdat, sh->env, sh);
 		if (sh->lexdat)
 				free_tree(sh->lexdat);
