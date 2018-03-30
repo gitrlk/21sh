@@ -1,6 +1,6 @@
 #include "../includes/sh.h"
 
-void				func(t_lexit *tmp, t_env *env, t_parsing *data, int node)
+void				choose_node(t_lexit *tmp, t_env *env, t_parsing *data, int node)
 {
 	if (node == 1)
 	{
@@ -84,7 +84,7 @@ t_lexit 			*init_node(t_lexit *tmp, t_lexit **list,
 		tmp = *list;
 	}
 	else
-		func(tmp, env, data, 1);
+		choose_node(tmp, env, data, 1);
 	return (tmp);
 }
 
@@ -124,7 +124,7 @@ int				parsing_listing(t_lexit **list, char *input, t_env *env)
 				data->breaker = check_first_node(data, input);
 				get_full_op(data, input);
 				tmp = init_node(tmp, list, env, data);
-				func(tmp, env, data, 2);
+				choose_node(tmp, env, data, 2);
 				while (ft_isspace(input[data->index]))
 					data->index++;
 				if (data->checker)
@@ -139,7 +139,7 @@ int				parsing_listing(t_lexit **list, char *input, t_env *env)
 			}
 			if (input[data->index + 1] == '\0' && data->to_node2 && data->breaker)
 			{
- 				func(tmp, env, data, 3);
+ 				choose_node(tmp, env, data, 3);
 				ft_strdel(&data->to_node2);
 			}
 		}

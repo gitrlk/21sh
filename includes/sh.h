@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/20 15:07:42 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/30 19:00:01 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@ typedef enum 		e_priorities
 	SEMICOLON,
 	AND_OR,
 	PIPE,
-	REDIR,
+	REDIR_R,
+	REDIR_L,
+	HEREDOC,
 	COMMAND,
 	ARG,
 	ERROR
@@ -88,11 +90,19 @@ typedef struct			s_lexit
 	char					**args;
 	char					*command;
 	int					prio;
+	struct s_redir		*redirs;
 	struct s_lexit		*left;
 	struct s_lexit		*right;
 	struct s_lexit		*next;
 	struct s_lexit		*prev;
 }							t_lexit;
+
+typedef struct			s_redir
+{
+	int					redir_right;
+	int					redir_left;
+	struct s_redir		*next;
+}							t_redir;
 
 typedef struct			s_parsing
 {
@@ -113,13 +123,6 @@ typedef struct			s_parsing
 	char					*ptr;
 	char					*ptr2;
 }							t_parsing;
-
-typedef struct			s_redir
-{
-	int					save_in;
-	int					save_out;
-	int					file;
-}							t_redir;
 
 typedef struct			s_fday
 {

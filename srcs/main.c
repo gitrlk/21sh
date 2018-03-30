@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/20 21:14:48 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/30 19:43:28 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,12 @@ int				get_prio(char *str, char **command, char **apaths)
 		ft_strdel(&path);
 		return (COMMAND);
 	}
-	else if (!ft_strcmp(str, ">") || !ft_strcmp(str, ">>") ||
-	!ft_strcmp(str, "<") || !ft_strcmp(str, "<<"))
-		return (REDIR);
+	else if (!ft_strcmp(str, ">") || !ft_strcmp(str, ">>"))
+		return (REDIR_R);
+	else if (!ft_strcmp(str, "<"))
+		return (REDIR_L);
+	else if (!ft_strcmp(str, "<<"))
+		return (HEREDOC);
 	else if (ft_isstrprint(str))
 		return (ARG);
 	else
@@ -249,11 +252,11 @@ void				execs(t_lexit *list, t_env *env, t_sh *sh)
 
 	if (list)
 	{
-		if (list->prio == REDIR)
-		{
-			// redir = 1;
-			handle_redir(list->input, sh, list, &redir);
-		}
+		// if (list->prio == REDIR_R)
+		// {
+		// 	// redir = 1;
+		// 	handle_redir(list->input, sh, list, &redir);
+		// }
 		if (list->left)
 			execs(list->left, env, sh);
 		if (list->prio == COMMAND)
@@ -304,13 +307,65 @@ void				free_list(t_lexit *list)
 	}
 }
 
-void				do_magic(t_sh *sh)
+// void				get_last_redir_r(t_lexit *node)
+// {
+// 	t_lexit		*tmp;
+//
+// 	tmp = node;
+// 	while (tmp->prio != SEMICOLON && tmp->prio != AND_OR && tmp->prio != PIPE && tmp->prio != COMMAND)
+// 	{
+// 		//avancer dans la liste jusqu'aux dernieres redirections
+// 		if (tmp->prio == REDIR_R)
+// 			assign_redir_r();
+// 		if (tmp->prio == REDIR_L)
+// 			assign_redir_l();
+//
+// 		tmp = tmp->next;
+// 	}
+// 	//ajouter les dernieres redirections a t_redir
+//
+//
+//
+// }
+// //
+// // void				add_redirs_to_node()
+// // {
+// //
+// // }
+// //
+// void				assign_redir(t_lexit *list)
+// {
+// 	t_list 		*tmp;
+//
+// 	tmp = list;
+// 	while (tmp)
+// 	{
+// 		if (tmp->prio == REDIR_R || tmp->prio == REDIR_L)
+// 		{
+// 			get_last_redir(tmp);
+// 			// add_redirs_to_node(tmp);
+// 		}
+// 		tmp = tmp->next;
+// 	}
+// }
+
+void				parsing_lexing(t_sh *sh)
 {
 	if(parsing_listing(&sh->list, sh->line->line, sh->env))
 	{
+		// while (sh->list)
+		// {
+		// 	ft_putstr(sh->list->input);
+		// 	ft_putchar('\n');
+		// 	ft_putstr("THIS IS PRIO : ");
+		// 	ft_putnbr(sh->list->prio);
+		// 	ft_putchar('\n');
+		// 	sh->list = sh->list->next;
+		// }
+		// assign_redir(sh->list);
 		sh->lexdat = ft_tree_it(sh->list, NULL, 0);
 		// ft_print_tree(sh->lexdat);
-		execs(sh->lexdat, sh->env, sh);
+		// execs(sh->lexdat, sh->env, sh);
 		if (sh->lexdat)
 				free_tree(sh->lexdat);
 	}
@@ -319,7 +374,7 @@ void				do_magic(t_sh *sh)
 
 }
 
-void				do_work(t_sh *sh, t_norm *values)
+void				ft_21sh(t_sh *sh, t_norm *values)
 {
 	ft_prompt();
 	while ((values->ret = read(0, &values->buf, sizeof(int))) &&
@@ -329,7 +384,7 @@ void				do_work(t_sh *sh, t_norm *values)
 		values->buf = 0;
 	}
 	ft_putchar('\n');
-	do_magic(sh);
+	parsing_lexing(sh);
 	ft_add_history(sh->line); //add line to history
 	if (ft_strequ(sh->line->line, "clear"))
 		tputs(tgetstr("cl", NULL), 1, ft_pointchar);
@@ -352,6 +407,6 @@ int				main(int ac, char **av, char **envp)
 	while (envp[values->i])
 		ft_push_env(&sh->env, envp[values->i++]);
 	while (42)
-		do_work(sh, values);
+		ft_21sh(sh, values);
 	return (0);
 }
