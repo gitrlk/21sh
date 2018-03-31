@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/30 19:43:28 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/31 18:06:42 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,63 +193,81 @@ int				check_first_node(t_parsing *data, char *input)
 	return (1);
 }
 
-void				execute_binary(t_lexit *list, t_env *env, t_fday *fd, int *redir)
+int				switch_fd(t_lexit *list, t_sh *sh)
+{
+	if (list->redirs && (list->redirs->redir_right == 1))
+	{
+		if ((sh->fd.saved_file = open(list->redirs->right_target, O_WRONLY |
+		O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
+		{
+			ft_putstr("OPEN ERROR");
+			return (0);
+		}
+		else
+		{
+			dup2(sh->fd.saved_file, 1);
+			close(sh->fd.saved_file);
+		}
+	}
+	if (list->redirs && (list->redirs->redir_left == 1))
+	{
+		if ((sh->fd.saved_file = open(list->redirs->left_target, O_RDONLY)) == -1)
+		{
+			ft_errors(4, NULL, list->redirs->left_target);
+			return (0);
+		}
+		else
+		{
+			dup2(sh->fd.saved_file, 0);
+			close(sh->fd.saved_file);
+		}
+	}
+	return (1);
+}
+
+void				execute_binary(t_lexit *list, t_env *env, t_sh *sh)
 {
 	char			**newenv;
 	pid_t			pid;
 
 	newenv = ft_fill_envp(env);
-	pid = fork();
+	pid = -1;
+	if (switch_fd(list, sh))
+		pid = fork();
 	if (pid == 0)
-	{
-		if (*redir == 1)
-		{
-			dup2(fd->saved_file, 1);
-			close(fd->saved_file);
-			*redir = 0;
-		}
-		if (*redir == 2)
-		{
-			dup2(fd->saved_file, 0);
-			close(fd->saved_file);
-			*redir = 0;
-		}
 		execve(list->command, list->args, newenv);
-	}
 	else if (pid > 0)
 		waitpid(pid, NULL, 0);
 	ft_freetab(newenv);
 }
 
-void  			handle_redir(char *redirection, t_sh *sh, t_lexit *lexdat, int *redir)
-{
-		if (ft_strequ(redirection, ">"))
-		{
-			if ((sh->fd.saved_file = open(lexdat->right->input, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
-				ft_putstr("OPEN ERROR");
-			*redir = 1;
-		}
-		else if (ft_strequ(redirection, "<"))
-		{
-			if ((sh->fd.saved_file = open(lexdat->right->input, O_RDONLY)) == -1)
-				ft_putstr("OPEN ERROR");
-			*redir = 2;
-		}
-		else if (ft_strequ(redirection, ">>"))
-		{
-			if ((sh->fd.saved_file = open(lexdat->right->input, O_WRONLY | O_APPEND)) == -1)
-				ft_putstr("OPEN ERROR");
-			*redir = 1;
-		}
-    	else
-      	exit(0);
-}
+// void  			handle_redir(char *redirection, t_sh *sh, t_lexit *lexdat, int *redir)
+// {
+// 		if (ft_strequ(redirection, ">"))
+// 		{
+// 			if ((sh->fd.saved_file = open(lexdat->right->input, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
+// 				ft_putstr("OPEN ERROR");
+// 			*redir = 1;
+// 		}
+// 		else if (ft_strequ(redirection, "<"))
+// 		{
+// 			if ((sh->fd.saved_file = open(lexdat->right->input, O_RDONLY)) == -1)
+// 				ft_putstr("OPEN ERROR");
+// 			*redir = 2;
+// 		}
+// 		else if (ft_strequ(redirection, ">>"))
+// 		{
+// 			if ((sh->fd.saved_file = open(lexdat->right->input, O_WRONLY | O_APPEND)) == -1)
+// 				ft_putstr("OPEN ERROR");
+// 			*redir = 1;
+// 		}
+//     	else
+//       	exit(0);
+// }
 
 
 void				execs(t_lexit *list, t_env *env, t_sh *sh)
 {
-	static int	redir = 0;
-
 	if (list)
 	{
 		// if (list->prio == REDIR_R)
@@ -260,10 +278,7 @@ void				execs(t_lexit *list, t_env *env, t_sh *sh)
 		if (list->left)
 			execs(list->left, env, sh);
 		if (list->prio == COMMAND)
-		{
-			execute_binary(list, env, &sh->fd, &redir);
-			redir = 0;
-		}
+			execute_binary(list, env, sh);
 		if (list->right)
 			execs(list->right, env, sh);
 	}
@@ -307,65 +322,63 @@ void				free_list(t_lexit *list)
 	}
 }
 
-// void				get_last_redir_r(t_lexit *node)
-// {
-// 	t_lexit		*tmp;
-//
-// 	tmp = node;
-// 	while (tmp->prio != SEMICOLON && tmp->prio != AND_OR && tmp->prio != PIPE && tmp->prio != COMMAND)
-// 	{
-// 		//avancer dans la liste jusqu'aux dernieres redirections
-// 		if (tmp->prio == REDIR_R)
-// 			assign_redir_r();
-// 		if (tmp->prio == REDIR_L)
-// 			assign_redir_l();
-//
-// 		tmp = tmp->next;
-// 	}
-// 	//ajouter les dernieres redirections a t_redir
-//
-//
-//
-// }
-// //
-// // void				add_redirs_to_node()
-// // {
-// //
-// // }
-// //
-// void				assign_redir(t_lexit *list)
-// {
-// 	t_list 		*tmp;
-//
-// 	tmp = list;
-// 	while (tmp)
-// 	{
-// 		if (tmp->prio == REDIR_R || tmp->prio == REDIR_L)
-// 		{
-// 			get_last_redir(tmp);
-// 			// add_redirs_to_node(tmp);
-// 		}
-// 		tmp = tmp->next;
-// 	}
-// }
+void				get_last_redir(t_lexit *node)
+{
+	t_lexit		*tmp;
+
+	tmp = node;
+	node->prev->redirs = (t_redir *)malloc(sizeof(t_redir));
+	node->prev->redirs->redir_right = 0;
+	node->prev->redirs->redir_left = 0;
+	node->prev->redirs->right_target = NULL;
+	node->prev->redirs->left_target = NULL;
+	while (tmp && (tmp->prio != SEMICOLON && tmp->prio != AND_OR && tmp->prio != PIPE && tmp->prio != COMMAND))
+	{
+		if (tmp->next && (tmp->prio == REDIR_R && tmp->next->prio == ARG))
+		{
+			node->prev->redirs->redir_right = 1;
+			node->prev->redirs->right_target = ft_strdup(tmp->next->input);
+		}
+		if (tmp->next && (tmp->prio == REDIR_L && tmp->next->prio == ARG))
+		{
+			node->prev->redirs->redir_left = 1;
+			node->prev->redirs->left_target = ft_strdup(tmp->next->input);
+		}
+		tmp = tmp->next;
+	}
+}
+
+
+void				get_redir(t_lexit *node)
+{
+	t_lexit		*tmp;
+
+	tmp = node;
+	if (tmp->next && (tmp->next->prio == REDIR_R || tmp->next->prio == REDIR_L))
+		get_last_redir(tmp->next);
+}
+
+void				assign_redir(t_lexit *list)
+{
+	t_lexit 		*tmp;
+
+	tmp = list;
+	while (tmp)
+	{
+		if (tmp->prio == COMMAND)
+			get_redir(tmp);
+		tmp = tmp->next;
+	}
+}
 
 void				parsing_lexing(t_sh *sh)
 {
 	if(parsing_listing(&sh->list, sh->line->line, sh->env))
 	{
-		// while (sh->list)
-		// {
-		// 	ft_putstr(sh->list->input);
-		// 	ft_putchar('\n');
-		// 	ft_putstr("THIS IS PRIO : ");
-		// 	ft_putnbr(sh->list->prio);
-		// 	ft_putchar('\n');
-		// 	sh->list = sh->list->next;
-		// }
-		// assign_redir(sh->list);
+		assign_redir(sh->list);
 		sh->lexdat = ft_tree_it(sh->list, NULL, 0);
 		// ft_print_tree(sh->lexdat);
-		// execs(sh->lexdat, sh->env, sh);
+		execs(sh->lexdat, sh->env, sh);
 		if (sh->lexdat)
 				free_tree(sh->lexdat);
 	}

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/30 19:00:01 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/31 16:31:28 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,9 @@ typedef struct			s_lexit
 typedef struct			s_redir
 {
 	int					redir_right;
+	char					*right_target;
 	int					redir_left;
+	char					*left_target;
 	struct s_redir		*next;
 }							t_redir;
 
