@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/31 18:06:42 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/31 18:51:32 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,7 +193,23 @@ int				check_first_node(t_parsing *data, char *input)
 	return (1);
 }
 
-int				switch_fd(t_lexit *list, t_sh *sh)
+void				switch_in_out(t_sh *sh, int in_out)
+{
+	if (in_out == 1)
+	{
+		sh->fd.saved_out = dup(1);
+		dup2(sh->fd.saved_file, 1);
+		close(sh->fd.saved_file);
+	}
+	if (in_out == 2)
+	{
+		sh->fd.saved_in = dup(0);
+		dup2(sh->fd.saved_file, 0);
+		close(sh->fd.saved_file);
+	}
+}
+
+int				switch_fd(t_lexit *list, t_sh *sh, int *mod)
 {
 	if (list->redirs && (list->redirs->redir_right == 1))
 	{
@@ -204,10 +220,8 @@ int				switch_fd(t_lexit *list, t_sh *sh)
 			return (0);
 		}
 		else
-		{
-			dup2(sh->fd.saved_file, 1);
-			close(sh->fd.saved_file);
-		}
+			switch_in_out(sh, 1);
+		*mod = 1;
 	}
 	if (list->redirs && (list->redirs->redir_left == 1))
 	{
@@ -217,27 +231,52 @@ int				switch_fd(t_lexit *list, t_sh *sh)
 			return (0);
 		}
 		else
-		{
-			dup2(sh->fd.saved_file, 0);
-			close(sh->fd.saved_file);
-		}
+			switch_in_out(sh, 2);
+		if (*mod == 0)
+			*mod = 2;
+		else
+			*mod = 3;
 	}
-	return (1);
+	return (*mod);
+}
+
+void				reset_fd(t_sh *sh, int mod)
+{
+	if (mod == 1)
+	{
+		dup2(sh->fd.saved_out, 1);
+		close(sh->fd.saved_out);
+	}
+	if (mod == 2)
+	{
+		dup2(sh->fd.saved_in, 0);
+		close(sh->fd.saved_in);
+	}
+	if (mod == 3)
+	{
+		dup2(sh->fd.saved_out, 1);
+		close(sh->fd.saved_out);
+		dup2(sh->fd.saved_in, 0);
+		close(sh->fd.saved_in);
+	}
 }
 
 void				execute_binary(t_lexit *list, t_env *env, t_sh *sh)
 {
 	char			**newenv;
 	pid_t			pid;
+	int			mod;
 
+	mod = 0;
 	newenv = ft_fill_envp(env);
-	pid = -1;
-	if (switch_fd(list, sh))
-		pid = fork();
+	mod = switch_fd(list, sh, &mod);
+	pid = fork();
 	if (pid == 0)
 		execve(list->command, list->args, newenv);
 	else if (pid > 0)
 		waitpid(pid, NULL, 0);
+	if (mod)
+		reset_fd(sh, mod);
 	ft_freetab(newenv);
 }
 
@@ -382,6 +421,7 @@ void				parsing_lexing(t_sh *sh)
 		if (sh->lexdat)
 				free_tree(sh->lexdat);
 	}
+	// sleep(1);
 	free_list(sh->list);
 	sh->list = NULL;
 
