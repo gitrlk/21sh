@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/31 18:51:32 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/03/31 19:43:51 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,8 +216,8 @@ int				switch_fd(t_lexit *list, t_sh *sh, int *mod)
 		if ((sh->fd.saved_file = open(list->redirs->right_target, O_WRONLY |
 		O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
 		{
-			ft_putstr("OPEN ERROR");
-			return (0);
+			ft_errors(5, NULL, list->redirs->right_target);
+			return (-1);
 		}
 		else
 			switch_in_out(sh, 1);
@@ -228,7 +228,7 @@ int				switch_fd(t_lexit *list, t_sh *sh, int *mod)
 		if ((sh->fd.saved_file = open(list->redirs->left_target, O_RDONLY)) == -1)
 		{
 			ft_errors(4, NULL, list->redirs->left_target);
-			return (0);
+			return (-1);
 		}
 		else
 			switch_in_out(sh, 2);
@@ -270,13 +270,16 @@ void				execute_binary(t_lexit *list, t_env *env, t_sh *sh)
 	mod = 0;
 	newenv = ft_fill_envp(env);
 	mod = switch_fd(list, sh, &mod);
-	pid = fork();
-	if (pid == 0)
-		execve(list->command, list->args, newenv);
-	else if (pid > 0)
-		waitpid(pid, NULL, 0);
-	if (mod)
-		reset_fd(sh, mod);
+	if (mod != -1)
+	{
+		pid = fork();
+		if (pid == 0)
+			execve(list->command, list->args, newenv);
+		else if (pid > 0)
+			waitpid(pid, NULL, 0);
+		if (mod)
+			reset_fd(sh, mod);
+	}
 	ft_freetab(newenv);
 }
 
