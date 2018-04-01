@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/03/31 16:31:28 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/01 15:42:05 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ typedef enum 		e_priorities
 	AND_OR,
 	PIPE,
 	REDIR_R,
+	REDIR_RR,
 	REDIR_L,
 	HEREDOC,
 	COMMAND,
@@ -149,31 +150,6 @@ typedef struct			s_sh
 
 
 
-// typedef struct				s_arglist
-// {
-// 	char						*input;
-// 	int						prio;
-// 	struct s_arglist		*next;
-// }								t_arglist;
-
-
-/*
-
- REFLEXION FUTURE STRUCTURE POUR execution
-
-typedef struct			s_lexit
-{
-	char					*input;
-	char					**to_exec;
-	char					**env;
-	int           exit_return;
-	int           priorite_lexem;
-	int						lexem;
-	struct s_lexit		*left;
-	struct s_lexit		*right;
-}							t_lexit;
-
-*/
 
 
 struct winsize		ft_init(t_edit *line);

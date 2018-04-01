@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/14 19:29:18 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/01 16:18:37 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char				**ft_prep_input(char *str)
 	return (tmp);
 }
 
-t_lexit 			*ft_tree_it(t_lexit *list, t_lexit *compare, int prio)
+t_lexit 			*ft_tree_it(t_lexit *list, t_lexit *delim, int prio)
 {
 	t_lexit	*keep;
 	t_lexit	*tmp;
@@ -49,9 +49,9 @@ t_lexit 			*ft_tree_it(t_lexit *list, t_lexit *compare, int prio)
 
 	keep = NULL;
 	tmp = list;
-	if (prio == 7 || !list)
+	if (prio == ERROR || !list)
 		return (NULL);
-	while (tmp != compare)
+	while (tmp != delim)
 	{
 		if (tmp->prio == prio)
 			keep = tmp;
@@ -60,9 +60,9 @@ t_lexit 			*ft_tree_it(t_lexit *list, t_lexit *compare, int prio)
 	if (keep)
 	{
 		keep->left = ft_tree_it(list, keep, prio);
-		keep->right = ft_tree_it(keep->next, compare, prio + 1);
+		keep->right = ft_tree_it(keep->next, delim, prio + 1);
 		return (keep);
 	}
 	else
-		return(ft_tree_it(list, compare, prio + 1));
+		return(ft_tree_it(list, delim, prio + 1));
 }

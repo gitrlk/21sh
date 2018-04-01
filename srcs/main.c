@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/31 19:43:51 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/01 16:15:50 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,8 +65,10 @@ int				get_prio(char *str, char **command, char **apaths)
 		ft_strdel(&path);
 		return (COMMAND);
 	}
-	else if (!ft_strcmp(str, ">") || !ft_strcmp(str, ">>"))
+	else if (!ft_strcmp(str, ">"))
 		return (REDIR_R);
+	else if (!ft_strcmp(str, ">>"))
+		return (REDIR_RR);
 	else if (!ft_strcmp(str, "<"))
 		return (REDIR_L);
 	else if (!ft_strcmp(str, "<<"))
@@ -211,6 +213,17 @@ void				switch_in_out(t_sh *sh, int in_out)
 
 int				switch_fd(t_lexit *list, t_sh *sh, int *mod)
 {
+	if (list->redirs && (list->redirs->redir_right == 2))
+	{
+		if ((sh->fd.saved_file = open(list->redirs->right_target, O_WRONLY | O_APPEND)) == -1)
+		{
+			ft_errors(5, NULL, list->redirs->right_target);
+			return (-1);
+		}
+		else
+			switch_in_out(sh, 1);
+		*mod = 1;
+	}
 	if (list->redirs && (list->redirs->redir_right == 1))
 	{
 		if ((sh->fd.saved_file = open(list->redirs->right_target, O_WRONLY |
@@ -232,10 +245,7 @@ int				switch_fd(t_lexit *list, t_sh *sh, int *mod)
 		}
 		else
 			switch_in_out(sh, 2);
-		if (*mod == 0)
-			*mod = 2;
-		else
-			*mod = 3;
+		*mod = *mod == 0 ? 2 : 3;
 	}
 	return (*mod);
 }
@@ -338,6 +348,10 @@ void				free_tree(t_lexit *lexdat)
 			ft_strdel(&lexdat->input);
 		if (lexdat->command && lexdat->command[0])
 			ft_strdel(&lexdat->command);
+		if (lexdat->redirs && lexdat->redirs->right_target)
+			ft_strdel(&lexdat->redirs->right_target);
+		if (lexdat->redirs && lexdat->redirs->left_target)
+			ft_strdel(&lexdat->redirs->left_target);
 	}
 }
 
@@ -358,6 +372,12 @@ void				free_list(t_lexit *list)
 				ft_freetab(tmp->args);
 			if (tmp->command)
 				ft_strdel(&tmp->command);
+			if (tmp->redirs && tmp->redirs->right_target)
+				ft_strdel(&tmp->redirs->right_target);
+			if (tmp->redirs && tmp->redirs->left_target)
+				ft_strdel(&tmp->redirs->left_target);
+			if (tmp->redirs)
+				free(tmp->redirs);
 			if (tmp)
 				free(tmp);
 		}
@@ -376,14 +396,18 @@ void				get_last_redir(t_lexit *node)
 	node->prev->redirs->left_target = NULL;
 	while (tmp && (tmp->prio != SEMICOLON && tmp->prio != AND_OR && tmp->prio != PIPE && tmp->prio != COMMAND))
 	{
-		if (tmp->next && (tmp->prio == REDIR_R && tmp->next->prio == ARG))
+		if (tmp->next && ((tmp->prio == REDIR_R || tmp->prio == REDIR_RR)&& tmp->next->prio == ARG))
 		{
-			node->prev->redirs->redir_right = 1;
+			node->prev->redirs->redir_right = tmp->prio == REDIR_R ? 1 : 2;
+			if (node->prev->redirs->right_target)
+				ft_strdel(&node->prev->redirs->right_target);
 			node->prev->redirs->right_target = ft_strdup(tmp->next->input);
 		}
 		if (tmp->next && (tmp->prio == REDIR_L && tmp->next->prio == ARG))
 		{
 			node->prev->redirs->redir_left = 1;
+			if (node->prev->redirs->left_target)
+				ft_strdel(&node->prev->redirs->left_target);
 			node->prev->redirs->left_target = ft_strdup(tmp->next->input);
 		}
 		tmp = tmp->next;
@@ -396,7 +420,7 @@ void				get_redir(t_lexit *node)
 	t_lexit		*tmp;
 
 	tmp = node;
-	if (tmp->next && (tmp->next->prio == REDIR_R || tmp->next->prio == REDIR_L))
+	if (tmp->next && (tmp->next->prio == REDIR_R || tmp->next->prio == REDIR_L || tmp->next->prio == REDIR_RR))
 		get_last_redir(tmp->next);
 }
 
@@ -419,12 +443,11 @@ void				parsing_lexing(t_sh *sh)
 	{
 		assign_redir(sh->list);
 		sh->lexdat = ft_tree_it(sh->list, NULL, 0);
-		// ft_print_tree(sh->lexdat);
-		execs(sh->lexdat, sh->env, sh);
+		ft_print_tree(sh->lexdat);
+		// execs(sh->lexdat, sh->env, sh);
 		if (sh->lexdat)
 				free_tree(sh->lexdat);
 	}
-	// sleep(1);
 	free_list(sh->list);
 	sh->list = NULL;
 
