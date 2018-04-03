@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/01 16:15:50 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/03 14:42:19 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,6 @@ void				ft_print_tree(t_lexit *lexdat)
 	i = 1;
 	if (lexdat)
 	{
-		// ft_putstr("CURRENT INPUT : ");
-		// ft_putstr(lexdat->input);
-		// ft_putchar('\n');
 		if (lexdat->left)
 			ft_print_tree(lexdat->left);
 		ft_putstr("CURRENT INPUT : ");
@@ -274,7 +271,7 @@ void				reset_fd(t_sh *sh, int mod)
 void				execute_binary(t_lexit *list, t_env *env, t_sh *sh)
 {
 	char			**newenv;
-	pid_t			pid;
+	// pid_t			pid;
 	int			mod;
 
 	mod = 0;
@@ -282,57 +279,60 @@ void				execute_binary(t_lexit *list, t_env *env, t_sh *sh)
 	mod = switch_fd(list, sh, &mod);
 	if (mod != -1)
 	{
-		pid = fork();
-		if (pid == 0)
-			execve(list->command, list->args, newenv);
-		else if (pid > 0)
-			waitpid(pid, NULL, 0);
+		execve(list->command, list->args, newenv);
 		if (mod)
 			reset_fd(sh, mod);
 	}
 	ft_freetab(newenv);
 }
 
-// void  			handle_redir(char *redirection, t_sh *sh, t_lexit *lexdat, int *redir)
-// {
-// 		if (ft_strequ(redirection, ">"))
-// 		{
-// 			if ((sh->fd.saved_file = open(lexdat->right->input, O_WRONLY | O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
-// 				ft_putstr("OPEN ERROR");
-// 			*redir = 1;
-// 		}
-// 		else if (ft_strequ(redirection, "<"))
-// 		{
-// 			if ((sh->fd.saved_file = open(lexdat->right->input, O_RDONLY)) == -1)
-// 				ft_putstr("OPEN ERROR");
-// 			*redir = 2;
-// 		}
-// 		else if (ft_strequ(redirection, ">>"))
-// 		{
-// 			if ((sh->fd.saved_file = open(lexdat->right->input, O_WRONLY | O_APPEND)) == -1)
-// 				ft_putstr("OPEN ERROR");
-// 			*redir = 1;
-// 		}
-//     	else
-//       	exit(0);
-// }
+void				do_pipes(t_lexit *list, t_env *env, t_sh *sh)
+{
+	pid_t pipid;
+	int pipefd[2];
+	int status;
 
+	pipe(pipefd);
+	pipid = fork();
+	if (pipid == 0)
+	{
+		dup2(pipefd[1], sh->fd.saved_out);
+		close(pipefd[0]);
+		execs_deep(list->left, env, sh);
+	}
+	else
+	{
+		dup2(pipefd[0], sh->fd.saved_in);
+		close(pipefd[1]);
+		waitpid(pipid, &status, 0);
+		execs_deep(list->right, env, sh);
+	}
+}
+
+void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
+{
+	if (list->prio == PIPE)
+		do_pipes(list, env, sh);
+	if (list->prio == COMMAND)
+		execute_binary(list, env, sh);
+	if (list->left)
+		execs_deep(list->left, env, sh);
+	if (list->right)
+		execs_deep(list->right, env, sh);
+}
 
 void				execs(t_lexit *list, t_env *env, t_sh *sh)
 {
 	if (list)
 	{
-		// if (list->prio == REDIR_R)
-		// {
-		// 	// redir = 1;
-		// 	handle_redir(list->input, sh, list, &redir);
-		// }
-		if (list->left)
-			execs(list->left, env, sh);
-		if (list->prio == COMMAND)
-			execute_binary(list, env, sh);
-		if (list->right)
-			execs(list->right, env, sh);
+		pid_t pid;
+		int status;
+		pid = fork();
+
+		if (pid == 0)
+			execs_deep(list, env, sh);
+		else
+			waitpid(pid, &status, 0);
 	}
 }
 
@@ -443,8 +443,8 @@ void				parsing_lexing(t_sh *sh)
 	{
 		assign_redir(sh->list);
 		sh->lexdat = ft_tree_it(sh->list, NULL, 0);
-		ft_print_tree(sh->lexdat);
-		// execs(sh->lexdat, sh->env, sh);
+		// ft_print_tree(sh->lexdat);
+		execs(sh->lexdat, sh->env, sh);
 		if (sh->lexdat)
 				free_tree(sh->lexdat);
 	}

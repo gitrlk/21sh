@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/01 15:42:05 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/03 14:42:23 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -194,6 +194,7 @@ t_parsing		*init_data(void);
 int				quote_checker(t_parsing *data, char *input);
 int				check_first_node(t_parsing *data, char *input);
 void				get_full_op(t_parsing *data, char *input);
+void				execs_deep(t_lexit *list, t_env *env, t_sh *sh);
 
 
 
