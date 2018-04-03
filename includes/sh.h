@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/03 14:42:23 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/03 17:46:51 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include <term.h>
 # include <fcntl.h>
 
-typedef enum 		e_priorities
+typedef enum 				e_priorities
 {
 	SEMICOLON,
 	AND_OR,
@@ -42,31 +42,31 @@ typedef enum 		e_priorities
 	// CHEVRONRIGHT,
 	// DOUBLECHEVRONLEFT,
 	// DOUBLECHEVRONRIGHT
-}						t_priorities;
+}								t_priorities;
 
-typedef struct			s_norm
+typedef struct				s_norm
 {
-	int					buf;
-	int					ret;
-	int					i;
-}							t_norm;
+	int						buf;
+	int						ret;
+	int						i;
+}								t_norm;
 
-typedef	struct		s_edit
+typedef	struct			s_edit
 {
-	struct winsize 	sz;
+	struct winsize 		sz;
 	int						cursor_pos;
 	int						max_size;
-	char 					*line;
+	char 						*line;
 	// char					**line_split;
-	int 					select_mode;
-	int           start_select;
-	int	           	end_select;
-	char 					*is_highlight;
-	char					*left;
-	char					*right;
-	struct s_hstr		*hstr; //pointer to the last element added
-	struct s_hstr		*curr; //pointer to current element of the history
-}							t_edit;
+int 							select_mode;
+	int       			    start_select;
+	int	    	       	end_select;
+	char 						*is_highlight;
+	char						*left;
+	char						*right;
+	struct s_hstr			*hstr; //pointer to the last element added
+	struct s_hstr			*curr; //pointer to current element of the history
+}								t_edit;
 
 typedef struct 	s_hstr
 {
@@ -142,6 +142,7 @@ typedef struct			s_sh
 	t_env					*env;
 	t_lexit				*list;
 	t_lexit				*lexdat;
+	t_lexit				**execs;
 	t_edit				*line;
 	t_norm				*values;
 	t_fday				fd;

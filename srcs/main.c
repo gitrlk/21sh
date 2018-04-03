@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/03 14:42:19 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/03 18:06:55 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,7 +271,6 @@ void				reset_fd(t_sh *sh, int mod)
 void				execute_binary(t_lexit *list, t_env *env, t_sh *sh)
 {
 	char			**newenv;
-	// pid_t			pid;
 	int			mod;
 
 	mod = 0;
@@ -283,6 +282,7 @@ void				execute_binary(t_lexit *list, t_env *env, t_sh *sh)
 		if (mod)
 			reset_fd(sh, mod);
 	}
+
 	ft_freetab(newenv);
 }
 
@@ -313,10 +313,12 @@ void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
 {
 	if (list->prio == PIPE)
 		do_pipes(list, env, sh);
-	if (list->prio == COMMAND)
-		execute_binary(list, env, sh);
+	// if (list->prio == COMMAND)
+	// 	execute_binary(list, env, sh);
 	if (list->left)
 		execs_deep(list->left, env, sh);
+	if (list->prio == COMMAND)
+		execute_binary(list, env, sh);
 	if (list->right)
 		execs_deep(list->right, env, sh);
 }
@@ -437,16 +439,32 @@ void				assign_redir(t_lexit *list)
 	}
 }
 
+// void				get_execs(t_sh *sh)
+// {
+// 	t_lexit		*tmp;
+//
+// 	tmp = sh->list;
+// 	while (tmp)
+// 	{
+// 		while (tmp && (tmp->prio != SEMICOLON))
+// 		{
+// 			sh->execs[i] = ;
+// 		}
+// 		tmp = tmp->next;
+// 	}
+// }
+
 void				parsing_lexing(t_sh *sh)
 {
 	if(parsing_listing(&sh->list, sh->line->line, sh->env))
 	{
 		assign_redir(sh->list);
+		// get_execs(sh);
 		sh->lexdat = ft_tree_it(sh->list, NULL, 0);
 		// ft_print_tree(sh->lexdat);
 		execs(sh->lexdat, sh->env, sh);
 		if (sh->lexdat)
-				free_tree(sh->lexdat);
+			free_tree(sh->lexdat);
 	}
 	free_list(sh->list);
 	sh->list = NULL;
