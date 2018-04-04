@@ -6,11 +6,35 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/03 18:06:55 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/04 20:32:55 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
+
+char			**copypasta(char **src)
+{
+	int			size;
+	int			j;
+	int			i;
+	char		**ret;
+
+	i = 0;
+	size = 0;
+	j = 0;
+	while (src[size])
+		size++;
+	if (!(ret = (char **)malloc(sizeof(char *) * size)))
+		return (NULL);
+	while (src[i])
+	{
+		ret[j] = ft_strdup(src[i]);
+		i++;
+		j++;
+	}
+	ret[j] = NULL;
+	return (ret);
+}
 
 void					init_structs(t_edit *line, t_norm *values, t_fday *fd)
 {
@@ -439,32 +463,165 @@ void				assign_redir(t_lexit *list)
 	}
 }
 
-// void				get_execs(t_sh *sh)
-// {
-// 	t_lexit		*tmp;
-//
-// 	tmp = sh->list;
-// 	while (tmp)
-// 	{
-// 		while (tmp && (tmp->prio != SEMICOLON))
-// 		{
-// 			sh->execs[i] = ;
-// 		}
-// 		tmp = tmp->next;
-// 	}
-// }
+t_lexit			*fill_exec_part(t_lexit *sauce)
+{
+	t_lexit		*dst;
+
+	dst = ft_memalloc(sizeof(t_lexit *));
+	dst->input = ft_strdup(sauce->input);
+	// dst->args = copypasta(sauce->args);
+	// ft_putstr("OK");
+	// ft_putchar('\n');
+	dst->command = ft_strdup(sauce->command);
+	dst->prio = sauce->prio;
+	dst->redirs = sauce->redirs;
+	dst->left = sauce->left;
+	dst->right = sauce->right;
+	dst->next = NULL;
+	dst->prev = sauce->prev;
+	return (dst);
+}
+
+t_lexit			*split_execs(t_sh *sh, t_lexit *start, t_lexit *end)
+{
+	t_lexit		*exec_part;
+	t_lexit		*tmp;
+
+	exec_part = ft_memalloc(sizeof(t_lexit));
+	tmp = !start ? sh->list : start;
+	// ft_putstr("OK");
+	// ft_putchar('\n');
+	if (tmp == end)
+		return(end);
+	while (tmp && (tmp != end))
+	{
+		// ft_putstr("OK");
+		// ft_putchar('\n');
+		exec_part = fill_exec_part(tmp);
+		exec_part = exec_part->next;
+		// ft_putstr("OK");
+		// ft_putchar('\n');
+		tmp = tmp->next;
+	}
+	return (exec_part);
+}
+
+int				check_semi(t_sh *sh, t_lexit *lst)
+{
+	t_lexit		*tmp;
+	int			i;
+
+	tmp = lst;
+	i = 0;
+	while (tmp)
+	{
+		if (tmp->prio == SEMICOLON)
+			return (1);
+		if (!tmp->next)
+		{
+			sh->execs[i] = sh->list;
+			return (0);
+		}
+		tmp = tmp->next;
+	}
+	return (0);
+}
+
+int				get_execs(t_sh *sh)
+{
+	t_lexit		*tmp;
+	t_lexit		*copy;
+	t_lexit		*start;
+	int			i;
+	int			number;
+
+	i = 0;
+	number = 0;
+	tmp = sh->list;
+	copy = NULL;
+	start = NULL;
+	sh->execs = ft_memalloc(sizeof(t_lexit **));
+	if (check_semi(sh, tmp))
+	{
+		while (tmp)
+		{
+			if (tmp->prio == SEMICOLON)
+			{
+				ft_putstr("OE\n");
+				copy = split_execs(sh, start, tmp);
+						ft_putstr("COPY INPUT : ");
+						ft_putstr(copy->input);
+						ft_putchar('\n');
+						// ft_putstr('COPY ARGS : ");
+						// ft_putstr(copy->args);
+						// ft_putchar("\n");
+						if (copy->command)
+						{
+							ft_putstr("COPY COMMAND : ");
+							ft_putstr(copy->command);
+							ft_putchar('\n');
+						}
+				start = tmp;
+				sh->execs[i] = copy;
+				number++;
+			}
+			tmp = tmp->next;
+		}
+	}
+	else
+		return (1);
+	return (number);
+	// while (tmp)
+	// {
+	// 	if (tmp->prio != SEMICOLON || !tmp->next)
+	// 	{
+	// 		ft_putstr("OUE\n");
+	// 		copy = split_execs(sh, start, tmp);
+	// 		ft_putstr("COPY INPUT : ");
+	// 		ft_putstr(copy->input);
+	// 		ft_putchar('\n');
+	// 		// ft_putstr('COPY ARGS : ");
+	// 		// ft_putstr(copy->args);
+	// 		// ft_putchar("\n");
+	// 		if (copy->command)
+	// 		{
+	// 			ft_putstr("COPY COMMAND : ");
+	// 			ft_putstr(copy->command);
+	// 			ft_putchar('\n');
+	// 		}
+	// 		start = tmp;
+	// 		sh->execs[i++] = ft_tree_it(copy, NULL, 0);
+	// 		// free_list(copy);
+	// 	}
+	// 	ft_putnbr(1);
+	// 	ft_putchar('\n');
+	// 	tmp = tmp->next;
+	// }
+}
 
 void				parsing_lexing(t_sh *sh)
 {
+	int			i;
+	int			number;
+
+	i = 0;
+	number = 0;
 	if(parsing_listing(&sh->list, sh->line->line, sh->env))
 	{
 		assign_redir(sh->list);
-		// get_execs(sh);
-		sh->lexdat = ft_tree_it(sh->list, NULL, 0);
+		number = get_execs(sh);
+		// ft_putstr("OUE");
+		// sh->lexdat = ft_tree_it(sh->list, NULL, 0);
 		// ft_print_tree(sh->lexdat);
-		execs(sh->lexdat, sh->env, sh);
-		if (sh->lexdat)
-			free_tree(sh->lexdat);
+		// while (sh->execs[i])
+		// {
+		// 	ft_putnbr(i);
+		// 	i++;
+		// }
+		while (number--)
+			execs(sh->execs[i++], sh->env, sh);
+		// if (sh->lexdat)
+		// 	free_tree(sh->lexdat);
 	}
 	free_list(sh->list);
 	sh->list = NULL;
