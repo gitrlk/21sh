@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/03 16:03:48 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/05 19:39:52 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ int 				ft_isstrprint(char *str)
 {
 	int i;
 
-	i = -1;
-	while (str[++i])
-		return (ft_isprint(str[i]));
-	return (0);
+	i = 0;
+	while (str[i] && ft_isprint(str[i]))
+		i++;
+	return (i);
 }
 
 char				**ft_prep_input(char *str)

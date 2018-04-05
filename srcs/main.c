@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/04 20:32:55 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/05 19:35:35 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,6 +181,7 @@ t_parsing		*init_data(void)
 
 	data = ft_memalloc(sizeof(t_parsing));
 	data->index = -1;
+	data->anex = 0;
 	data->simpleq = 0;
 	data->doubleq = 0;
 	data->checker = 0;
@@ -188,34 +189,34 @@ t_parsing		*init_data(void)
 	data->subber = 0;
 	data->breaker = 1;
 	data->empty = 0;
-	data->to_node1 = NULL;
+	data->to_node = NULL;
 	data->to_node2 = NULL;
 	return (data);
 }
 
-int				check_first_node(t_parsing *data, char *input)
-{
-	char *tmp;
-
-	data->anex = data->latest;
-	while ((!ft_strchr(OPERATOR, input[data->anex])) && input[data->anex])
-		data->anex++;
-	data->subber = data->anex - data->latest;
-	data->to_node_op[0] = data->ptr[0];
-	if (!ft_isstrprint((tmp = ft_strtrim(data->to_node1 =
-	(ft_strsub(input, data->latest, data->subber))))) && (data->ptr[0] != ';'))
-	{
-		ft_strdel(&data->to_node1);
-		data->to_node1 = NULL;
-		ft_strdel(&tmp);
-		ft_errors(1, data->ptr, NULL);
-		return (0);
-	}
-	ft_strdel(&tmp);
-	data->checker = 1;
-	return (1);
-}
-
+// int				check_first_node(t_parsing *data, char *input)
+// {
+// 	char *tmp;
+//
+// 	data->anex = data->latest;
+// 	while ((!ft_strchr(OPERATOR, input[data->anex])) && input[data->anex])
+// 		data->anex++;
+// 	data->subber = data->anex - data->latest;
+// 	data->to_node_op[0] = data->ptr[0];
+// 	if (!ft_isstrprint((tmp = ft_strtrim(data->to_node1 =
+// 	(ft_strsub(input, data->latest, data->subber))))) && (data->ptr[0] != ';'))
+// 	{
+// 		ft_strdel(&data->to_node1);
+// 		data->to_node1 = NULL;
+// 		ft_strdel(&tmp);
+// 		ft_errors(1, data->ptr, NULL);
+// 		return (0);
+// 	}
+// 	ft_strdel(&tmp);
+// 	data->checker = 1;
+// 	return (1);
+// }
+//
 void				switch_in_out(t_sh *sh, int in_out)
 {
 	if (in_out == 1)
@@ -306,7 +307,6 @@ void				execute_binary(t_lexit *list, t_env *env, t_sh *sh)
 		if (mod)
 			reset_fd(sh, mod);
 	}
-
 	ft_freetab(newenv);
 }
 
@@ -463,47 +463,43 @@ void				assign_redir(t_lexit *list)
 	}
 }
 
-t_lexit			*fill_exec_part(t_lexit *sauce)
+t_lexit			*fill_exec_part(t_lexit *sauce, t_lexit *end)
 {
 	t_lexit		*dst;
-
-	dst = ft_memalloc(sizeof(t_lexit *));
-	dst->input = ft_strdup(sauce->input);
+	t_lexit		*tmp;
+   //
+	// dst = ft_memalloc(sizeof(t_lexit *));
+	dst = sauce;
+	tmp = dst;
+	(void)end;
+	// dst->input = ft_strdup(sauce->input);
 	// dst->args = copypasta(sauce->args);
-	// ft_putstr("OK");
-	// ft_putchar('\n');
-	dst->command = ft_strdup(sauce->command);
-	dst->prio = sauce->prio;
-	dst->redirs = sauce->redirs;
-	dst->left = sauce->left;
-	dst->right = sauce->right;
-	dst->next = NULL;
-	dst->prev = sauce->prev;
+	// dst->command = ft_strdup(sauce->command);
+	// dst->prio = sauce->prio;
+	// dst->redirs = sauce->redirs;
+	// dst->left = sauce->left;
+	// dst->right = sauce->right;
+	// dst->next = sauce->next;
+	// while (tmp && tmp != end)
+	// {
+	// 	if (tmp->next == end)
+	// 		tmp->next = NULL;
+	// 	tmp = tmp->next;
+	// }
+	// dst->prev = sauce->prev;
 	return (dst);
 }
 
 t_lexit			*split_execs(t_sh *sh, t_lexit *start, t_lexit *end)
 {
-	t_lexit		*exec_part;
 	t_lexit		*tmp;
+	t_lexit		*exec_parts;
 
-	exec_part = ft_memalloc(sizeof(t_lexit));
 	tmp = !start ? sh->list : start;
-	// ft_putstr("OK");
-	// ft_putchar('\n');
 	if (tmp == end)
 		return(end);
-	while (tmp && (tmp != end))
-	{
-		// ft_putstr("OK");
-		// ft_putchar('\n');
-		exec_part = fill_exec_part(tmp);
-		exec_part = exec_part->next;
-		// ft_putstr("OK");
-		// ft_putchar('\n');
-		tmp = tmp->next;
-	}
-	return (exec_part);
+	exec_parts = fill_exec_part(tmp, end);
+	return (exec_parts);
 }
 
 int				check_semi(t_sh *sh, t_lexit *lst)
@@ -530,7 +526,6 @@ int				check_semi(t_sh *sh, t_lexit *lst)
 int				get_execs(t_sh *sh)
 {
 	t_lexit		*tmp;
-	t_lexit		*copy;
 	t_lexit		*start;
 	int			i;
 	int			number;
@@ -538,65 +533,35 @@ int				get_execs(t_sh *sh)
 	i = 0;
 	number = 0;
 	tmp = sh->list;
-	copy = NULL;
 	start = NULL;
 	sh->execs = ft_memalloc(sizeof(t_lexit **));
 	if (check_semi(sh, tmp))
 	{
 		while (tmp)
 		{
+
 			if (tmp->prio == SEMICOLON)
 			{
-				ft_putstr("OE\n");
-				copy = split_execs(sh, start, tmp);
-						ft_putstr("COPY INPUT : ");
-						ft_putstr(copy->input);
-						ft_putchar('\n');
-						// ft_putstr('COPY ARGS : ");
-						// ft_putstr(copy->args);
-						// ft_putchar("\n");
-						if (copy->command)
-						{
-							ft_putstr("COPY COMMAND : ");
-							ft_putstr(copy->command);
-							ft_putchar('\n');
-						}
-				start = tmp;
-				sh->execs[i] = copy;
+				ft_putstr("HERE FIRST\n");
+				sh->execs[i] = ft_tree_it(split_execs(sh, start, tmp), NULL, 0);
+				start = tmp->next;
+				i++;
 				number++;
 			}
+			if (tmp->prio != SEMICOLON && !tmp->next)
+			{
+				ft_putstr("HERE SECOND\n");
+				sh->execs[i] = ft_tree_it(split_execs(sh, start, tmp), NULL, 0);
+				i++;
+				number++;
+			}
+			ft_putstr("LOOP\n");
 			tmp = tmp->next;
 		}
 	}
 	else
 		return (1);
 	return (number);
-	// while (tmp)
-	// {
-	// 	if (tmp->prio != SEMICOLON || !tmp->next)
-	// 	{
-	// 		ft_putstr("OUE\n");
-	// 		copy = split_execs(sh, start, tmp);
-	// 		ft_putstr("COPY INPUT : ");
-	// 		ft_putstr(copy->input);
-	// 		ft_putchar('\n');
-	// 		// ft_putstr('COPY ARGS : ");
-	// 		// ft_putstr(copy->args);
-	// 		// ft_putchar("\n");
-	// 		if (copy->command)
-	// 		{
-	// 			ft_putstr("COPY COMMAND : ");
-	// 			ft_putstr(copy->command);
-	// 			ft_putchar('\n');
-	// 		}
-	// 		start = tmp;
-	// 		sh->execs[i++] = ft_tree_it(copy, NULL, 0);
-	// 		// free_list(copy);
-	// 	}
-	// 	ft_putnbr(1);
-	// 	ft_putchar('\n');
-	// 	tmp = tmp->next;
-	// }
 }
 
 void				parsing_lexing(t_sh *sh)
@@ -610,7 +575,6 @@ void				parsing_lexing(t_sh *sh)
 	{
 		assign_redir(sh->list);
 		number = get_execs(sh);
-		// ft_putstr("OUE");
 		// sh->lexdat = ft_tree_it(sh->list, NULL, 0);
 		// ft_print_tree(sh->lexdat);
 		// while (sh->execs[i])
@@ -619,13 +583,17 @@ void				parsing_lexing(t_sh *sh)
 		// 	i++;
 		// }
 		while (number--)
-			execs(sh->execs[i++], sh->env, sh);
-		// if (sh->lexdat)
-		// 	free_tree(sh->lexdat);
+		{
+			// ft_print_tree(sh->execs[i]);
+			execs(sh->execs[i], sh->env, sh);
+			if (sh->execs[i])
+				free_tree(sh->execs[i]);
+			i++;
+		}
+		free(sh->execs);
 	}
 	free_list(sh->list);
 	sh->list = NULL;
-
 }
 
 void				ft_21sh(t_sh *sh, t_norm *values)
