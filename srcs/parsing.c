@@ -113,14 +113,21 @@ int				check_left_right(char *input, t_parsing *data)
 {
 	char			*tmp;
 
+	if (input[data->index + 1] == '\0')
+		return (0);
+	if (data->index == 1)
+		return (0);
 	if (!ft_isstrprint(tmp = ft_strtrim(ft_strsub(input, data->anex, data->index))))
 	{
-		ft_putstr(tmp);
 		ft_strdel(&tmp);
 		return (0);
 	}
 	ft_strdel(&tmp);
-	while (input[])
+	data->subber = data->index;
+	while (input[data->subber])
+		data->subber++;
+	while (data->index < data->subber && (!ft_strchr(OPERATOR, input[data->index])))
+		data->index++;
 	if (!ft_isstrprint(tmp = ft_strtrim(ft_strsub(input, data->index, data->subber))))
 	{
 		ft_strdel(&tmp);
@@ -137,6 +144,11 @@ int				node_lro(char *input, t_lexit **list, t_parsing *data, t_lexit *tmp)
 	if (!check_left_right(input, data))
 		return (0);
 	return (1);
+}
+
+int				check_if_over(char *input, t_lexit *tmp)
+{
+
 }
 
 int				parsing_listing(t_lexit **list, char *input, t_env *env)
@@ -157,12 +169,14 @@ int				parsing_listing(t_lexit **list, char *input, t_env *env)
 			{
 				if (data->ptr[0] != ';')
 					 if(!node_lro(input, list, data, tmp))
-					 {
-						ft_putstr("OUEOUE");
 						return (0);
-					}
-				// if (data->ptr[0] == ';')
-				// 	check_if_over(input, list, data, tmp);
+				if (data->ptr[0] == ';')
+				{
+					if (check_if_over(input, tmp))
+						last_node();
+					else
+						node_lro();
+				}
 			}
 		}
 		// 	{
