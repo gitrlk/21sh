@@ -1,4 +1,5 @@
 #include "../includes/sh.h"
+#include<stdio.h>
 
 // void				choose_node(t_lexit *tmp, t_env *env, t_parsing *data, int node)
 // {
@@ -112,18 +113,23 @@ t_lexit			*single_node(t_lexit *tmp, t_lexit **list, t_env *env, char *input)
 int				check_left_right(char *input, t_parsing *data)
 {
 	char			*tmp;
+	char			*tmp1;
 
+	tmp1 = NULL;
 	if (input[data->index + 1] == '\0')
 		return (0);
 	if (data->index == 1)
 		return (0);
 	data->check = data->index - data->anex;
-	if (!ft_isstrprint(tmp = ft_strtrim(ft_strsub(input, data->anex, data->check))))
+	tmp1 = ft_strsub(input, data->anex, data->check);
+	if (!ft_isstrprint(tmp = ft_strtrim(tmp1)))
 	{
+		ft_strdel(&tmp1);
 		ft_strdel(&tmp);
 		return (0);
 	}
 	ft_strdel(&tmp);
+	ft_strdel(&tmp1);
 	data->subber = data->index;
 	data->subber++;
 	data->index++;
@@ -131,17 +137,17 @@ int				check_left_right(char *input, t_parsing *data)
 		data->subber++;
 	while (input[data->subber] && (!ft_strchr(OPERATOR, input[data->subber])))
 		data->subber++;
-	if (!ft_isstrprint(tmp = ft_strtrim(ft_strsub(input, data->index, data->subber))))
+	tmp1 = ft_strsub(input, data->index, (data->subber - data->index));
+	if (!ft_isstrprint(tmp = ft_strtrim(tmp1)))
 	{
 		ft_strdel(&tmp);
+		ft_strdel(&tmp1);
 		return (0);
 	}
 	if (input[data->subber] == '\0')
-	{
-		ft_putendl(tmp);
 		data->wordsize = ft_strlen(tmp);
-	}
 	ft_strdel(&tmp);
+	ft_strdel(&tmp1);
 	return (1);
 }
 
@@ -151,7 +157,7 @@ void			link_last_node(char *input, t_lexit **list, t_parsing *data)
 	t_lexit		*tmp;
 
 	tmp = *list;
-	content = ft_strsub(input, data->index + 1, data->subber);
+	content = ft_strsub(input, (data->index + 1), (data->subber - data->index));
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = add_node(content, data->env);
@@ -204,37 +210,80 @@ int				node_lro(char *input, t_lexit **list, t_parsing *data)
 int				check_if_over(char *input, t_parsing *data)
 {
 	char		*tmp;
+	char		*tmp1;
 
 	tmp = NULL;
+	tmp1 = NULL;
 	if (input[data->index + 1] == '\0')
 		return (1);
 	data->subber = data->index;
-	while (input[data->subber])
+	while (data->subber < data->len)
+	{
 		data->subber++;
-	if (!ft_isstrprint(tmp = ft_strtrim(ft_strsub(input, data->index, data->subber))))
+		data->last++;
+	}
+	tmp1 = ft_strsub(input, data->index, data->last);
+	if (!ft_isstrprint(tmp = ft_strtrim(tmp1)))
 	{
 		ft_strdel(&tmp);
+		ft_strdel(&tmp1);
+		data->last = 0;
 		return (1);
 	}
 	ft_strdel(&tmp);
+	ft_strdel(&tmp1);
+	data->last = 0;
 	return (0);
 }
 
-// void			last_node(t_lexit **list, char *input, t_env *env, t_parsing *data)
-// {
-//
-// }
+void			last_node(t_lexit **list, char *input, t_parsing *data)
+{
+	int		i;
+	int		j;
+	t_lexit	*tmp;
+	char		*content;
+
+	tmp = *list;
+	i = data->index - 1;
+	j = 0;
+	while (i > 0)
+	{
+		if (ft_strchr(OPERATOR, input[i - 1]))
+			break ;
+		i--;
+		j++;
+	}
+	content = ft_strtrim(ft_strsub(input, i, j));
+	if (!tmp)
+	{
+		*list = add_node(content, data->env);
+		ft_strdel(&content);
+		tmp = *list;
+	}
+	else
+	{
+		while (tmp->next)
+			tmp = tmp->next;
+		tmp->next = add_node(content, data->env);
+		ft_strdel(&content);
+		tmp->next->prev = tmp;
+	}
+}
 
 int				parsing_listing(t_lexit **list, char *input, t_env *env)
 {
 	t_parsing	*data;
 	t_lexit		*tmp;
+	char			*empty;
 
 	tmp = *list;
 	data = init_data();
 	data->env = env;
-	if (ft_strtrim(input)[0] == '\0')
+	empty = ft_strtrim(input);
+	if (empty[0] == '\0')
 		data->empty = 1;
+	ft_strdel(&empty);
+	data->len = ft_strlen(input);
 	if (quote_checker(data, input) && !data->empty)
 	{
 		while (input[++data->index])
@@ -248,46 +297,18 @@ int				parsing_listing(t_lexit **list, char *input, t_env *env)
 						return (0);
 				if (data->ptr[0] == ';')
 				{
-					// if (check_if_over(input, data))
-					// 	last_node(list, input, env, data);
-					// else
+					if (check_if_over(input, data))
+						last_node(list, input, data);
+					else
 						node_lro(input, list, data);
 				}
 			}
 		}
-		// 	{
-		// 		data->breaker = check_first_node(data, input);
-		// 		get_full_op(data, input);
-		// 		tmp = init_node(tmp, list, env, data);
-		// 		choose_node(tmp, env, data, 2);
-		// 		while (ft_isspace(input[data->index]))
-		// 			data->index++;
-		// 		if (data->checker)
-		// 			data->breaker = parsing_error(data, input, 1);
-		// 		index_juggle(data, input);
-		// 		data->breaker = parsing_error(data, input, 2);
-		// 		if (!data->breaker)
-		// 			break ;
-		// 		if (end_line_checker(data, input) && data->breaker != 0)
-		// 			if (data->to_node2 && data->to_node2[0])
-		// 				ft_strdel(&data->to_node2);
-		// 	}
-		// 	if (input[data->index + 1] == '\0' && data->to_node2 && data->breaker)
-		// 	{
- 		// 		choose_node(tmp, env, data, 3);
-		// 		ft_strdel(&data->to_node2);
-		// 	}
-		// }
 		if (input && !*(list))
 			tmp = single_node(tmp, list, env, input);
 	}
-	// if (data->breaker)
-	// 	ft_strdel(&data->to_node2);
-	// ok = data->breaker;
-	// ft_memdel((void **)&data);
-	// if (ok)
-		return (1);
-	// return (0);
+	ft_memdel((void **)&data);
+	return (1);
 }
 
 // int				parsing_listing(t_lexit **list, char *input, t_env *env)

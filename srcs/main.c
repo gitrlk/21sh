@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/07 01:29:56 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/07 20:34:02 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,8 @@ t_parsing		*init_data(void)
 	data->env = NULL;
 	data->index = -1;
 	data->anex = 0;
+	data->len = 0;
+	data->last = 0;
 	data->simpleq = 0;
 	data->doubleq = 0;
 	data->checker = 0;
@@ -535,15 +537,16 @@ int				get_execs(t_sh *sh)
 	number = 0;
 	tmp = sh->list;
 	start = NULL;
-	sh->execs = ft_memalloc(sizeof(t_lexit **));
+	get_number(number);
+	sh->execs = ft_memalloc(sizeof(t_lexit **) * number);
 	if (check_semi(sh, tmp))
 	{
 		while (tmp)
 		{
-
 			if (tmp->prio == SEMICOLON)
 			{
 				ft_putstr("HERE FIRST\n");
+				ft_putnbr(i);
 				sh->execs[i] = ft_tree_it(split_execs(sh, start, tmp), NULL, 0);
 				start = tmp->next;
 				i++;
@@ -574,15 +577,17 @@ void				parsing_lexing(t_sh *sh)
 	number = 0;
 	if(parsing_listing(&sh->list, sh->line->line, sh->env))
 	{
-		while (sh->list)
-		{
-			ft_putstr("INPUT IN LIST IS : ");
-			ft_putstr(sh->list->input);
-			ft_putchar('\n');
-			sh->list = sh->list->next;
-		}
+		// while (sh->list)
+		// {
+		// 	ft_putstr("INPUT IN LIST IS : ");
+		// 	ft_putstr(sh->list->input);
+		// 	ft_putchar('\n');
+		// 	sh->list = sh->list->next;
+		// }
 		assign_redir(sh->list);
 		number = get_execs(sh);
+		ft_putnbr(number);
+		ft_putchar('\n');
 		// sh->lexdat = ft_tree_it(sh->list, NULL, 0);
 		// ft_print_tree(sh->lexdat);
 		// while (sh->execs[i])
@@ -590,15 +595,15 @@ void				parsing_lexing(t_sh *sh)
 		// 	ft_putnbr(i);
 		// 	i++;
 		// }
-		while (number--)
-		{
-			// ft_print_tree(sh->execs[i]);
-			execs(sh->execs[i], sh->env, sh);
-			if (sh->execs[i])
-				free_tree(sh->execs[i]);
-			i++;
-		}
-		free(sh->execs);
+		// while (number--)
+		// {
+		// 	// ft_print_tree(sh->execs[i]);
+		// 	execs(sh->execs[i], sh->env, sh);
+		// 	if (sh->execs[i])
+		// 		free_tree(sh->execs[i]);
+		// 	i++;
+		// }
+		// free(sh->execs);
 	}
 	free_list(sh->list);
 	sh->list = NULL;
@@ -615,6 +620,7 @@ void				ft_21sh(t_sh *sh, t_norm *values)
 	}
 	ft_putchar('\n');
 	parsing_lexing(sh);
+	ft_putstr("COUCOU\n");
 	ft_add_history(sh->line); //add line to history
 	if (ft_strequ(sh->line->line, "clear"))
 		tputs(tgetstr("cl", NULL), 1, ft_pointchar);

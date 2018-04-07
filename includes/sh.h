@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/07 06:28:17 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/07 19:16:14 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,9 @@ typedef struct			s_parsing
 	int					index;
 	int					anex;
 	int					check;
-	int 				wordsize;
+	int					len;
+	int					last;
+	int 					wordsize;
 	int					anex2;
 	int					quote_checker;
 	int					simpleq;

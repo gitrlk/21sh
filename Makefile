@@ -6,13 +6,13 @@
 #    By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/04/19 14:14:34 by jecarol           #+#    #+#              #
-#    Updated: 2018/01/25 20:40:12 by rfabre           ###   ########.fr        #
+#    Updated: 2018/04/07 20:28:06 by jecarol          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 NAME = 21sh
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g -fsanitize=address
 
 SRCS_LIST = main.c line_movement.c line_editing.c copy_paste.c term.c line_edit2.c env.c history.c tokenizer.c parsing.c freesets.c execution.c path_mngmnt.c errors.c
 

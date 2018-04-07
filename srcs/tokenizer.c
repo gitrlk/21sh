@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/05 19:39:52 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/07 20:41:05 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,6 @@ t_lexit 			*ft_tree_it(t_lexit *list, t_lexit *delim, int prio)
 	if (keep)
 	{
 		keep->left = ft_tree_it(list, keep, prio);
-		// if (keep->next->input)
-		// 	ft_putstr(keep->next->input);
 		keep->right = ft_tree_it(keep->next, delim, prio + 1);
 		return (keep);
 	}
