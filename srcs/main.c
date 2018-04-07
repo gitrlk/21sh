@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/05 19:35:35 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/07 01:29:56 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,6 +180,7 @@ t_parsing		*init_data(void)
 	t_parsing *data;
 
 	data = ft_memalloc(sizeof(t_parsing));
+	data->env = NULL;
 	data->index = -1;
 	data->anex = 0;
 	data->simpleq = 0;
@@ -573,6 +574,13 @@ void				parsing_lexing(t_sh *sh)
 	number = 0;
 	if(parsing_listing(&sh->list, sh->line->line, sh->env))
 	{
+		while (sh->list)
+		{
+			ft_putstr("INPUT IN LIST IS : ");
+			ft_putstr(sh->list->input);
+			ft_putchar('\n');
+			sh->list = sh->list->next;
+		}
 		assign_redir(sh->list);
 		number = get_execs(sh);
 		// sh->lexdat = ft_tree_it(sh->list, NULL, 0);

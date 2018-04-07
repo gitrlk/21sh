@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/05 19:02:11 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/07 06:28:17 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,9 @@ typedef struct			s_parsing
 {
 	int					index;
 	int					anex;
+	int					check;
+	int 				wordsize;
+	int					anex2;
 	int					quote_checker;
 	int					simpleq;
 	int					doubleq;
@@ -120,6 +123,7 @@ typedef struct			s_parsing
 	int					subber;
 	int					breaker;
 	int					empty;
+	t_env				*env;
 	char					*to_node;
 	char					*to_node2;
 	char					to_node_op[2];
