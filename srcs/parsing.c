@@ -193,6 +193,7 @@ void			link_nodes(char *input, t_lexit **list, t_parsing *data)
 		while (tmp->next)
 			tmp = tmp->next;
 		tmp->next = add_node(data->to_node_op, data->env);
+		tmp->next->prev = tmp;
 	}
 	if (input[data->subber] == '\0')
 		link_last_node(input, list, data);

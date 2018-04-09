@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/07 19:16:14 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/09 19:13:30 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,8 @@ typedef struct			s_lexit
 	char					**args;
 	char					*command;
 	int					prio;
+	int					first;
+	int					checker;
 	struct s_redir		*redirs;
 	struct s_lexit		*left;
 	struct s_lexit		*right;
@@ -148,7 +150,7 @@ typedef struct			s_sh
 	t_env					*env;
 	t_lexit				*list;
 	t_lexit				*lexdat;
-	t_lexit				**execs;
+	t_lexit				*execs;
 	t_edit				*line;
 	t_norm				*values;
 	t_fday				fd;

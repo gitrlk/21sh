@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:03 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/20 19:24:58 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/09 18:48:13 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,15 +37,4 @@ void			ft_line_reset(t_edit *line)
 	line->line = ft_memalloc(sizeof(char));
 	line->select_mode = 0;
 	line->curr = NULL;
-}
-
-void 				ft_free_lexdat(t_lexit *lexdat)
-{
-	if (!lexdat)
-		return ;
-	ft_free_lexdat(lexdat->left);
-	ft_free_lexdat(lexdat->right);
-	ft_strdel(&lexdat->input);
-	free(lexdat->next);
-	free(lexdat);
 }
