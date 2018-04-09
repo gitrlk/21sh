@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/09 19:16:59 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/09 20:04:17 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,29 +199,6 @@ t_parsing		*init_data(void)
 	return (data);
 }
 
-// int				check_first_node(t_parsing *data, char *input)
-// {
-// 	char *tmp;
-//
-// 	data->anex = data->latest;
-// 	while ((!ft_strchr(OPERATOR, input[data->anex])) && input[data->anex])
-// 		data->anex++;
-// 	data->subber = data->anex - data->latest;
-// 	data->to_node_op[0] = data->ptr[0];
-// 	if (!ft_isstrprint((tmp = ft_strtrim(data->to_node1 =
-// 	(ft_strsub(input, data->latest, data->subber))))) && (data->ptr[0] != ';'))
-// 	{
-// 		ft_strdel(&data->to_node1);
-// 		data->to_node1 = NULL;
-// 		ft_strdel(&tmp);
-// 		ft_errors(1, data->ptr, NULL);
-// 		return (0);
-// 	}
-// 	ft_strdel(&tmp);
-// 	data->checker = 1;
-// 	return (1);
-// }
-//
 void				switch_in_out(t_sh *sh, int in_out)
 {
 	if (in_out == 1)
@@ -537,7 +514,6 @@ int				get_execs(t_sh *sh)
 	copy = NULL;
 	head = NULL;
 	exec_number = get_number(sh);
-	// sh->execs = ft_memalloc(sizeof(t_lexit **) * exec_number);
 	sh->execs = NULL;
 	if (check_semi(sh, tmp))
 	{
@@ -555,7 +531,6 @@ int				get_execs(t_sh *sh)
 				copy->next->first = 0;
 				copy->next->prev = copy;
 				copy = copy->next;
-				// copy->next->prev = copy->next;
 			}
 			if (tmp->next && tmp->next->prio == SEMICOLON)
 			{
@@ -565,8 +540,6 @@ int				get_execs(t_sh *sh)
 				while (copy->first != 1)
 					copy = copy->prev;
 				free_list(copy);
-				// free_list(head);
-				// free_tree(sh->execs);
 				sh->execs = NULL;
 				copy = NULL;
 				head = NULL;
@@ -581,15 +554,11 @@ int				get_execs(t_sh *sh)
 					copy = copy->prev;
 				free_list(copy);
 				copy = NULL;
-				// free_tree(sh->execs);
 				sh->execs = NULL;
 				i++;
 			}
 			tmp = tmp->next;
 		}
-		// free_list(sh->list);
-		// sh->list = NULL;
-		// free(sh->execs);
 	}
 	else
 		return (1);
@@ -612,33 +581,6 @@ void				parsing_lexing(t_sh *sh)
 			sh->execs = ft_tree_it(sh->list, NULL, 0);
 			execs(sh->execs, sh->env, sh);
 		}
-
-		// ft_putnbr(number);
-
-		// while (number--)
-		// {
-		// 	while (sh->execs[i]->next)
-		// 	{
-		// 		ft_putendl(sh->execs[i]->input);
-		// 		sh->execs[i] = sh->execs[i]->next;
-		// 	}
-		// 	i++;
-		// }
-		// sh->lexdat = ft_tree_it(sh->list, NULL, 0);
-		// ft_print_tree(sh->lexdat);
-		// while (sh->execs[i])
-		// {
-		// 	ft_putnbr(i);
-		// 	i++;
-		// }
-		// while (number--)
-		// {
-		// 	ft_print_tree(sh->execs[i]);
-			// execs(sh->execs[i], sh->env, sh);
-			// if (sh->execs[i])
-			// 	free_tree(sh->execs[i]);
-			// i++;
-		// free(sh->execs);
 	}
 	free_list(sh->list);
 	sh->list = NULL;
@@ -655,7 +597,6 @@ void				ft_21sh(t_sh *sh, t_norm *values)
 	}
 	ft_putchar('\n');
 	parsing_lexing(sh);
-	// ft_putstr("COUCOU\n");
 	ft_add_history(sh->line); //add line to history
 	if (ft_strequ(sh->line->line, "clear"))
 		tputs(tgetstr("cl", NULL), 1, ft_pointchar);
