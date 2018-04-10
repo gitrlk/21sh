@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/09 20:04:17 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/09 22:40:47 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -310,8 +310,9 @@ void				do_pipes(t_lexit *list, t_env *env, t_sh *sh)
 	{
 		dup2(pipefd[0], sh->fd.saved_in);
 		close(pipefd[1]);
-		waitpid(pipid, &status, 0);
+		// waitpid(pipid, &status, 0);
 		execs_deep(list->right, env, sh);
+		waitpid(pipid, &status, 0);
 	}
 }
 
