@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/09 19:13:30 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/10 15:08:00 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,7 +184,7 @@ int 				ft_pre_parser(t_edit *line);
 int 				parse_list(t_lexit *list);
 void			ft_freetab(char **table);
 void 				ft_free_lexdat(t_lexit *lexdat);
-void				ft_env(char **cmd, t_env *env);
+void				ft_env(t_lexit *list, t_env *env, t_sh *sh);
 void				ft_execs(t_lexit *lexdat, t_env *env, t_edit *line);
 char				**ft_set_paths(t_env *env);
 int 			ft_errors(int code, char *cmd, char *arg);
@@ -204,6 +204,9 @@ int				quote_checker(t_parsing *data, char *input);
 int				check_first_node(t_parsing *data, char *input);
 void				get_full_op(t_parsing *data, char *input);
 void				execs_deep(t_lexit *list, t_env *env, t_sh *sh);
+void				free_list(t_lexit *list);
+char			**copypasta(char **src, int i);
+void				execs(t_lexit *list, t_env *env, t_sh *sh);
 
 
 

@@ -6,20 +6,18 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/10 14:42:45 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/10 15:16:09 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "sh.h"
 
-char			**copypasta(char **src)
+char			**copypasta(char **src, int i)
 {
 	int			size;
 	int			j;
-	int			i;
 	char		**ret;
 
-	i = 0;
 	size = 0;
 	j = 0;
 	while (src[size])
@@ -82,8 +80,13 @@ int				get_prio(char *str, char **command, char **apaths)
 		return (PIPE);
 	else if ((path = find_cmd(apaths, str)) || !ft_strcmp(str, "cd") || !ft_strcmp(str, "env") || !ft_strcmp(str, "echo"))
 	{
-		*command = ft_strdup(path);
-		ft_strdel(&path);
+		if (path)
+		{
+			*command = ft_strdup(path);
+			ft_strdel(&path);
+		}
+		else
+			*command = ft_strdup(str);
 		return (COMMAND);
 	}
 	else if (!ft_strcmp(str, ">"))
@@ -315,9 +318,20 @@ void				do_pipes(t_lexit *list, t_env *env, t_sh *sh)
 	}
 }
 
-void				check_if_builtin(t_lexit *list, t_env *env, t_sh *sh)
+int				check_if_builtin(t_lexit *list, t_env *env, t_sh *sh)
 {
-	
+	(void)env;
+	(void)sh;
+	if (!ft_strcmp(list->args[0], "env"))
+		return (1);
+	else
+		return (0);
+		// ft_env(list, env, sh);
+}
+
+void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
+{
+	ft_env(list, env, sh);
 }
 
 void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
@@ -331,9 +345,10 @@ void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
 		execs_deep(list->left, env, sh);
 	if (list->prio == COMMAND)
 	{
-
 		if (check_if_builtin(list, env, sh))
+		{
 			execute_builtin(list, env, sh);
+		}
 		else
 			execute_binary(list, env, sh);
 	}
