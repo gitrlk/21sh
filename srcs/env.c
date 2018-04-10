@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/10 15:18:01 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/10 19:44:01 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,10 +159,36 @@ void			ft_empty_env(t_env **env, int *i)
 	*i += 1;
 }
 
+char			*render_args(t_lexit *list)
+{
+	char		*result;
+	int			i;
+
+	i = 0;
+	result = NULL;
+	while (list->args[i])
+	{
+
+	}
+	return (result);
+}
+
+void			update_list(t_lexit *list, t_env *env, int i)
+{
+	char		**apaths;
+
+	apaths = ft_set_paths(env);
+	ft_strdel(&list->input);
+	ft_strdel(&list->command);
+	list->input = ft_strdup(list->args[i]);
+	list->args = list->args + i;
+	list->prio = get_prio(list->args[0], &list->command, apaths);
+	ft_freetab(apaths);
+}
+
 void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
 {
 	t_env		*new_env;
-	char		**new_cmd;
 	int			i;
 
 	i = 1;
@@ -177,7 +203,7 @@ void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
 			ft_env_with_var(&new_env, list->args[i++]);
 		if (list->args[i])
 		{
-			new_cmd = copypasta(list->args, i);
+			update_list(list, new_env, i);
 			execs(list, new_env, sh);
 		}
 		else

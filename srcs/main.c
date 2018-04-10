@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/10 15:16:09 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/10 19:11:52 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -346,9 +346,7 @@ void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
 	if (list->prio == COMMAND)
 	{
 		if (check_if_builtin(list, env, sh))
-		{
 			execute_builtin(list, env, sh);
-		}
 		else
 			execute_binary(list, env, sh);
 	}

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/10 15:08:00 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/10 19:22:14 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,6 +207,7 @@ void				execs_deep(t_lexit *list, t_env *env, t_sh *sh);
 void				free_list(t_lexit *list);
 char			**copypasta(char **src, int i);
 void				execs(t_lexit *list, t_env *env, t_sh *sh);
+int				get_prio(char *str, char **command, char **apaths);
 
 
 
