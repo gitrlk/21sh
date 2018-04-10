@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/09 22:40:47 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/10 14:42:45 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ int				get_prio(char *str, char **command, char **apaths)
 		return (AND_OR);
 	else if (!ft_strcmp(str, "|"))
 		return (PIPE);
-	else if ((path = find_cmd(apaths, str)))
+	else if ((path = find_cmd(apaths, str)) || !ft_strcmp(str, "cd") || !ft_strcmp(str, "env") || !ft_strcmp(str, "echo"))
 	{
 		*command = ft_strdup(path);
 		ft_strdel(&path);
@@ -310,22 +310,33 @@ void				do_pipes(t_lexit *list, t_env *env, t_sh *sh)
 	{
 		dup2(pipefd[0], sh->fd.saved_in);
 		close(pipefd[1]);
-		// waitpid(pipid, &status, 0);
 		execs_deep(list->right, env, sh);
 		waitpid(pipid, &status, 0);
 	}
 }
 
+void				check_if_builtin(t_lexit *list, t_env *env, t_sh *sh)
+{
+	
+}
+
 void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
 {
+	char			*tmp;
+
+	tmp = NULL;
 	if (list->prio == PIPE)
 		do_pipes(list, env, sh);
-	// if (list->prio == COMMAND)
-	// 	execute_binary(list, env, sh);
 	if (list->left)
 		execs_deep(list->left, env, sh);
 	if (list->prio == COMMAND)
-		execute_binary(list, env, sh);
+	{
+
+		if (check_if_builtin(list, env, sh))
+			execute_builtin(list, env, sh);
+		else
+			execute_binary(list, env, sh);
+	}
 	if (list->right)
 		execs_deep(list->right, env, sh);
 }
@@ -439,9 +450,7 @@ void				get_redir(t_lexit *node)
 
 	tmp = node;
 	if (tmp->next && (tmp->next->prio == REDIR_R || tmp->next->prio == REDIR_L || tmp->next->prio == REDIR_RR))
-	{
 		get_last_redir(tmp->next);
-	}
 }
 
 void				assign_redir(t_lexit *list)
@@ -506,10 +515,8 @@ int				get_execs(t_sh *sh)
 	t_lexit		*start;
 	t_lexit		*copy;
 	t_lexit		*head;
-	int			i;
 	int			exec_number;
 
-	i = 0;
 	tmp = sh->list;
 	start = NULL;
 	copy = NULL;
@@ -537,7 +544,6 @@ int				get_execs(t_sh *sh)
 			{
 				sh->execs = ft_tree_it(head, NULL, 0);
 				execs(sh->execs, sh->env, sh);
-				i++;
 				while (copy->first != 1)
 					copy = copy->prev;
 				free_list(copy);
@@ -556,7 +562,6 @@ int				get_execs(t_sh *sh)
 				free_list(copy);
 				copy = NULL;
 				sh->execs = NULL;
-				i++;
 			}
 			tmp = tmp->next;
 		}
