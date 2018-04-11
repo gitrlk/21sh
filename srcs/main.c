@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/10 19:11:52 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/11 00:51:17 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,7 +322,7 @@ int				check_if_builtin(t_lexit *list, t_env *env, t_sh *sh)
 {
 	(void)env;
 	(void)sh;
-	if (!ft_strcmp(list->args[0], "env"))
+	if (!ft_strcmp(list->args[0], "env") || !ft_strcmp(list->args[0], "echo"))
 		return (1);
 	else
 		return (0);
@@ -331,7 +331,18 @@ int				check_if_builtin(t_lexit *list, t_env *env, t_sh *sh)
 
 void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 {
-	ft_env(list, env, sh);
+	int				mod;
+
+	mod = switch_fd(list, sh, &mod);
+	if (mod != -1)
+	{
+		if (!ft_strcmp(list->args[0], "env"))
+			ft_env(list, env, sh);
+		else if (!ft_strcmp(list->args[0], "echo"))
+			ft_echo(list);
+		if (mod)
+			reset_fd(sh, mod);
+	}
 }
 
 void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
@@ -438,7 +449,7 @@ void				get_last_redir(t_lexit *node)
 	node->prev->redirs->left_target = NULL;
 	while (tmp && (tmp->prio != SEMICOLON && tmp->prio != AND_OR && tmp->prio != PIPE && tmp->prio != COMMAND))
 	{
-		if (tmp->next && ((tmp->prio == REDIR_R || tmp->prio == REDIR_RR)&& tmp->next->prio == ARG))
+		if (tmp->next && ((tmp->prio == REDIR_R || tmp->prio == REDIR_RR) && tmp->next->prio == ARG))
 		{
 			node->prev->redirs->redir_right = tmp->prio == REDIR_R ? 1 : 2;
 			if (node->prev->redirs->right_target)
@@ -584,7 +595,7 @@ int				get_execs(t_sh *sh)
 	return (exec_number);
 }
 
-void				parsing_lexing(t_sh *sh)
+void				parsing_lexing_execution(t_sh *sh)
 {
 	int			i;
 	int			number;
@@ -615,7 +626,7 @@ void				ft_21sh(t_sh *sh, t_norm *values)
 		values->buf = 0;
 	}
 	ft_putchar('\n');
-	parsing_lexing(sh);
+	parsing_lexing_execution(sh);
 	ft_add_history(sh->line); //add line to history
 	if (ft_strequ(sh->line->line, "clear"))
 		tputs(tgetstr("cl", NULL), 1, ft_pointchar);

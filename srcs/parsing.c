@@ -306,9 +306,7 @@ int				parsing_listing(t_lexit **list, char *input, t_env *env)
 			}
 		}
 		if (input && !*(list))
-		{
 			tmp = single_node(tmp, list, env, input);
-		}
 	}
 	ft_memdel((void **)&data);
 	return (1);

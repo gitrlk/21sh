@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/10 19:22:14 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/10 23:49:03 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ typedef	struct			s_edit
 	int						cursor_pos;
 	int						max_size;
 	char 						*line;
-	// char					**line_split;
 int 							select_mode;
 	int       			    start_select;
 	int	    	       	end_select;
@@ -208,6 +207,7 @@ void				free_list(t_lexit *list);
 char			**copypasta(char **src, int i);
 void				execs(t_lexit *list, t_env *env, t_sh *sh);
 int				get_prio(char *str, char **command, char **apaths);
+void			ft_echo(t_lexit *list);
 
 
 
