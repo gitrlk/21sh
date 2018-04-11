@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/10 23:37:53 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/11 15:35:52 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -160,11 +160,11 @@ void			ft_empty_env(t_env **env, int *i)
 	*i += 1;
 }
 
-void			update_list(t_lexit *list, int i, t_sh *sh)
+void			update_list(t_lexit *list, int i, t_env *env)
 {
 	char		**apaths;
 
-	apaths = ft_set_paths(sh->env);
+	apaths = ft_set_paths(env);
 	ft_strdel(&list->input);
 	ft_strdel(&list->command);
 	list->input = ft_strdup(list->args[i]);
@@ -176,7 +176,7 @@ void			update_list(t_lexit *list, int i, t_sh *sh)
 void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
 {
 	t_env		*new_env;
-	int			i;
+	int		i;
 
 	i = 1;
 	new_env = (env ? ft_copy_list(env) : NULL);
@@ -190,7 +190,7 @@ void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
 			ft_env_with_var(&new_env, list->args[i++]);
 		if (list->args[i])
 		{
-			update_list(list, i, sh);
+			update_list(list, i, new_env);
 			execs(list, new_env, sh);
 		}
 		else

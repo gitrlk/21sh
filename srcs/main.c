@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/11 00:51:17 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/11 19:38:42 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,7 +222,8 @@ int				switch_fd(t_lexit *list, t_sh *sh, int *mod)
 {
 	if (list->redirs && (list->redirs->redir_right == 2))
 	{
-		if ((sh->fd.saved_file = open(list->redirs->right_target, O_WRONLY | O_APPEND)) == -1)
+		if ((sh->fd.saved_file = open(list->redirs->right_target, O_WRONLY |
+		O_APPEND | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
 		{
 			ft_errors(5, NULL, list->redirs->right_target);
 			return (-1);
@@ -345,6 +346,13 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 	}
 }
 
+void				do_heredoc(t_lexit *list)
+{
+	// while ()
+	ft_putendl(list->left->redirs->endoff);
+	ft_putendl(list->left->redirs->follow_up[0]);
+}
+
 void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
 {
 	char			*tmp;
@@ -352,6 +360,8 @@ void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
 	tmp = NULL;
 	if (list->prio == PIPE)
 		do_pipes(list, env, sh);
+	if (list->prio == HEREDOC)
+		do_heredoc(list);
 	if (list->left)
 		execs_deep(list->left, env, sh);
 	if (list->prio == COMMAND)
@@ -436,6 +446,16 @@ void				free_list(t_lexit *list)
 	}
 }
 
+void				get_eof(t_lexit *node, t_lexit *target)
+{
+	t_lexit		*tmp;
+
+	tmp = node;
+	target->redirs->endoff = ft_strdup(node->next->args[0]);
+	if (node->next->args[1])
+		target->redirs->follow_up = copypasta(node->next->args, 1);
+}
+
 void				get_last_redir(t_lexit *node)
 {
 	t_lexit		*tmp;
@@ -447,6 +467,8 @@ void				get_last_redir(t_lexit *node)
 	node->prev->redirs->redir_left = 0;
 	node->prev->redirs->right_target = NULL;
 	node->prev->redirs->left_target = NULL;
+	node->prev->redirs->endoff = NULL;
+	node->prev->redirs->follow_up = NULL;
 	while (tmp && (tmp->prio != SEMICOLON && tmp->prio != AND_OR && tmp->prio != PIPE && tmp->prio != COMMAND))
 	{
 		if (tmp->next && ((tmp->prio == REDIR_R || tmp->prio == REDIR_RR) && tmp->next->prio == ARG))
@@ -456,9 +478,11 @@ void				get_last_redir(t_lexit *node)
 				ft_strdel(&node->prev->redirs->right_target);
 			node->prev->redirs->right_target = ft_strdup(tmp->next->input);
 		}
-		if (tmp->next && (tmp->prio == REDIR_L && tmp->next->prio == ARG))
+		if (tmp->next && ((tmp->prio == REDIR_L || tmp->prio == HEREDOC) && tmp->next->prio == ARG))
 		{
-			node->prev->redirs->redir_left = 1;
+			node->prev->redirs->redir_left = tmp->prio == REDIR_L ? 1 : 2;
+			if (tmp->prio == HEREDOC)
+				get_eof(tmp, node->prev);
 			if (node->prev->redirs->left_target)
 				ft_strdel(&node->prev->redirs->left_target);
 			node->prev->redirs->left_target = ft_strdup(tmp->next->input);
@@ -473,7 +497,7 @@ void				get_redir(t_lexit *node)
 	t_lexit		*tmp;
 
 	tmp = node;
-	if (tmp->next && (tmp->next->prio == REDIR_R || tmp->next->prio == REDIR_L || tmp->next->prio == REDIR_RR))
+	if (tmp->next && (tmp->next->prio == REDIR_R || tmp->next->prio == REDIR_L || tmp->next->prio == REDIR_RR || tmp->next->prio == HEREDOC))
 		get_last_redir(tmp->next);
 }
 

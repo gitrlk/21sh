@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/10 23:49:03 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/11 18:25:17 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,8 @@ typedef struct			s_redir
 	char					*right_target;
 	int					redir_left;
 	char					*left_target;
+	char					*endoff;
+	char					**follow_up;
 	struct s_redir		*next;
 }							t_redir;
 
