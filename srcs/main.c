@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/11 19:38:42 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/13 01:17:17 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,7 +177,6 @@ void				get_full_op(t_parsing *data, char *input)
 					data->to_node_op[1] = '<';
 					data->index++;
 				}
-
 }
 
 t_parsing		*init_data(void)
@@ -323,11 +322,14 @@ int				check_if_builtin(t_lexit *list, t_env *env, t_sh *sh)
 {
 	(void)env;
 	(void)sh;
-	if (!ft_strcmp(list->args[0], "env") || !ft_strcmp(list->args[0], "echo"))
-		return (1);
+	if (list)
+	{
+		if (list->args && (!ft_strcmp(list->args[0], "env") || !ft_strcmp(list->args[0], "echo") || !ft_strcmp(list->args[0], "cd")))
+			return (1);
+		return (0);
+	}
 	else
 		return (0);
-		// ft_env(list, env, sh);
 }
 
 void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
@@ -341,6 +343,8 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 			ft_env(list, env, sh);
 		else if (!ft_strcmp(list->args[0], "echo"))
 			ft_echo(list);
+		else if (!ft_strcmp(list->args[0], "cd"))
+			ft_cd(list->args, &env);
 		if (mod)
 			reset_fd(sh, mod);
 	}
@@ -348,7 +352,14 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 
 void				do_heredoc(t_lexit *list)
 {
-	// while ()
+	int				ret;
+
+	ret = 0;
+	if ((ret = open("/tmp/heredoc_fd", O_WRONLY |
+	O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
+		ft_errors(5, NULL, list->redirs->right_target);
+	else
+		ft_putendl_fd(list->left->redirs->follow_up[0], ret);
 	ft_putendl(list->left->redirs->endoff);
 	ft_putendl(list->left->redirs->follow_up[0]);
 }
@@ -388,6 +399,12 @@ void				execs(t_lexit *list, t_env *env, t_sh *sh)
 		else
 			waitpid(pid, &status, 0);
 	}
+}
+
+void				exec_no_fork(t_lexit *list, t_env *env, t_sh *sh)
+{
+	if (list)
+		execs_deep(list, env, sh);
 }
 
 void				free_tree(t_lexit *lexdat)
@@ -591,7 +608,10 @@ int				get_execs(t_sh *sh)
 			if (tmp->next && tmp->next->prio == SEMICOLON)
 			{
 				sh->execs = ft_tree_it(head, NULL, 0);
-				execs(sh->execs, sh->env, sh);
+				if (check_if_builtin(sh->execs, sh->env, sh))
+					exec_no_fork(sh->execs, sh->env, sh);
+				else
+					execs(sh->execs, sh->env, sh);
 				while (copy->first != 1)
 					copy = copy->prev;
 				free_list(copy);
@@ -604,7 +624,10 @@ int				get_execs(t_sh *sh)
 			if (tmp->prio != SEMICOLON && !tmp->next)
 			{
 				sh->execs = ft_tree_it(head, NULL, 0);
-				execs(sh->execs, sh->env, sh);
+				if (check_if_builtin(sh->execs, sh->env, sh))
+					exec_no_fork(sh->execs, sh->env, sh);
+				else
+					execs(sh->execs, sh->env, sh);
 				while (copy->first != 1)
 					copy = copy->prev;
 				free_list(copy);
@@ -633,7 +656,10 @@ void				parsing_lexing_execution(t_sh *sh)
 		if (number == 1)
 		{
 			sh->execs = ft_tree_it(sh->list, NULL, 0);
-			execs(sh->execs, sh->env, sh);
+			if (check_if_builtin(sh->execs, sh->env, sh))
+				exec_no_fork(sh->execs, sh->env, sh);
+			else
+				execs(sh->execs, sh->env, sh);
 		}
 	}
 	free_list(sh->list);

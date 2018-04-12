@@ -144,6 +144,8 @@ int				check_left_right(char *input, t_parsing *data)
 		ft_strdel(&tmp1);
 		return (0);
 	}
+	if (ft_strchr(OPERATOR, tmp[0]))
+		return (0);
 	if (input[data->subber] == '\0')
 		data->wordsize = ft_strlen(tmp);
 	ft_strdel(&tmp);
@@ -172,9 +174,7 @@ void			link_nodes(char *input, t_lexit **list, t_parsing *data)
 
 	tmp = *list;
 	data->index--;
-	ft_putendl(input);
 	content = ft_strsub(input, data->anex, data->check);
-	ft_putendl(content);
 	data->anex = data->index + 1;
 	if (!tmp)
 	{

@@ -19,5 +19,4 @@ void			ft_echo(t_lexit *list)
 		if (ft_strcmp(list->args[1], "-n") != 0)
 			write(1, "\n", 1);
 	}
-	exit(0);
 }

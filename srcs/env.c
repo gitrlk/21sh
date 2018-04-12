@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/11 15:35:52 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/13 01:13:31 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,5 +198,4 @@ void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
 	}
 	if (new_env)
 		free_env(new_env);
-	exit (0);
 }
