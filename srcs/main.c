@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/13 04:00:31 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/13 04:11:06 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int				get_prio(char *str, char **command, char **apaths)
 		return (AND_OR);
 	else if (!ft_strcmp(str, "|"))
 		return (PIPE);
-	else if ((path = find_cmd(apaths, str)) || !ft_strcmp(str, "cd") || !ft_strcmp(str, "env") || !ft_strcmp(str, "echo"))
+	else if ((path = find_cmd(apaths, str)) || !ft_strcmp(str, "cd") || !ft_strcmp(str, "env") || !ft_strcmp(str, "echo") || !ft_strcmp(str, "exit"))
 	{
 		if (path)
 		{
@@ -377,11 +377,6 @@ void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
 		do_pipes(list, env, sh);
 	if (list->prio == HEREDOC)
 		do_heredoc(list);
-	// if (list->prio == ARG && ft_strcmp(list->args[0], "exit"))
-	// {
-	// 	ft_errors(6, NULL, list->args[0]);
-	// 	exit (0);
-	// }
 	if (list->left)
 		execs_deep(list->left, env, sh);
 	if (list->prio == COMMAND)
@@ -609,7 +604,7 @@ int				get_execs(t_sh *sh)
 			}
 			else
 			{
-				copy->next = copy_segment(sh , tmp);
+				copy->next = copy_segment(sh, tmp);
 				copy->next->first = 0;
 				copy->next->prev = copy;
 				copy = copy->next;
@@ -695,8 +690,6 @@ void				ft_21sh(t_sh *sh, t_norm *values)
 	ft_add_history(sh->line); //add line to history
 	if (ft_strequ(sh->line->line, "clear"))
 		tputs(tgetstr("cl", NULL), 1, ft_pointchar);
-	if (ft_strequ(sh->line->line, "exit"))
-		exit(0);
 	ft_line_reset(sh->line);
 }
 
