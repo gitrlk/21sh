@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/13 01:13:31 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/13 14:50:07 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,14 +163,20 @@ void			ft_empty_env(t_env **env, int *i)
 void			update_list(t_lexit *list, int i, t_env *env)
 {
 	char		**apaths;
+	char		**tmp;
 
 	apaths = ft_set_paths(env);
 	ft_strdel(&list->input);
 	ft_strdel(&list->command);
 	list->input = ft_strdup(list->args[i]);
-	list->args = list->args + i;
+
+	tmp = copypasta(list->args, i);
+	ft_freetab(list->args);
+	list->args = copypasta(tmp, 0);
+	ft_freetab(tmp);
 	list->prio = get_prio(list->args[0], &list->command, apaths);
-	ft_freetab(apaths);
+	if (apaths)
+		ft_freetab(apaths);
 }
 
 void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
@@ -191,7 +197,12 @@ void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
 		if (list->args[i])
 		{
 			update_list(list, i, new_env);
-			execs(list, new_env, sh);
+			if (check_if_builtin(list, new_env, sh))
+				exec_no_fork(list, new_env, sh);
+			else if (list->prio != ARG)
+				execs(sh->execs, sh->env, sh);
+			else
+				ft_errors(7, NULL, sh->execs->args[0]);
 		}
 		else
 			ft_print_env(new_env);

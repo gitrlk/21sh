@@ -1,48 +1,4 @@
-#include "../includes/sh.h"
-
-void		ft_lst_add_tenv(t_env **alst, t_env *new)
-{
-	t_env	*lst;
-
-	lst = *alst;
-	if (lst == NULL)
-	{
-		*alst = new;
-	}
-	else
-	{
-		while (lst->next != NULL)
-			lst = lst->next;
-		lst->next = new;
-	}
-}
-
-int			ft_modify_tenv(t_env **venv, char *new, char *contents)
-{
-	t_env	*tmp;
-	char	*buf;
-	t_env	*tmpp;
-
-	tmp = *venv;
-	buf = ft_strjoin(new, contents);
-	while (tmp)
-	{
-		if (!ft_strncmp(tmp->var, new, ft_strlen(new)))
-		{
-			free(tmp->var);
-			tmp->var = ft_strdup(buf);
-			ft_strdel(&buf);
-			return (1);
-		}
-		tmp = tmp->next;
-	}
-	if (!(tmpp = ft_memalloc(sizeof(t_env))))
-		ft_putendl_fd("Malloc Failed", 2);
-	tmpp->var = ft_strdup(buf);
-	ft_lst_add_tenv(venv, tmpp);
-	ft_strdel(&buf);
-	return (0);
-}
+#include "sh.h"
 
 int			find_t_env_str(char *venv, char *str)
 {

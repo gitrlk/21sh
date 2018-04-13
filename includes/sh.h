@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/13 01:00:23 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/13 14:15:32 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,6 +211,15 @@ void				execs(t_lexit *list, t_env *env, t_sh *sh);
 int				get_prio(char *str, char **command, char **apaths);
 void			ft_echo(t_lexit *list);
 void 			ft_cd(char **args, t_env **env);
+void        exec_unsetenv(char **commands, t_env **venv);
+void exec_setenv(char **cmd, t_env **env);
+int            ft_modify_tenv(t_env **venv, char *new, char *contents);
+int            find_t_env(t_env **venv, char *commands);
+void        ft_lst_add_tenv(t_env **alst, t_env *new);
+int            find_t_env_array(char *env, char *search);
+void        ft_lst_add_tenv(t_env **alst, t_env *new);
+void				exec_no_fork(t_lexit *list, t_env *env, t_sh *sh);
+int				check_if_builtin(t_lexit *list, t_env *env, t_sh *sh);
 
 
 

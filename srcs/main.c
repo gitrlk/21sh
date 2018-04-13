@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/13 04:29:37 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/13 14:46:53 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int				get_prio(char *str, char **command, char **apaths)
 		return (AND_OR);
 	else if (!ft_strcmp(str, "|"))
 		return (PIPE);
-	else if ((path = find_cmd(apaths, str)) || !ft_strcmp(str, "cd") || !ft_strcmp(str, "env") || !ft_strcmp(str, "echo") || !ft_strcmp(str, "exit"))
+	else if ((path = find_cmd(apaths, str)) || !ft_strcmp(str, "cd") || !ft_strcmp(str, "env") || !ft_strcmp(str, "echo") || !ft_strcmp(str, "exit") ||  !ft_strcmp(str, "setenv") || !ft_strcmp(str, "unset"))
 	{
 		if (path)
 		{
@@ -120,6 +120,7 @@ t_lexit			*add_node(char *input, t_env *env)
 	tmp->args = ft_prep_input(input);
 	tmp->redirs = NULL;
 	tmp->checker = 0;
+	tmp->command = NULL;
 
 	//
 	// update env si necessaire
@@ -326,7 +327,7 @@ int				check_if_builtin(t_lexit *list, t_env *env, t_sh *sh)
 	{
 		if (list->args && (!ft_strcmp(list->args[0], "env") ||
 		 !ft_strcmp(list->args[0], "echo") ||
-		  !ft_strcmp(list->args[0], "cd") || !ft_strcmp(list->args[0], "exit")))
+		  !ft_strcmp(list->args[0], "cd") || !ft_strcmp(list->args[0], "exit") || !ft_strcmp(list->args[0], "setenv") || !ft_strcmp(list->args[0], "unset")))
 			return (1);
 		return (0);
 	}
@@ -348,6 +349,10 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 			ft_echo(list);
 		else if (!ft_strcmp(list->args[0], "cd"))
 			ft_cd(list->args, &env);
+		else if (!ft_strcmp(list->args[0], "setenv"))
+			exec_setenv((list->args + 1), &env);
+		else if (!ft_strcmp(list->args[0], "unset"))
+			exec_unsetenv((list->args + 1), &env);
 		else if (!ft_strcmp(list->args[0], "exit"))
 			exit (0);
 		if (mod)
@@ -364,7 +369,10 @@ void				do_heredoc(t_lexit *list)
 	O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
 		ft_errors(5, NULL, list->redirs->right_target);
 	else
+	{
 		ft_putendl_fd(list->left->redirs->follow_up[0], ret);
+	}
+	ft_putendl_fd(list->left->redirs->follow_up[0], ret);
 	ft_putendl(list->left->redirs->endoff);
 	ft_putendl(list->left->redirs->follow_up[0]);
 }
@@ -493,14 +501,14 @@ void				get_last_redir(t_lexit *node)
 	node->prev->redirs->follow_up = NULL;
 	while (tmp && (tmp->prio != SEMICOLON && tmp->prio != AND_OR && tmp->prio != PIPE && tmp->prio != COMMAND))
 	{
-		if (tmp->next && ((tmp->prio == REDIR_R || tmp->prio == REDIR_RR) && tmp->next->prio == ARG))
+		if (tmp->next && ((tmp->prio == REDIR_R || tmp->prio == REDIR_RR)))
 		{
 			node->prev->redirs->redir_right = tmp->prio == REDIR_R ? 1 : 2;
 			if (node->prev->redirs->right_target)
 				ft_strdel(&node->prev->redirs->right_target);
 			node->prev->redirs->right_target = ft_strdup(tmp->next->input);
 		}
-		if (tmp->next && ((tmp->prio == REDIR_L || tmp->prio == HEREDOC) && tmp->next->prio == ARG))
+		if (tmp->next && ((tmp->prio == REDIR_L || tmp->prio == HEREDOC)))
 		{
 			node->prev->redirs->redir_left = tmp->prio == REDIR_L ? 1 : 2;
 			if (tmp->prio == HEREDOC)
@@ -665,12 +673,15 @@ void				parsing_lexing_execution(t_sh *sh)
 		if (number == 1)
 		{
 			sh->execs = ft_tree_it(sh->list, NULL, 0);
-			if (check_if_builtin(sh->execs, sh->env, sh))
-				exec_no_fork(sh->execs, sh->env, sh);
-			else if (sh->execs->prio != ARG)
-				execs(sh->execs, sh->env, sh);
-			// else
-			// 	ft_errors(6, NULL, sh->execs->args[0]);
+			if (sh->execs->args)
+			{
+				if (check_if_builtin(sh->execs, sh->env, sh))
+					exec_no_fork(sh->execs, sh->env, sh);
+				else if (sh->execs->prio != ARG)
+					execs(sh->execs, sh->env, sh);
+				else
+					ft_errors(6, NULL, sh->execs->args[0]);
+			}
 		}
 	}
 	free_list(sh->list);

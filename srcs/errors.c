@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:00 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/13 03:34:05 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/13 14:17:43 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,12 @@ int 			ft_errors(int code, char *cmd, char *arg)
 	if (code == 6)
 	{
 		ft_putstr_fd("21sh: command not found: ", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putchar('\n');
+	}
+	if (code == 7)
+	{
+		ft_putstr_fd("env: command not found: ", 2);
 		ft_putstr_fd(arg, 2);
 		ft_putchar('\n');
 	}

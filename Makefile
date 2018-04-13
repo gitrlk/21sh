@@ -6,7 +6,7 @@
 #    By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/04/19 14:14:34 by jecarol           #+#    #+#              #
-#    Updated: 2018/04/13 01:00:54 by rlkcmptr         ###   ########.fr        #
+#    Updated: 2018/04/13 13:36:56 by jecarol          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 NAME = 21sh
@@ -14,7 +14,7 @@ NAME = 21sh
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
 
-SRCS_LIST = main.c line_movement.c line_editing.c copy_paste.c term.c line_edit2.c env.c history.c tokenizer.c parsing.c freesets.c execution.c path_mngmnt.c errors.c echo.c cd.c
+SRCS_LIST = main.c line_movement.c line_editing.c copy_paste.c term.c line_edit2.c env.c history.c tokenizer.c parsing.c freesets.c execution.c path_mngmnt.c errors.c echo.c cd.c setenv.c unset.c
 
 SRCS_DIR = srcs/
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LIST))
