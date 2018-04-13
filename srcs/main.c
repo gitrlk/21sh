@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/13 04:11:06 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/13 04:29:37 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -338,6 +338,7 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 {
 	int				mod;
 
+	mod = 0;
 	mod = switch_fd(list, sh, &mod);
 	if (mod != -1)
 	{
@@ -614,7 +615,7 @@ int				get_execs(t_sh *sh)
 				sh->execs = ft_tree_it(head, NULL, 0);
 				if (check_if_builtin(sh->execs, sh->env, sh))
 					exec_no_fork(sh->execs, sh->env, sh);
-				else if (sh->execs->prio == COMMAND)
+				else if (sh->execs->prio != ARG)
 					execs(sh->execs, sh->env, sh);
 				else
 					ft_errors(6, NULL, sh->execs->args[0]);
@@ -632,7 +633,7 @@ int				get_execs(t_sh *sh)
 				sh->execs = ft_tree_it(head, NULL, 0);
 				if (check_if_builtin(sh->execs, sh->env, sh))
 					exec_no_fork(sh->execs, sh->env, sh);
-				else if (sh->execs->prio == COMMAND)
+				else if (sh->execs->prio != ARG)
 					execs(sh->execs, sh->env, sh);
 				else
 					ft_errors(6, NULL, sh->execs->args[0]);
@@ -666,10 +667,10 @@ void				parsing_lexing_execution(t_sh *sh)
 			sh->execs = ft_tree_it(sh->list, NULL, 0);
 			if (check_if_builtin(sh->execs, sh->env, sh))
 				exec_no_fork(sh->execs, sh->env, sh);
-			else if (sh->execs->prio == COMMAND)
+			else if (sh->execs->prio != ARG)
 				execs(sh->execs, sh->env, sh);
-			else
-				ft_errors(6, NULL, sh->execs->args[0]);
+			// else
+			// 	ft_errors(6, NULL, sh->execs->args[0]);
 		}
 	}
 	free_list(sh->list);
