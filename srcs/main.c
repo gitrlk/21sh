@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/13 14:46:53 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/13 19:40:39 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,14 @@ void				ft_print_tree(t_lexit *lexdat)
 	i = 1;
 	if (lexdat)
 	{
-		if (lexdat->left)
-			ft_print_tree(lexdat->left);
 		ft_putstr("CURRENT INPUT : ");
 		ft_putstr(lexdat->input);
 		ft_putchar('\n');
+		if (lexdat->left)
+			ft_print_tree(lexdat->left);
+		// ft_putstr("CURRENT INPUT : ");
+		// ft_putstr(lexdat->input);
+		// ft_putchar('\n');
 		if (lexdat->right)
 			ft_print_tree(lexdat->right);
 	}
@@ -296,7 +299,7 @@ void				execute_binary(t_lexit *list, t_env *env, t_sh *sh)
 	ft_freetab(newenv);
 }
 
-void				do_pipes(t_lexit *list, t_env *env, t_sh *sh)
+void				do_pipes(t_lexit *list, t_env *env, t_sh *sh, int buf)
 {
 	pid_t pipid;
 	int pipefd[2];
@@ -308,26 +311,26 @@ void				do_pipes(t_lexit *list, t_env *env, t_sh *sh)
 	{
 		dup2(pipefd[1], sh->fd.saved_out);
 		close(pipefd[0]);
-		execs_deep(list->left, env, sh);
+		execs_deep(list->left, env, sh, buf);
 	}
 	else
 	{
 		dup2(pipefd[0], sh->fd.saved_in);
 		close(pipefd[1]);
-		execs_deep(list->right, env, sh);
+		execs_deep(list->right, env, sh, buf);
 		waitpid(pipid, &status, 0);
 	}
 }
 
-int				check_if_builtin(t_lexit *list, t_env *env, t_sh *sh)
+int				check_if_builtin(t_lexit *list)
 {
-	(void)env;
-	(void)sh;
 	if (list)
 	{
 		if (list->args && (!ft_strcmp(list->args[0], "env") ||
 		 !ft_strcmp(list->args[0], "echo") ||
-		  !ft_strcmp(list->args[0], "cd") || !ft_strcmp(list->args[0], "exit") || !ft_strcmp(list->args[0], "setenv") || !ft_strcmp(list->args[0], "unset")))
+		  !ft_strcmp(list->args[0], "cd") || !ft_strcmp(list->args[0], "exit") ||
+		  !ft_strcmp(list->args[0], "setenv")
+		  || !ft_strcmp(list->args[0], "unset")))
 			return (1);
 		return (0);
 	}
@@ -335,7 +338,7 @@ int				check_if_builtin(t_lexit *list, t_env *env, t_sh *sh)
 		return (0);
 }
 
-void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
+void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh, int buf)
 {
 	int				mod;
 
@@ -344,7 +347,7 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 	if (mod != -1)
 	{
 		if (!ft_strcmp(list->args[0], "env"))
-			ft_env(list, env, sh);
+			ft_env(list, env, sh, buf);
 		else if (!ft_strcmp(list->args[0], "echo"))
 			ft_echo(list);
 		else if (!ft_strcmp(list->args[0], "cd"))
@@ -360,46 +363,79 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 	}
 }
 
-void				do_heredoc(t_lexit *list)
+void				do_heredoc(t_lexit *list, t_sh *sh, int buf)
 {
 	int				ret;
+	int				hd;
+	int				stop;
 
 	ret = 0;
-	if ((ret = open("/tmp/heredoc_fd", O_WRONLY |
-	O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
-		ft_errors(5, NULL, list->redirs->right_target);
-	else
-	{
-		ft_putendl_fd(list->left->redirs->follow_up[0], ret);
-	}
-	ft_putendl_fd(list->left->redirs->follow_up[0], ret);
-	ft_putendl(list->left->redirs->endoff);
-	ft_putendl(list->left->redirs->follow_up[0]);
+	hd = 0;
+	stop = 0;
+	// if (list->left && (list->left->prio == HEREDOC))
+	// 	do_heredoc(list->left, sh, buf);
+	// ft_putendl(list->left->redirs->endoff);
+	// if ((ret = open("/tmp/heredoc_fd", O_WRONLY |
+	// O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
+		// ft_errors(5, NULL, "heredoc error: couldn't create heredoc");
+	// else
+	// {
+		while (!stop)
+		{
+			ft_prompt(2);
+			ft_line_reset(sh->line);
+			while ((hd = read(0, &buf, sizeof(int))))
+			{
+				handle_key(buf, sh->line);
+				if (buf == '\n')
+					break ;
+				buf = 0;
+			}
+			if (list->redirs->follow_up)
+				while (list->redirs->follow_up[i])
+					i++;
+			list->redirs->follow_up[i] = ft_strdup(sh->line->line);
+			if (!ft_strcmp(sh->line->line, list->redirs->endoff))
+				stop = 1;
+			ft_putchar('\n');
+		}
+		if (list->left && (list->left->prio == HEREDOC))
+		{
+			do_heredoc(list->left, sh, buf);
+		}
+	// }
+	// ft_putendl_fd(list->left->redirs->follow_up[0], ret);
+	// ft_putendl(list->left->redirs->endoff);
+	// ft_putendl(list->left->redirs->follow_up[0]);
 }
 
-void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
+void				execs_deep(t_lexit *list, t_env *env, t_sh *sh, int buf)
 {
 	char			*tmp;
 
 	tmp = NULL;
 	if (list->prio == PIPE)
-		do_pipes(list, env, sh);
+		do_pipes(list, env, sh, buf);
 	if (list->prio == HEREDOC)
-		do_heredoc(list);
+	{
+		// if (list->left)
+		// 	ft_putstr();
+		do_heredoc(list, sh, buf);
+	}
 	if (list->left)
-		execs_deep(list->left, env, sh);
+		execs_deep(list->left, env, sh, buf);
 	if (list->prio == COMMAND)
 	{
-		if (check_if_builtin(list, env, sh))
-			execute_builtin(list, env, sh);
+		if (check_if_builtin(list))
+			execute_builtin(list, env, sh, buf);
 		else
 			execute_binary(list, env, sh);
 	}
 	if (list->right)
-		execs_deep(list->right, env, sh);
+		execs_deep(list->right, env, sh, buf);
 }
 
-void				execs(t_lexit *list, t_env *env, t_sh *sh)
+void				execs(t_lexit *list, t_env *env, t_sh *sh, int buf)
 {
 	if (list)
 	{
@@ -408,16 +444,16 @@ void				execs(t_lexit *list, t_env *env, t_sh *sh)
 		pid = fork();
 
 		if (pid == 0)
-			execs_deep(list, env, sh);
+			execs_deep(list, env, sh, buf);
 		else
 			waitpid(pid, &status, 0);
 	}
 }
 
-void				exec_no_fork(t_lexit *list, t_env *env, t_sh *sh)
+void				exec_no_fork(t_lexit *list, t_env *env, t_sh *sh, int buf)
 {
 	if (list)
-		execs_deep(list, env, sh);
+		execs_deep(list, env, sh, buf);
 }
 
 void				free_tree(t_lexit *lexdat)
@@ -476,14 +512,20 @@ void				free_list(t_lexit *list)
 	}
 }
 
-void				get_eof(t_lexit *node, t_lexit *target)
+void				get_eof(t_lexit *node)
 {
-	t_lexit		*tmp;
+	node->redirs = (t_redir *)malloc(sizeof(t_redir));
+	node->checker = 1;
+	node->redirs->redir_right = 0;
+	node->redirs->redir_left = 0;
+	node->redirs->right_target = NULL;
+	node->redirs->left_target = NULL;
+	node->redirs->endoff = NULL;
+	node->redirs->follow_up = NULL;
 
-	tmp = node;
-	target->redirs->endoff = ft_strdup(node->next->args[0]);
-	if (node->next->args[1])
-		target->redirs->follow_up = copypasta(node->next->args, 1);
+	node->redirs->endoff = ft_strdup(node->next->args[0]);
+	if (node->next->args && (node->next->args[1]))
+		node->redirs->follow_up = copypasta(node->next->args, 1);
 }
 
 void				get_last_redir(t_lexit *node)
@@ -512,10 +554,10 @@ void				get_last_redir(t_lexit *node)
 		{
 			node->prev->redirs->redir_left = tmp->prio == REDIR_L ? 1 : 2;
 			if (tmp->prio == HEREDOC)
-				get_eof(tmp, node->prev);
-			if (node->prev->redirs->left_target)
-				ft_strdel(&node->prev->redirs->left_target);
-			node->prev->redirs->left_target = ft_strdup(tmp->next->input);
+				get_eof(node);
+			if (node->redirs->left_target)
+				ft_strdel(&node->redirs->left_target);
+			node->redirs->left_target = ft_strdup(tmp->next->input);
 		}
 		tmp = tmp->next;
 	}
@@ -587,7 +629,7 @@ t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
 	return (dst);
 }
 
-int				get_execs(t_sh *sh)
+int				get_execs(t_sh *sh, int buf)
 {
 	t_lexit		*tmp;
 	t_lexit		*start;
@@ -621,10 +663,10 @@ int				get_execs(t_sh *sh)
 			if (tmp->next && tmp->next->prio == SEMICOLON)
 			{
 				sh->execs = ft_tree_it(head, NULL, 0);
-				if (check_if_builtin(sh->execs, sh->env, sh))
-					exec_no_fork(sh->execs, sh->env, sh);
+				if (check_if_builtin(sh->execs))
+					exec_no_fork(sh->execs, sh->env, sh, buf);
 				else if (sh->execs->prio != ARG)
-					execs(sh->execs, sh->env, sh);
+					execs(sh->execs, sh->env, sh, buf);
 				else
 					ft_errors(6, NULL, sh->execs->args[0]);
 				while (copy->first != 1)
@@ -639,10 +681,10 @@ int				get_execs(t_sh *sh)
 			if (tmp->prio != SEMICOLON && !tmp->next)
 			{
 				sh->execs = ft_tree_it(head, NULL, 0);
-				if (check_if_builtin(sh->execs, sh->env, sh))
-					exec_no_fork(sh->execs, sh->env, sh);
+				if (check_if_builtin(sh->execs))
+					exec_no_fork(sh->execs, sh->env, sh, buf);
 				else if (sh->execs->prio != ARG)
-					execs(sh->execs, sh->env, sh);
+					execs(sh->execs, sh->env, sh, buf);
 				else
 					ft_errors(6, NULL, sh->execs->args[0]);
 				while (copy->first != 1)
@@ -659,7 +701,7 @@ int				get_execs(t_sh *sh)
 	return (exec_number);
 }
 
-void				parsing_lexing_execution(t_sh *sh)
+void				parsing_lexing_execution(t_sh *sh, int buf)
 {
 	int			i;
 	int			number;
@@ -669,16 +711,17 @@ void				parsing_lexing_execution(t_sh *sh)
 	if(parsing_listing(&sh->list, sh->line->line, sh->env))
 	{
 		assign_redir(sh->list);
-		number = get_execs(sh);
+		number = get_execs(sh, buf);
 		if (number == 1)
 		{
 			sh->execs = ft_tree_it(sh->list, NULL, 0);
+			// ft_print_tree(sh->execs);
 			if (sh->execs->args)
 			{
-				if (check_if_builtin(sh->execs, sh->env, sh))
-					exec_no_fork(sh->execs, sh->env, sh);
+				if (check_if_builtin(sh->execs))
+					exec_no_fork(sh->execs, sh->env, sh, buf);
 				else if (sh->execs->prio != ARG)
-					execs(sh->execs, sh->env, sh);
+					execs(sh->execs, sh->env, sh, buf);
 				else
 					ft_errors(6, NULL, sh->execs->args[0]);
 			}
@@ -690,7 +733,7 @@ void				parsing_lexing_execution(t_sh *sh)
 
 void				ft_21sh(t_sh *sh, t_norm *values)
 {
-	ft_prompt();
+	ft_prompt(1);
 	while ((values->ret = read(0, &values->buf, sizeof(int))) &&
 	values->buf != '\n')
 	{
@@ -698,7 +741,7 @@ void				ft_21sh(t_sh *sh, t_norm *values)
 		values->buf = 0;
 	}
 	ft_putchar('\n');
-	parsing_lexing_execution(sh);
+	parsing_lexing_execution(sh, values->buf);
 	ft_add_history(sh->line); //add line to history
 	if (ft_strequ(sh->line->line, "clear"))
 		tputs(tgetstr("cl", NULL), 1, ft_pointchar);
