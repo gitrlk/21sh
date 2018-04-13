@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:00 by jecarol           #+#    #+#             */
-/*   Updated: 2018/03/31 19:35:13 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/13 03:34:05 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,12 @@ int 			ft_errors(int code, char *cmd, char *arg)
 	if (code == 5)
 	{
 		ft_putstr_fd("21sh: permission denied: ", 2);
+		ft_putstr_fd(arg, 2);
+		ft_putchar('\n');
+	}
+	if (code == 6)
+	{
+		ft_putstr_fd("21sh: command not found: ", 2);
 		ft_putstr_fd(arg, 2);
 		ft_putchar('\n');
 	}

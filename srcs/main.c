@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/13 01:17:17 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/13 04:00:31 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -324,7 +324,9 @@ int				check_if_builtin(t_lexit *list, t_env *env, t_sh *sh)
 	(void)sh;
 	if (list)
 	{
-		if (list->args && (!ft_strcmp(list->args[0], "env") || !ft_strcmp(list->args[0], "echo") || !ft_strcmp(list->args[0], "cd")))
+		if (list->args && (!ft_strcmp(list->args[0], "env") ||
+		 !ft_strcmp(list->args[0], "echo") ||
+		  !ft_strcmp(list->args[0], "cd") || !ft_strcmp(list->args[0], "exit")))
 			return (1);
 		return (0);
 	}
@@ -345,6 +347,8 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 			ft_echo(list);
 		else if (!ft_strcmp(list->args[0], "cd"))
 			ft_cd(list->args, &env);
+		else if (!ft_strcmp(list->args[0], "exit"))
+			exit (0);
 		if (mod)
 			reset_fd(sh, mod);
 	}
@@ -373,6 +377,11 @@ void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
 		do_pipes(list, env, sh);
 	if (list->prio == HEREDOC)
 		do_heredoc(list);
+	// if (list->prio == ARG && ft_strcmp(list->args[0], "exit"))
+	// {
+	// 	ft_errors(6, NULL, list->args[0]);
+	// 	exit (0);
+	// }
 	if (list->left)
 		execs_deep(list->left, env, sh);
 	if (list->prio == COMMAND)
@@ -610,8 +619,10 @@ int				get_execs(t_sh *sh)
 				sh->execs = ft_tree_it(head, NULL, 0);
 				if (check_if_builtin(sh->execs, sh->env, sh))
 					exec_no_fork(sh->execs, sh->env, sh);
-				else
+				else if (sh->execs->prio == COMMAND)
 					execs(sh->execs, sh->env, sh);
+				else
+					ft_errors(6, NULL, sh->execs->args[0]);
 				while (copy->first != 1)
 					copy = copy->prev;
 				free_list(copy);
@@ -626,8 +637,10 @@ int				get_execs(t_sh *sh)
 				sh->execs = ft_tree_it(head, NULL, 0);
 				if (check_if_builtin(sh->execs, sh->env, sh))
 					exec_no_fork(sh->execs, sh->env, sh);
-				else
+				else if (sh->execs->prio == COMMAND)
 					execs(sh->execs, sh->env, sh);
+				else
+					ft_errors(6, NULL, sh->execs->args[0]);
 				while (copy->first != 1)
 					copy = copy->prev;
 				free_list(copy);
@@ -658,8 +671,10 @@ void				parsing_lexing_execution(t_sh *sh)
 			sh->execs = ft_tree_it(sh->list, NULL, 0);
 			if (check_if_builtin(sh->execs, sh->env, sh))
 				exec_no_fork(sh->execs, sh->env, sh);
-			else
+			else if (sh->execs->prio == COMMAND)
 				execs(sh->execs, sh->env, sh);
+			else
+				ft_errors(6, NULL, sh->execs->args[0]);
 		}
 	}
 	free_list(sh->list);

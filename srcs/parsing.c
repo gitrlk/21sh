@@ -297,7 +297,7 @@ int				parsing_listing(t_lexit **list, char *input, t_env *env)
 				get_full_op(data, input);
 				if (data->ptr[0] != ';')
 					 if(!node_lro(input, list, data))
-						return (0);
+				 			return(ft_errors(1, &data->ptr[0], NULL));
 				if (data->ptr[0] == ';')
 				{
 					if (check_if_over(input, data))
