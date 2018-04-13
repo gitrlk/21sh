@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/13 19:40:39 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/13 19:43:46 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -368,10 +368,12 @@ void				do_heredoc(t_lexit *list, t_sh *sh, int buf)
 	int				ret;
 	int				hd;
 	int				stop;
+	int				i;
 
 	ret = 0;
 	hd = 0;
 	stop = 0;
+	i = 0;
 	// if (list->left && (list->left->prio == HEREDOC))
 	// 	do_heredoc(list->left, sh, buf);
 	// ft_putendl(list->left->redirs->endoff);
@@ -394,7 +396,7 @@ void				do_heredoc(t_lexit *list, t_sh *sh, int buf)
 			if (list->redirs->follow_up)
 				while (list->redirs->follow_up[i])
 					i++;
-			list->redirs->follow_up[i] = ft_strdup(sh->line->line);
+			list->redirs->follow_up[i++] = ft_strdup(sh->line->line);
 			if (!ft_strcmp(sh->line->line, list->redirs->endoff))
 				stop = 1;
 			ft_putchar('\n');
