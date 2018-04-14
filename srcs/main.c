@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 00:05:36 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/15 00:57:41 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,9 @@ int				get_prio(char *str, char **command, char **apaths)
 		return (AND_OR);
 	else if (!ft_strcmp(str, "|"))
 		return (PIPE);
-	else if ((path = find_cmd(apaths, str)) || !ft_strcmp(str, "cd") || !ft_strcmp(str, "env") || !ft_strcmp(str, "echo") || !ft_strcmp(str, "exit") ||  !ft_strcmp(str, "setenv") || !ft_strcmp(str, "unset"))
+	else if ((path = find_cmd(apaths, str)) || !ft_strcmp(str, "cd") ||
+	!ft_strcmp(str, "env") || !ft_strcmp(str, "echo") || !ft_strcmp(str, "exit")
+	||  !ft_strcmp(str, "setenv") || !ft_strcmp(str, "unset"))
 	{
 		if (path)
 		{
@@ -124,11 +126,6 @@ t_lexit			*add_node(char *input, t_env *env)
 	tmp->redirs = NULL;
 	tmp->checker = 0;
 	tmp->command = NULL;
-
-	//
-	// update env si necessaire
-	//
-
 	tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
 	ft_freetab(apaths);
 	return (tmp);
@@ -221,16 +218,13 @@ void				switch_in_out(t_sh *sh, int in_out)
 	}
 }
 
-int				switch_fd(t_lexit *list, t_sh *sh, int *mod)
+int				switch_right(t_lexit *list, t_sh *sh, int *mod)
 {
 	if (list->redirs && (list->redirs->redir_right == 2))
 	{
 		if ((sh->fd.saved_file = open(list->redirs->right_target, O_WRONLY |
 		O_APPEND | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
-		{
-			ft_errors(5, NULL, list->redirs->right_target);
 			return (-1);
-		}
 		else
 			switch_in_out(sh, 1);
 		*mod = 1;
@@ -239,21 +233,20 @@ int				switch_fd(t_lexit *list, t_sh *sh, int *mod)
 	{
 		if ((sh->fd.saved_file = open(list->redirs->right_target, O_WRONLY |
 		O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
-		{
-			ft_errors(5, NULL, list->redirs->right_target);
 			return (-1);
-		}
 		else
 			switch_in_out(sh, 1);
 		*mod = 1;
 	}
+	return (0);
+}
+
+int				switch_left(t_lexit *list, t_sh *sh, int *mod)
+{
 	if (list->redirs && (list->redirs->redir_left == 1))
 	{
 		if ((sh->fd.saved_file = open(list->redirs->left_target, O_RDONLY)) == -1)
-		{
-			ft_errors(4, NULL, list->redirs->left_target);
 			return (-1);
-		}
 		else
 			switch_in_out(sh, 2);
 		*mod = *mod == 0 ? 2 : 3;
@@ -261,14 +254,20 @@ int				switch_fd(t_lexit *list, t_sh *sh, int *mod)
 	if (list->redirs && (list->redirs->redir_left == 2))
 	{
 		if ((sh->fd.saved_file = open("/tmp/heredoc_fd", O_RDONLY)) == -1)
-		{
-			ft_errors(4, NULL, "heredoc error : couldn't open heredoc");
 			return (-1);
-		}
 		else
 			switch_in_out(sh, 2);
 		*mod = *mod == 0 ? 2 : 3;
 	}
+	return (0);
+}
+
+int				switch_fd(t_lexit *list, t_sh *sh, int *mod)
+{
+	if ((switch_right(list, sh, mod) == -1))
+		ft_errors(5, NULL, list->redirs->right_target);
+	if ((switch_left(list, sh, mod) == -1))
+		ft_errors(5, NULL, list->redirs->left_target);
 	return (*mod);
 }
 
@@ -779,10 +778,21 @@ void				cut_list(t_sh *sh, t_execs *igo)
 	}
 }
 
-int				free_igo(t_execs *igo)
+int				free_igo(t_execs *igo, int mod)
 {
-	free(igo);
-	return (1);
+	int			exec_number;
+
+	exec_number = igo->exec_number;
+	if (mod == 1)
+	{
+		free(igo);
+		return (1);
+	}
+	else
+	{
+		free(igo);
+		return (exec_number);
+	}
 }
 
 int				get_execs(t_sh *sh, int buf)
@@ -800,8 +810,10 @@ int				get_execs(t_sh *sh, int buf)
 				exec_last_segment(sh, igo, buf);
 			igo->tmp = igo->tmp->next;
 		}
+		return (free_igo(igo, 2));
 	}
-	return (free_igo(igo));
+	else
+		return (free_igo(igo, 1));
 }
 
 void				parsing_exing(t_sh *sh, int buf)
