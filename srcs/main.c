@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/14 02:35:29 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/14 16:45:33 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -258,6 +258,17 @@ int				switch_fd(t_lexit *list, t_sh *sh, int *mod)
 			switch_in_out(sh, 2);
 		*mod = *mod == 0 ? 2 : 3;
 	}
+	if (list->redirs && (list->redirs->redir_left == 2))
+	{
+		if ((sh->fd.saved_file = open("/tmp/heredoc_fd", O_RDONLY)) == -1)
+		{
+			ft_errors(4, NULL, "heredoc error : couldn't open heredoc");
+			return (-1);
+		}
+		else
+			switch_in_out(sh, 2);
+		*mod = *mod == 0 ? 2 : 3;
+	}
 	return (*mod);
 }
 
@@ -368,20 +379,19 @@ void				do_heredoc(t_lexit *list, t_sh *sh, int buf)
 	int				ret;
 	int				hd;
 	int				stop;
-	int				i;
+	char				*tmp;
 
 	ret = 0;
 	hd = 0;
 	stop = 0;
-	i = 0;
-	// if (list->left && (list->left->prio == HEREDOC))
-	// 	do_heredoc(list->left, sh, buf);
-	// ft_putendl(list->left->redirs->endoff);
-	// if ((ret = open("/tmp/heredoc_fd", O_WRONLY |
-	// O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
-		// ft_errors(5, NULL, "heredoc error: couldn't create heredoc");
-	// else
-	// {
+	tmp = NULL;
+	if (list->left && (list->left->prio == HEREDOC))
+		do_heredoc(list->left, sh, buf);
+	if ((ret = open("/tmp/heredoc_fd", O_WRONLY |
+	O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
+		ft_errors(5, NULL, "heredoc error: couldn't create heredoc");
+	else
+	{
 		while (!stop)
 		{
 			ft_prompt(2);
@@ -393,29 +403,39 @@ void				do_heredoc(t_lexit *list, t_sh *sh, int buf)
 					break ;
 				buf = 0;
 			}
-			if (list->redirs->follow_up)
-				while (list->redirs->follow_up[i])
-					i++;
-			list->redirs->follow_up[i++] = ft_strdup(sh->line->line);
-			if (!ft_strcmp(sh->line->line, list->redirs->endoff))
+			tmp = ft_strdup(sh->line->line);
+			if (ft_strcmp(tmp, list->redirs->endoff))
+			{
+				ft_putstr_fd(tmp, ret);
+				ft_putchar_fd('\n', ret);
+			}
+			// if (list->redirs->follow_up)
+			// 	while (list->redirs->follow_up[i])
+			// 		i++;
+			// list->redirs->follow_up[i] = ft_strdup(sh->line->line);
+			// ft_putstr("THIS IS FOLLOW UP : ");
+			// 	ft_putendl(list->redirs->follow_up[i]);
+			// ft_putstr("THIS IS END OF : ");
+			// ft_putendl(list->redirs->endoff);
+			if (!ft_strcmp(tmp, list->redirs->endoff))
+			{
+				ft_strdel(&list->redirs->endoff);
 				stop = 1;
+			}
+			ft_strdel(&tmp);
 			ft_putchar('\n');
 		}
-		if (list->left && (list->left->prio == HEREDOC))
-		{
-			do_heredoc(list->left, sh, buf);
-		}
+		// if (list->left && (list->left->prio == HEREDOC))
+		// 	do_heredoc(list->left, sh, buf);
 	// }
 	// ft_putendl_fd(list->left->redirs->follow_up[0], ret);
 	// ft_putendl(list->left->redirs->endoff);
 	// ft_putendl(list->left->redirs->follow_up[0]);
+	}
 }
 
 void				execs_deep(t_lexit *list, t_env *env, t_sh *sh, int buf)
 {
-	char			*tmp;
-
-	tmp = NULL;
 	if (list->prio == PIPE)
 		do_pipes(list, env, sh, buf);
 	if (list->prio == HEREDOC)
@@ -505,6 +525,8 @@ void				free_list(t_lexit *list)
 			{
 				ft_strdel(&tmp->redirs->left_target);
 				checker = 1;
+				if (tmp->redirs->redir_left == 2)
+					ft_strdel(&tmp->redirs->endoff);
 			}
 			if (tmp->checker && checker == 1)
 				free(tmp->redirs);
