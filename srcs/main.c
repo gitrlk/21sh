@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/14 16:45:33 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/14 20:46:34 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -385,8 +385,12 @@ void				do_heredoc(t_lexit *list, t_sh *sh, int buf)
 	hd = 0;
 	stop = 0;
 	tmp = NULL;
-	if (list->left && (list->left->prio == HEREDOC))
-		do_heredoc(list->left, sh, buf);
+	// if (list->left && (list->left->prio == HEREDOC))
+	// 	do_heredoc(list->left, sh, buf);
+	// ft_putstr("INPUT IS : ");
+	// ft_putendl(list->prev->input);
+	// ft_putstr("ENDOFF IS : ");
+	// ft_putendl(list->prev->redirs->endoff);
 	if ((ret = open("/tmp/heredoc_fd", O_WRONLY |
 	O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
 		ft_errors(5, NULL, "heredoc error: couldn't create heredoc");
@@ -438,12 +442,12 @@ void				execs_deep(t_lexit *list, t_env *env, t_sh *sh, int buf)
 {
 	if (list->prio == PIPE)
 		do_pipes(list, env, sh, buf);
-	if (list->prio == HEREDOC)
-	{
-		// if (list->left)
-		// 	ft_putstr();
-		do_heredoc(list, sh, buf);
-	}
+	// if (list->prio == HEREDOC)
+	// {
+	// 	// if (list->left)
+	// 	// 	ft_putstr();
+	// 	do_heredoc(list, sh, buf);
+	// }
 	if (list->left)
 		execs_deep(list->left, env, sh, buf);
 	if (list->prio == COMMAND)
@@ -536,7 +540,7 @@ void				free_list(t_lexit *list)
 	}
 }
 
-void				get_eof(t_lexit *node)
+void				get_eof(t_lexit *node, t_sh *sh, int buf)
 {
 	node->redirs = (t_redir *)malloc(sizeof(t_redir));
 	node->checker = 1;
@@ -548,11 +552,12 @@ void				get_eof(t_lexit *node)
 	node->redirs->follow_up = NULL;
 
 	node->redirs->endoff = ft_strdup(node->next->args[0]);
-	if (node->next->args && (node->next->args[1]))
-		node->redirs->follow_up = copypasta(node->next->args, 1);
+// if (node->next->args && (node->next->args[1]))
+//	node->redirs->follow_up = copypasta(node->next->args, 1);
+	do_heredoc(node, sh, buf);
 }
 
-void				get_last_redir(t_lexit *node)
+void				get_last_redir(t_lexit *node, t_sh *sh, int buf)
 {
 	t_lexit		*tmp;
 
@@ -578,7 +583,7 @@ void				get_last_redir(t_lexit *node)
 		{
 			node->prev->redirs->redir_left = tmp->prio == REDIR_L ? 1 : 2;
 			if (tmp->prio == HEREDOC)
-				get_eof(node);
+				get_eof(tmp, sh, buf);
 			if (node->prev->redirs->left_target)
 				ft_strdel(&node->prev->redirs->left_target);
 			node->prev->redirs->left_target = ft_strdup(tmp->next->input);
@@ -588,24 +593,24 @@ void				get_last_redir(t_lexit *node)
 }
 
 
-void				get_redir(t_lexit *node)
+void				get_redir(t_lexit *node, t_sh *sh, int buf)
 {
 	t_lexit		*tmp;
 
 	tmp = node;
 	if (tmp->next && (tmp->next->prio == REDIR_R || tmp->next->prio == REDIR_L || tmp->next->prio == REDIR_RR || tmp->next->prio == HEREDOC))
-		get_last_redir(tmp->next);
+		get_last_redir(tmp->next, sh, buf);
 }
 
-void				assign_redir(t_lexit *list)
+void				assign_redir(t_lexit *list, t_sh *sh, int buf)
 {
 	t_lexit 		*tmp;
 
 	tmp = list;
-	while (tmp)
+	while (tmp && tmp->prio != SEMICOLON)
 	{
 		if (tmp->prio == COMMAND)
-			get_redir(tmp);
+			get_redir(tmp, sh, buf);
 		tmp = tmp->next;
 	}
 }
@@ -619,6 +624,7 @@ int				check_semi(t_sh *sh, t_lexit *lst)
 	i = 0;
 	while (tmp)
 	{
+		ft_putendl(tmp->input);
 		if (tmp->prio == SEMICOLON)
 			return (1);
 		if (!tmp->next)
@@ -713,12 +719,14 @@ int				get_execs(t_sh *sh, int buf)
 	t_lexit		*start;
 	t_lexit		*copy;
 	t_lexit		*head;
+	t_lexit		*tmp2;
 	int			exec_number;
 
 	tmp = sh->list;
 	start = NULL;
 	copy = NULL;
 	head = NULL;
+	tmp2 = NULL;
 	exec_number = get_number(sh);
 	sh->execs = NULL;
 	if (check_semi(sh, tmp))
@@ -742,7 +750,9 @@ int				get_execs(t_sh *sh, int buf)
 			{
 				if (double_check(head))
 				{
+					assign_redir(head, sh, buf);
 					sh->execs = ft_tree_it(head, NULL, 0);
+					tmp2 = sh->execs;
 					if (check_if_builtin(sh->execs))
 						exec_no_fork(sh->execs, sh->env, sh, buf);
 					else if (sh->execs->prio != ARG)
@@ -763,6 +773,7 @@ int				get_execs(t_sh *sh, int buf)
 			{
 				if (double_check(head))
 				{
+					assign_redir(head, sh, buf);
 					sh->execs = ft_tree_it(head, NULL, 0);
 					if (check_if_builtin(sh->execs))
 						exec_no_fork(sh->execs, sh->env, sh, buf);
@@ -794,7 +805,7 @@ void				parsing_lexing_execution(t_sh *sh, int buf)
 	number = 0;
 	if(parsing_listing(&sh->list, sh->line->line, sh->env))
 	{
-		assign_redir(sh->list);
+		// assign_redir(sh->list);
 		number = get_execs(sh, buf);
 		if (number == 1)
 		{
@@ -802,6 +813,7 @@ void				parsing_lexing_execution(t_sh *sh, int buf)
 			{
 				if (double_check(sh->list))
 				{
+					assign_redir(sh->list, sh, buf);
 					sh->execs = ft_tree_it(sh->list, NULL, 0);
 					if (sh->execs->args)
 					{
