@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/13 17:15:26 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/15 00:02:27 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,9 +107,16 @@ typedef struct			s_redir
 	int					redir_left;
 	char					*left_target;
 	char					*endoff;
-	char					**follow_up;
+	// char					**follow_up;
 	struct s_redir		*next;
 }							t_redir;
+
+typedef struct			s_hdc
+{
+	int				ret_stop[2];
+	int				hd;
+	char				*tmp;
+}							t_hdc;
 
 typedef struct			s_parsing
 {
@@ -158,6 +165,15 @@ typedef struct			s_sh
 	t_fday				fd;
 }							t_sh;
 
+typedef struct			s_execs
+{
+	t_lexit		*tmp;
+	t_lexit		*start;
+	t_lexit		*copy;
+	t_lexit		*head;
+	t_lexit		*tmp2;
+	int			exec_number;
+}							t_execs;
 
 
 

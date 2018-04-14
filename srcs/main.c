@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/14 20:49:31 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/15 00:05:36 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -374,67 +374,53 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh, int buf)
 	}
 }
 
+void				heredoc_work(char *input, t_sh *sh, int *ret_stop, t_lexit *list)
+{
+	input = ft_strdup(sh->line->line);
+	if (ft_strcmp(input, list->redirs->endoff))
+	{
+		ft_putstr_fd(input, ret_stop[0]);
+		ft_putchar_fd('\n', ret_stop[0]);
+	}
+	if (!ft_strcmp(input, list->redirs->endoff))
+	{
+		ft_strdel(&list->redirs->endoff);
+		ret_stop[1] = 1;
+	}
+	ft_strdel(&input);
+	ft_putchar('\n');
+}
+
+void				init_valhd(t_hdc *valhd)
+{
+	valhd->ret_stop[0] = 0;
+	valhd->hd = 0;
+	valhd->ret_stop[1] = 0;
+	valhd->tmp = NULL;
+}
+
 void				do_heredoc(t_lexit *list, t_sh *sh, int buf)
 {
-	int				ret;
-	int				hd;
-	int				stop;
-	char				*tmp;
-
-	ret = 0;
-	hd = 0;
-	stop = 0;
-	tmp = NULL;
-	// if (list->left && (list->left->prio == HEREDOC))
-	// 	do_heredoc(list->left, sh, buf);
-	// ft_putstr("INPUT IS : ");
-	// ft_putendl(list->prev->input);
-	// ft_putstr("ENDOFF IS : ");
-	// ft_putendl(list->prev->redirs->endoff);
-	if ((ret = open("/tmp/heredoc_fd", O_WRONLY |
+	t_hdc			valhd;
+	init_valhd(&valhd);
+	if ((valhd.ret_stop[0] = open("/tmp/heredoc_fd", O_WRONLY |
 	O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
 		ft_errors(5, NULL, "heredoc error: couldn't create heredoc");
 	else
 	{
-		while (!stop)
+		while (!valhd.ret_stop[1])
 		{
 			ft_prompt(2);
 			ft_line_reset(sh->line);
-			while ((hd = read(0, &buf, sizeof(int))))
+			while ((valhd.hd = read(0, &buf, sizeof(int))))
 			{
 				handle_key(buf, sh->line);
 				if (buf == '\n')
 					break ;
 				buf = 0;
 			}
-			tmp = ft_strdup(sh->line->line);
-			if (ft_strcmp(tmp, list->redirs->endoff))
-			{
-				ft_putstr_fd(tmp, ret);
-				ft_putchar_fd('\n', ret);
-			}
-			// if (list->redirs->follow_up)
-			// 	while (list->redirs->follow_up[i])
-			// 		i++;
-			// list->redirs->follow_up[i] = ft_strdup(sh->line->line);
-			// ft_putstr("THIS IS FOLLOW UP : ");
-			// 	ft_putendl(list->redirs->follow_up[i]);
-			// ft_putstr("THIS IS END OF : ");
-			// ft_putendl(list->redirs->endoff);
-			if (!ft_strcmp(tmp, list->redirs->endoff))
-			{
-				ft_strdel(&list->redirs->endoff);
-				stop = 1;
-			}
-			ft_strdel(&tmp);
-			ft_putchar('\n');
+			heredoc_work(valhd.tmp, sh, valhd.ret_stop, list);
 		}
-		// if (list->left && (list->left->prio == HEREDOC))
-		// 	do_heredoc(list->left, sh, buf);
-	// }
-	// ft_putendl_fd(list->left->redirs->follow_up[0], ret);
-	// ft_putendl(list->left->redirs->endoff);
-	// ft_putendl(list->left->redirs->follow_up[0]);
 	}
 }
 
@@ -442,12 +428,6 @@ void				execs_deep(t_lexit *list, t_env *env, t_sh *sh, int buf)
 {
 	if (list->prio == PIPE)
 		do_pipes(list, env, sh, buf);
-	// if (list->prio == HEREDOC)
-	// {
-	// 	// if (list->left)
-	// 	// 	ft_putstr();
-	// 	do_heredoc(list, sh, buf);
-	// }
 	if (list->left)
 		execs_deep(list->left, env, sh, buf);
 	if (list->prio == COMMAND)
@@ -501,6 +481,28 @@ void				free_tree(t_lexit *lexdat)
 	}
 }
 
+void				clean_list(t_lexit *tmp, int *checker)
+{
+	if (tmp->input)
+		ft_strdel(&tmp->input);
+	if (tmp->args)
+		ft_freetab(tmp->args);
+	if (tmp->command)
+		ft_strdel(&tmp->command);
+	if (tmp->checker && tmp->redirs->right_target)
+	{
+		ft_strdel(&tmp->redirs->right_target);
+		*checker = 1;
+	}
+	if (tmp->checker && tmp->redirs->left_target)
+	{
+		ft_strdel(&tmp->redirs->left_target);
+		*checker = 1;
+		if (tmp->redirs->redir_left == 2)
+			ft_strdel(&tmp->redirs->endoff);
+	}
+}
+
 void				free_list(t_lexit *list)
 {
 	t_lexit		*tmp;
@@ -514,25 +516,7 @@ void				free_list(t_lexit *list)
 		{
 			tmp = list;
 			list = list->next;
-			if (tmp->input)
-				ft_strdel(&tmp->input);
-			if (tmp->args)
-				ft_freetab(tmp->args);
-			if (tmp->command)
-				ft_strdel(&tmp->command);
-			if (tmp->checker && tmp->redirs->right_target)
-			{
-				ft_strdel(&tmp->redirs->right_target);
-				checker = 1;
-			}
-			if (tmp->checker && tmp->redirs->left_target)
-			{
-				ft_strdel(&tmp->redirs->left_target);
-				checker = 1;
-				if (tmp->redirs->redir_left == 2)
-					ft_strdel(&tmp->redirs->endoff);
-			}
-			if (tmp->checker && checker == 1)
+			clean_list(tmp, &checker);
 				free(tmp->redirs);
 			if (tmp)
 				free(tmp);
@@ -549,12 +533,22 @@ void				get_eof(t_lexit *node, t_sh *sh, int buf)
 	node->redirs->right_target = NULL;
 	node->redirs->left_target = NULL;
 	node->redirs->endoff = NULL;
-	node->redirs->follow_up = NULL;
+	// node->redirs->follow_up = NULL;
 
 	node->redirs->endoff = ft_strdup(node->next->args[0]);
-// if (node->next->args && (node->next->args[1]))
-//	node->redirs->follow_up = copypasta(node->next->args, 1);
 	do_heredoc(node, sh, buf);
+}
+
+void				init_redirs(t_lexit *node)
+{
+	node->redirs = (t_redir *)malloc(sizeof(t_redir));
+	node->checker = 1;
+	node->redirs->redir_right = 0;
+	node->redirs->redir_left = 0;
+	node->redirs->right_target = NULL;
+	node->redirs->left_target = NULL;
+	node->redirs->endoff = NULL;
+	// node->redirs->follow_up = NULL;
 }
 
 void				get_last_redir(t_lexit *node, t_sh *sh, int buf)
@@ -562,15 +556,9 @@ void				get_last_redir(t_lexit *node, t_sh *sh, int buf)
 	t_lexit		*tmp;
 
 	tmp = node;
-	node->prev->redirs = (t_redir *)malloc(sizeof(t_redir));
-	node->prev->checker = 1;
-	node->prev->redirs->redir_right = 0;
-	node->prev->redirs->redir_left = 0;
-	node->prev->redirs->right_target = NULL;
-	node->prev->redirs->left_target = NULL;
-	node->prev->redirs->endoff = NULL;
-	node->prev->redirs->follow_up = NULL;
-	while (tmp && (tmp->prio != SEMICOLON && tmp->prio != AND_OR && tmp->prio != PIPE && tmp->prio != COMMAND))
+	init_redirs(node->prev);
+	while (tmp && (tmp->prio != SEMICOLON && tmp->prio != AND_OR && tmp->prio !=
+	PIPE && tmp->prio != COMMAND))
 	{
 		if (tmp->next && ((tmp->prio == REDIR_R || tmp->prio == REDIR_RR)))
 		{
@@ -598,7 +586,8 @@ void				get_redir(t_lexit *node, t_sh *sh, int buf)
 	t_lexit		*tmp;
 
 	tmp = node;
-	if (tmp->next && (tmp->next->prio == REDIR_R || tmp->next->prio == REDIR_L || tmp->next->prio == REDIR_RR || tmp->next->prio == HEREDOC))
+	if (tmp->next && (tmp->next->prio == REDIR_R || tmp->next->prio == REDIR_L ||
+	tmp->next->prio == REDIR_RR || tmp->next->prio == HEREDOC))
 		get_last_redir(tmp->next, sh, buf);
 }
 
@@ -661,7 +650,9 @@ t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
 int					check_pipe(t_lexit *node)
 {
 	if (node->prev->prio != COMMAND || node->next->prio != COMMAND)
-		return (node->prev->prio != COMMAND ? ft_errors(6, NULL, node->prev->args[0]) : ft_errors(6, NULL, node->next->args[0]));
+		return (node->prev->prio != COMMAND ?
+		ft_errors(6, NULL, node->prev->args[0]) :
+		ft_errors(6, NULL, node->next->args[0]));
 	return (1);
 }
 
@@ -712,122 +703,133 @@ int 				double_check(t_lexit *lst)
 	return (0);
 }
 
-int				get_execs(t_sh *sh, int buf)
+void				execute(t_sh *sh, int buf)
 {
-	t_lexit		*tmp;
-	t_lexit		*start;
-	t_lexit		*copy;
-	t_lexit		*head;
-	t_lexit		*tmp2;
-	int			exec_number;
-
-	tmp = sh->list;
-	start = NULL;
-	copy = NULL;
-	head = NULL;
-	tmp2 = NULL;
-	exec_number = get_number(sh);
-	sh->execs = NULL;
-	if (check_semi(sh, tmp))
-	{
-		while (tmp)
-		{
-			if (!copy)
-			{
-				copy = copy_segment(sh, tmp);
-				copy->first = 1;
-				head = copy;
-			}
-			else
-			{
-				copy->next = copy_segment(sh, tmp);
-				copy->next->first = 0;
-				copy->next->prev = copy;
-				copy = copy->next;
-			}
-			if (tmp->next && tmp->next->prio == SEMICOLON)
-			{
-				if (double_check(head))
-				{
-					assign_redir(head, sh, buf);
-					sh->execs = ft_tree_it(head, NULL, 0);
-					tmp2 = sh->execs;
-					if (check_if_builtin(sh->execs))
-						exec_no_fork(sh->execs, sh->env, sh, buf);
-					else if (sh->execs->prio != ARG)
-						execs(sh->execs, sh->env, sh, buf);
-					else
-						ft_errors(6, NULL, sh->execs->args[0]);
-					while (copy->first != 1)
-						copy = copy->prev;
-					free_list(copy);
-					sh->execs = NULL;
-					copy = NULL;
-					head = NULL;
-					if (tmp->next)
-						tmp = tmp->next;
-				}
-			}
-			if (tmp->prio != SEMICOLON && !tmp->next)
-			{
-				if (double_check(head))
-				{
-					assign_redir(head, sh, buf);
-					sh->execs = ft_tree_it(head, NULL, 0);
-					if (check_if_builtin(sh->execs))
-						exec_no_fork(sh->execs, sh->env, sh, buf);
-					else if (sh->execs->prio != ARG)
-						execs(sh->execs, sh->env, sh, buf);
-					else
-						ft_errors(6, NULL, sh->execs->args[0]);
-					while (copy->first != 1)
-						copy = copy->prev;
-					free_list(copy);
-					copy = NULL;
-					sh->execs = NULL;
-				}
-			}
-			tmp = tmp->next;
-		}
-	}
+	if (check_if_builtin(sh->execs))
+		exec_no_fork(sh->execs, sh->env, sh, buf);
+	else if (sh->execs->prio != ARG)
+		execs(sh->execs, sh->env, sh, buf);
 	else
-		return (1);
-	return (exec_number);
+		ft_errors(6, NULL, sh->execs->args[0]);
 }
 
-void				parsing_lexing_execution(t_sh *sh, int buf)
+t_execs			*init_igo(t_sh *sh)
+{
+	t_execs		*igo;
+
+	igo = ft_memalloc(sizeof(t_execs));
+	igo->tmp = sh->list;
+	igo->start = NULL;
+	igo->copy = NULL;
+	igo->head = NULL;
+	igo->tmp2 = NULL;
+	igo->exec_number = get_number(sh);
+	sh->execs = NULL;
+	return (igo);
+}
+
+void				exec_segment(t_sh *sh, t_execs *igo, int buf)
+{
+	if (double_check(igo->head))
+	{
+		assign_redir(igo->head, sh, buf);
+		sh->execs = ft_tree_it(igo->head, NULL, 0);
+		igo->tmp2 = sh->execs;
+		execute(sh, buf);
+		while (igo->copy->first != 1)
+			igo->copy = igo->copy->prev;
+		free_list(igo->copy);
+		sh->execs = NULL;
+		igo->copy = NULL;
+		igo->head = NULL;
+		if (igo->tmp->next)
+			igo->tmp = igo->tmp->next;
+	}
+}
+
+void				exec_last_segment(t_sh *sh, t_execs *igo, int buf)
+{
+	if (double_check(igo->head))
+	{
+		assign_redir(igo->head, sh, buf);
+		sh->execs = ft_tree_it(igo->head, NULL, 0);
+		execute(sh, buf);
+		while (igo->copy->first != 1)
+			igo->copy = igo->copy->prev;
+		free_list(igo->copy);
+		igo->copy = NULL;
+		sh->execs = NULL;
+	}
+}
+
+void				cut_list(t_sh *sh, t_execs *igo)
+{
+	if (!igo->copy)
+	{
+		igo->copy = copy_segment(sh, igo->tmp);
+		igo->copy->first = 1;
+		igo->head = igo->copy;
+	}
+	else
+	{
+		igo->copy->next = copy_segment(sh, igo->tmp);
+		igo->copy->next->first = 0;
+		igo->copy->next->prev = igo->copy;
+		igo->copy = igo->copy->next;
+	}
+}
+
+int				free_igo(t_execs *igo)
+{
+	free(igo);
+	return (1);
+}
+
+int				get_execs(t_sh *sh, int buf)
+{
+	t_execs		*igo;
+	igo = init_igo(sh);
+	if (check_semi(sh, igo->tmp))
+	{
+		while (igo->tmp)
+		{
+			cut_list(sh, igo);
+			if (igo->tmp->next && igo->tmp->next->prio == SEMICOLON)
+				exec_segment(sh, igo, buf);
+			if (igo->tmp->prio != SEMICOLON && !igo->tmp->next)
+				exec_last_segment(sh, igo, buf);
+			igo->tmp = igo->tmp->next;
+		}
+	}
+	return (free_igo(igo));
+}
+
+void				parsing_exing(t_sh *sh, int buf)
+{
+	if (double_check(sh->list))
+	{
+		assign_redir(sh->list, sh, buf);
+		sh->execs = ft_tree_it(sh->list, NULL, 0);
+		if (sh->execs->args)
+			execute(sh, buf);
+		free_list(sh->list);
+		sh->list = NULL;
+	}
+}
+
+void				p_l_x(t_sh *sh, int buf)
 {
 	int			i;
 	int			number;
 
 	i = 0;
 	number = 0;
-	if(parsing_listing(&sh->list, sh->line->line, sh->env))
+	if (parsing_listing(&sh->list, sh->line->line, sh->env))
 	{
-		// assign_redir(sh->list);
 		number = get_execs(sh, buf);
 		if (number == 1)
-		{
 			if (sh->list)
-			{
-				if (double_check(sh->list))
-				{
-					assign_redir(sh->list, sh, buf);
-					sh->execs = ft_tree_it(sh->list, NULL, 0);
-					if (sh->execs->args)
-					{
-						if (check_if_builtin(sh->execs))
-							exec_no_fork(sh->execs, sh->env, sh, buf);
-						else if (sh->execs->prio != ARG)
-							execs(sh->execs, sh->env, sh, buf);
-						else
-							ft_errors(6, NULL, sh->execs->args[0]);
-					}
-					free_list(sh->list);
-					sh->list = NULL;
-				}
-			}
-		}
+				parsing_exing(sh, buf);
 	}
 	if (sh->list)
 	{
@@ -846,7 +848,7 @@ void				ft_21sh(t_sh *sh, t_norm *values)
 		values->buf = 0;
 	}
 	ft_putchar('\n');
-	parsing_lexing_execution(sh, values->buf);
+	p_l_x(sh, values->buf);
 	ft_add_history(sh->line); //add line to history
 	if (ft_strequ(sh->line->line, "clear"))
 		tputs(tgetstr("cl", NULL), 1, ft_pointchar);

@@ -216,18 +216,22 @@ int				check_if_over(char *input, t_parsing *data)
 {
 	char		*tmp;
 	char		*tmp1;
+	int		start;
 
 	tmp = NULL;
 	tmp1 = NULL;
+	start = 0;
 	if (input[data->index + 1] == '\0')
 		return (1);
+	else
+		start = data->index + 1;
 	data->subber = data->index;
 	while (data->subber < data->len)
 	{
 		data->subber++;
 		data->last++;
 	}
-	tmp1 = ft_strsub(input, data->index, data->last);
+	tmp1 = ft_strsub(input, start, data->last);
 	if (!ft_isstrprint(tmp = ft_strtrim(tmp1)))
 	{
 		ft_strdel(&tmp);
@@ -235,6 +239,9 @@ int				check_if_over(char *input, t_parsing *data)
 		data->last = 0;
 		return (1);
 	}
+	// ft_putstr("OUESHJ");
+	if (ft_strchr(OPERATOR, tmp[0]))
+		return (-1);
 	ft_strdel(&tmp);
 	ft_strdel(&tmp1);
 	data->last = 0;
@@ -246,6 +253,7 @@ void			last_node(t_lexit **list, char *input, t_parsing *data)
 	int		i;
 	int		j;
 	t_lexit	*tmp;
+	char		*tmpn;
 	char		*content;
 
 	tmp = *list;
@@ -258,10 +266,12 @@ void			last_node(t_lexit **list, char *input, t_parsing *data)
 		i--;
 		j++;
 	}
-	content = ft_strtrim(ft_strsub(input, i, j));
+	tmpn = ft_strsub(input, i, j);
+	content = ft_strtrim(tmpn);
 	if (!tmp)
 	{
 		*list = add_node(content, data->env);
+		ft_strdel(&tmpn);
 		ft_strdel(&content);
 		tmp = *list;
 	}
@@ -271,6 +281,7 @@ void			last_node(t_lexit **list, char *input, t_parsing *data)
 			tmp = tmp->next;
 		tmp->next = add_node(content, data->env);
 		ft_strdel(&content);
+		ft_strdel(&tmpn);
 		tmp->next->prev = tmp;
 	}
 }
@@ -280,7 +291,9 @@ int				parsing_listing(t_lexit **list, char *input, t_env *env)
 	t_parsing	*data;
 	t_lexit		*tmp;
 	char			*empty;
+	int			ret;
 
+	ret = 0;
 	tmp = *list;
 	data = init_data();
 	data->env = env;
@@ -302,9 +315,11 @@ int				parsing_listing(t_lexit **list, char *input, t_env *env)
 				 			return(ft_errors(1, &data->ptr[0], NULL));
 				if (data->ptr[0] == ';')
 				{
-					if (check_if_over(input, data))
+					if ((ret = check_if_over(input, data)) != -1)
 						last_node(list, input, data);
-					else
+					else if (ret == -1)
+						return (ft_errors(1, &data->ptr[0], NULL));
+					if (ret == 0)
 						node_lro(input, list, data);
 				}
 			}
