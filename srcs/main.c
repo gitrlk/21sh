@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/13 19:43:46 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/14 02:35:29 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -328,8 +328,8 @@ int				check_if_builtin(t_lexit *list)
 	{
 		if (list->args && (!ft_strcmp(list->args[0], "env") ||
 		 !ft_strcmp(list->args[0], "echo") ||
-		  !ft_strcmp(list->args[0], "cd") || !ft_strcmp(list->args[0], "exit") ||
-		  !ft_strcmp(list->args[0], "setenv")
+		  !ft_strcmp(list->args[0], "cd") || !ft_strcmp(list->args[0], "exit")
+		  || !ft_strcmp(list->args[0], "setenv")
 		  || !ft_strcmp(list->args[0], "unset")))
 			return (1);
 		return (0);
@@ -557,9 +557,9 @@ void				get_last_redir(t_lexit *node)
 			node->prev->redirs->redir_left = tmp->prio == REDIR_L ? 1 : 2;
 			if (tmp->prio == HEREDOC)
 				get_eof(node);
-			if (node->redirs->left_target)
-				ft_strdel(&node->redirs->left_target);
-			node->redirs->left_target = ft_strdup(tmp->next->input);
+			if (node->prev->redirs->left_target)
+				ft_strdel(&node->prev->redirs->left_target);
+			node->prev->redirs->left_target = ft_strdup(tmp->next->input);
 		}
 		tmp = tmp->next;
 	}
@@ -631,6 +631,60 @@ t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
 	return (dst);
 }
 
+int					check_pipe(t_lexit *node)
+{
+	if (node->prev->prio != COMMAND || node->next->prio != COMMAND)
+		return (node->prev->prio != COMMAND ? ft_errors(6, NULL, node->prev->args[0]) : ft_errors(6, NULL, node->next->args[0]));
+	return (1);
+}
+
+int					check_redirr(t_lexit *node, int *checker)
+{
+	if (*checker == 0)
+	{
+		if (node->prev->prio != COMMAND)
+			return (ft_errors(6, NULL, node->prev->args[0]));
+		else
+			*checker = 1;
+	}
+	return (1);
+}
+
+int					check_redirl(t_lexit *node)
+{
+	if ((open(node->next->args[0], O_RDONLY)) == -1)
+		return(ft_errors(4, NULL, node->next->args[0]));
+	return (1);
+}
+
+int 				double_check(t_lexit *lst)
+{
+	int checker;
+	t_lexit *tmp;
+
+	checker = 0;
+	tmp = lst;
+	if (tmp)
+	{
+		while(tmp)
+		{
+			if (tmp->prio == PIPE)
+				if (!check_pipe(tmp))
+					return (0);
+			if (tmp->prio == REDIR_R || tmp->prio == REDIR_RR)
+				if (!check_redirr(tmp, &checker))
+					break ;
+			if (tmp->prio == REDIR_L)
+				if (!check_redirl(tmp))
+					break ;
+			tmp = tmp->next;
+		}
+		if (!tmp)
+			return (1);
+	}
+	return (0);
+}
+
 int				get_execs(t_sh *sh, int buf)
 {
 	t_lexit		*tmp;
@@ -664,36 +718,42 @@ int				get_execs(t_sh *sh, int buf)
 			}
 			if (tmp->next && tmp->next->prio == SEMICOLON)
 			{
-				sh->execs = ft_tree_it(head, NULL, 0);
-				if (check_if_builtin(sh->execs))
-					exec_no_fork(sh->execs, sh->env, sh, buf);
-				else if (sh->execs->prio != ARG)
-					execs(sh->execs, sh->env, sh, buf);
-				else
-					ft_errors(6, NULL, sh->execs->args[0]);
-				while (copy->first != 1)
-					copy = copy->prev;
-				free_list(copy);
-				sh->execs = NULL;
-				copy = NULL;
-				head = NULL;
-				if (tmp->next)
-					tmp = tmp->next;
+				if (double_check(head))
+				{
+					sh->execs = ft_tree_it(head, NULL, 0);
+					if (check_if_builtin(sh->execs))
+						exec_no_fork(sh->execs, sh->env, sh, buf);
+					else if (sh->execs->prio != ARG)
+						execs(sh->execs, sh->env, sh, buf);
+					else
+						ft_errors(6, NULL, sh->execs->args[0]);
+					while (copy->first != 1)
+						copy = copy->prev;
+					free_list(copy);
+					sh->execs = NULL;
+					copy = NULL;
+					head = NULL;
+					if (tmp->next)
+						tmp = tmp->next;
+				}
 			}
 			if (tmp->prio != SEMICOLON && !tmp->next)
 			{
-				sh->execs = ft_tree_it(head, NULL, 0);
-				if (check_if_builtin(sh->execs))
-					exec_no_fork(sh->execs, sh->env, sh, buf);
-				else if (sh->execs->prio != ARG)
-					execs(sh->execs, sh->env, sh, buf);
-				else
-					ft_errors(6, NULL, sh->execs->args[0]);
-				while (copy->first != 1)
-					copy = copy->prev;
-				free_list(copy);
-				copy = NULL;
-				sh->execs = NULL;
+				if (double_check(head))
+				{
+					sh->execs = ft_tree_it(head, NULL, 0);
+					if (check_if_builtin(sh->execs))
+						exec_no_fork(sh->execs, sh->env, sh, buf);
+					else if (sh->execs->prio != ARG)
+						execs(sh->execs, sh->env, sh, buf);
+					else
+						ft_errors(6, NULL, sh->execs->args[0]);
+					while (copy->first != 1)
+						copy = copy->prev;
+					free_list(copy);
+					copy = NULL;
+					sh->execs = NULL;
+				}
 			}
 			tmp = tmp->next;
 		}
@@ -716,21 +776,31 @@ void				parsing_lexing_execution(t_sh *sh, int buf)
 		number = get_execs(sh, buf);
 		if (number == 1)
 		{
-			sh->execs = ft_tree_it(sh->list, NULL, 0);
-			// ft_print_tree(sh->execs);
-			if (sh->execs->args)
+			if (sh->list)
 			{
-				if (check_if_builtin(sh->execs))
-					exec_no_fork(sh->execs, sh->env, sh, buf);
-				else if (sh->execs->prio != ARG)
-					execs(sh->execs, sh->env, sh, buf);
-				else
-					ft_errors(6, NULL, sh->execs->args[0]);
+				if (double_check(sh->list))
+				{
+					sh->execs = ft_tree_it(sh->list, NULL, 0);
+					if (sh->execs->args)
+					{
+						if (check_if_builtin(sh->execs))
+							exec_no_fork(sh->execs, sh->env, sh, buf);
+						else if (sh->execs->prio != ARG)
+							execs(sh->execs, sh->env, sh, buf);
+						else
+							ft_errors(6, NULL, sh->execs->args[0]);
+					}
+					free_list(sh->list);
+					sh->list = NULL;
+				}
 			}
 		}
 	}
-	free_list(sh->list);
-	sh->list = NULL;
+	if (sh->list)
+	{
+		free_list(sh->list);
+		sh->list = NULL;
+	}
 }
 
 void				ft_21sh(t_sh *sh, t_norm *values)

@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:00 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/13 14:17:43 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/14 02:29:46 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ int 			ft_errors(int code, char *cmd, char *arg)
 		ft_putstr_fd("21sh: no such file or directory: ", 2);
 		ft_putstr_fd(arg, 2);
 		ft_putchar('\n');
+		return (0);
 	}
 	if (code == 5)
 	{
@@ -52,6 +53,7 @@ int 			ft_errors(int code, char *cmd, char *arg)
 		ft_putstr_fd("21sh: command not found: ", 2);
 		ft_putstr_fd(arg, 2);
 		ft_putchar('\n');
+		return (0);
 	}
 	if (code == 7)
 	{
