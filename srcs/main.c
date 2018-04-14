@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/14 20:46:34 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/14 20:49:31 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -624,7 +624,6 @@ int				check_semi(t_sh *sh, t_lexit *lst)
 	i = 0;
 	while (tmp)
 	{
-		ft_putendl(tmp->input);
 		if (tmp->prio == SEMICOLON)
 			return (1);
 		if (!tmp->next)
