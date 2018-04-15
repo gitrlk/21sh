@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 03:32:44 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/15 14:05:12 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,14 +43,14 @@ void init_line_edit(t_edit *line)
 	line->is_highlight = ft_strnew(0);
 }
 
-void					init_structs(t_edit *line, t_norm *values, t_fday *fd)
+void					init_structs(t_edit *line, t_fday *fd)
 {
 	line->hstr = NULL;
 	ft_line_reset(line);
 	init_line_edit(line);
-	values->buf = 0;
-	values->i = 0;
-	values->ret = 0;
+	// values->buf = 0;
+	// values->i = 0;
+	// values->ret = 0;
 	fd->saved_in = STDIN_FILENO;
 	fd->saved_out = STDOUT_FILENO;
 	fd->saved_err = STDERR_FILENO;
@@ -140,7 +140,30 @@ t_lexit			*add_node(char *input, t_env *env)
 	return (tmp);
 }
 
-int				quote_checker(t_parsing *data, char *input)
+void			do_simple_quotes(char *input, t_sh *sh)
+{
+	int			ret_stop[2];
+
+	ret_stop[0] = 0;
+	ret_stop[1] = 0;
+	(void)input;
+	while (!ret_stop[1])
+	{
+		ft_prompt(3);
+		// ft_line_reset(sh->line);
+		while ((ret_stop[0] = read(0, &sh->buf, sizeof(int))))
+		{
+			handle_key(sh->buf, sh->line, 1);
+			if (sh->buf == '\n' || sh->buf == 3)
+				break ;
+			sh->buf = 0;
+		}
+		
+		// heredoc_work(valhd.tmp, sh, valhd.ret_stop, list, buf);
+	}
+}
+
+int				quote_checker(t_parsing *data, char *input, t_sh *sh)
 {
 	data->quote_checker = 0;
 	while (input[data->quote_checker])
@@ -152,8 +175,10 @@ int				quote_checker(t_parsing *data, char *input)
 		if (input[data->quote_checker + 1] == '\0')
 		{
 			if (data->simpleq % 2)
-				return (ft_errors(2, NULL, NULL));
+				do_simple_quotes(input, sh);
+				// return (ft_errors(2, NULL, NULL));
 			if (data->doubleq % 2)
+				// do_double_quotes();
 				return (ft_errors(3, NULL, NULL));
 		}
 		data->quote_checker++;
@@ -318,7 +343,7 @@ void				execute_binary(t_lexit *list, t_env *env, t_sh *sh)
 	ft_freetab(newenv);
 }
 
-void				do_pipes(t_lexit *list, t_env *env, t_sh *sh, int buf)
+void				do_pipes(t_lexit *list, t_env *env, t_sh *sh)
 {
 	pid_t pipid;
 	int pipefd[2];
@@ -330,13 +355,13 @@ void				do_pipes(t_lexit *list, t_env *env, t_sh *sh, int buf)
 	{
 		dup2(pipefd[1], sh->fd.saved_out);
 		close(pipefd[0]);
-		execs_deep(list->left, env, sh, buf);
+		execs_deep(list->left, env, sh);
 	}
 	else
 	{
 		dup2(pipefd[0], sh->fd.saved_in);
 		close(pipefd[1]);
-		execs_deep(list->right, env, sh, buf);
+		execs_deep(list->right, env, sh);
 		waitpid(pipid, &status, 0);
 	}
 }
@@ -357,7 +382,7 @@ int				check_if_builtin(t_lexit *list)
 		return (0);
 }
 
-void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh, int buf)
+void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 {
 	int				mod;
 
@@ -366,7 +391,7 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh, int buf)
 	if (mod != -1)
 	{
 		if (!ft_strcmp(list->args[0], "env"))
-			ft_env(list, env, sh, buf);
+			ft_env(list, env, sh);
 		else if (!ft_strcmp(list->args[0], "echo"))
 			ft_echo(list);
 		else if (!ft_strcmp(list->args[0], "cd"))
@@ -382,30 +407,30 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh, int buf)
 	}
 }
 
-void				heredoc_work(char *i, t_sh *sh, int *ret, t_lexit *list, int buf)
+void				heredoc_work(t_sh *sh, t_lexit *list, t_hdc *valhd)
 {
-	i = ft_strdup(sh->line->line);
-	if (ft_strcmp(i, list->redirs->endoff) && (buf != 3))
+	valhd->tmp = ft_strdup(sh->line->line);
+	if (ft_strcmp(valhd->tmp, list->redirs->endoff) && (sh->buf != 3))
 	{
-		ft_putstr_fd(i, ret[0]);
-		ft_putchar_fd('\n', ret[0]);
+		ft_putstr_fd(valhd->tmp, valhd->ret_stop[0]);
+		ft_putchar_fd('\n', valhd->ret_stop[0]);
 	}
-	if (buf == 3)
+	if (sh->buf == 3)
 	{
-		close(ret[0]);
+		close(valhd->ret_stop[0]);
 		ft_strdel(&list->redirs->endoff);
-		ret[0] = open("/tmp/heredoc_fd",O_RDONLY | O_WRONLY | O_TRUNC);
-		close(ret[0]);
-		ret[1] = 1;
+		valhd->ret_stop[0] = open("/tmp/heredoc_fd",O_RDONLY | O_WRONLY | O_TRUNC);
+		close(valhd->ret_stop[0]);
+		valhd->ret_stop[1] = 1;
 		set_term_back();
 	}
-	else if (!ft_strcmp(i, list->redirs->endoff))
+	else if (!ft_strcmp(valhd->tmp, list->redirs->endoff))
 	{
 		ft_strdel(&list->redirs->endoff);
-		ret[1] = 1;
+		valhd->ret_stop[1] = 1;
 		set_term_back();
 	}
-	ft_strdel(&i);
+	ft_strdel(&valhd->tmp);
 	ft_putchar('\n');
 }
 
@@ -417,7 +442,7 @@ void				init_valhd(t_hdc *valhd)
 	valhd->tmp = NULL;
 }
 
-void				do_heredoc(t_lexit *list, t_sh *sh, int buf)
+void				do_heredoc(t_lexit *list, t_sh *sh)
 {
 	t_hdc			valhd;
 
@@ -432,36 +457,36 @@ void				do_heredoc(t_lexit *list, t_sh *sh, int buf)
 		{
 			ft_prompt(2);
 			ft_line_reset(sh->line);
-			while ((valhd.hd = read(0, &buf, sizeof(int))))
+			while ((valhd.hd = read(0, &sh->buf, sizeof(int))))
 			{
-				handle_key(buf, sh->line, 1);
-				if (buf == '\n' || buf == 3)
+				handle_key(sh->buf, sh->line, 1);
+				if (sh->buf == '\n' || sh->buf == 3)
 					break ;
-				buf = 0;
+				sh->buf = 0;
 			}
-			heredoc_work(valhd.tmp, sh, valhd.ret_stop, list, buf);
+			heredoc_work(sh, list, &valhd);
 		}
 	}
 }
 
-void				execs_deep(t_lexit *list, t_env *env, t_sh *sh, int buf)
+void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
 {
 	if (list->prio == PIPE)
-		do_pipes(list, env, sh, buf);
+		do_pipes(list, env, sh);
 	if (list->left)
-		execs_deep(list->left, env, sh, buf);
+		execs_deep(list->left, env, sh);
 	if (list->prio == COMMAND)
 	{
 		if (check_if_builtin(list))
-			execute_builtin(list, env, sh, buf);
+			execute_builtin(list, env, sh);
 		else
 			execute_binary(list, env, sh);
 	}
 	if (list->right)
-		execs_deep(list->right, env, sh, buf);
+		execs_deep(list->right, env, sh);
 }
 
-void				execs(t_lexit *list, t_env *env, t_sh *sh, int buf)
+void				execs(t_lexit *list, t_env *env, t_sh *sh)
 {
 	if (list)
 	{
@@ -470,16 +495,16 @@ void				execs(t_lexit *list, t_env *env, t_sh *sh, int buf)
 		pid = fork();
 
 		if (pid == 0)
-			execs_deep(list, env, sh, buf);
+			execs_deep(list, env, sh);
 		else
 			waitpid(pid, &status, 0);
 	}
 }
 
-void				exec_no_fork(t_lexit *list, t_env *env, t_sh *sh, int buf)
+void				exec_no_fork(t_lexit *list, t_env *env, t_sh *sh)
 {
 	if (list)
-		execs_deep(list, env, sh, buf);
+		execs_deep(list, env, sh);
 }
 
 void				free_tree(t_lexit *lexdat)
@@ -544,7 +569,7 @@ void				free_list(t_lexit *list)
 	}
 }
 
-void				get_eof(t_lexit *node, t_sh *sh, int buf)
+void				get_eof(t_lexit *node, t_sh *sh)
 {
 	node->redirs = (t_redir *)malloc(sizeof(t_redir));
 	node->checker = 1;
@@ -556,7 +581,7 @@ void				get_eof(t_lexit *node, t_sh *sh, int buf)
 	// node->redirs->follow_up = NULL;
 
 	node->redirs->endoff = ft_strdup(node->next->args[0]);
-	do_heredoc(node, sh, buf);
+	do_heredoc(node, sh);
 }
 
 void				init_redirs(t_lexit *node)
@@ -571,7 +596,7 @@ void				init_redirs(t_lexit *node)
 	// node->redirs->follow_up = NULL;
 }
 
-void				get_last_redir(t_lexit *node, t_sh *sh, int buf)
+void				get_last_redir(t_lexit *node, t_sh *sh)
 {
 	t_lexit		*tmp;
 
@@ -591,7 +616,7 @@ void				get_last_redir(t_lexit *node, t_sh *sh, int buf)
 		{
 			node->prev->redirs->redir_left = tmp->prio == REDIR_L ? 1 : 2;
 			if (tmp->prio == HEREDOC)
-				get_eof(tmp, sh, buf);
+				get_eof(tmp, sh);
 			if (node->prev->redirs->left_target)
 				ft_strdel(&node->prev->redirs->left_target);
 			node->prev->redirs->left_target = ft_strdup(tmp->next->input);
@@ -601,17 +626,17 @@ void				get_last_redir(t_lexit *node, t_sh *sh, int buf)
 }
 
 
-void				get_redir(t_lexit *node, t_sh *sh, int buf)
+void				get_redir(t_lexit *node, t_sh *sh)
 {
 	t_lexit		*tmp;
 
 	tmp = node;
 	if (tmp->next && (tmp->next->prio == REDIR_R || tmp->next->prio == REDIR_L ||
 	tmp->next->prio == REDIR_RR || tmp->next->prio == HEREDOC))
-		get_last_redir(tmp->next, sh, buf);
+		get_last_redir(tmp->next, sh);
 }
 
-void				assign_redir(t_lexit *list, t_sh *sh, int buf)
+void				assign_redir(t_lexit *list, t_sh *sh)
 {
 	t_lexit 		*tmp;
 
@@ -619,7 +644,7 @@ void				assign_redir(t_lexit *list, t_sh *sh, int buf)
 	while (tmp && tmp->prio != SEMICOLON)
 	{
 		if (tmp->prio == COMMAND)
-			get_redir(tmp, sh, buf);
+			get_redir(tmp, sh);
 		tmp = tmp->next;
 	}
 }
@@ -720,12 +745,12 @@ int 				double_check(t_lexit *lst)
 	return (0);
 }
 
-void				execute(t_sh *sh, int buf)
+void				execute(t_sh *sh)
 {
 	if (check_if_builtin(sh->execs))
-		exec_no_fork(sh->execs, sh->env, sh, buf);
+		exec_no_fork(sh->execs, sh->env, sh);
 	else if (sh->execs->prio != ARG)
-		execs(sh->execs, sh->env, sh, buf);
+		execs(sh->execs, sh->env, sh);
 	else
 		ft_errors(6, NULL, sh->execs->args[0]);
 }
@@ -745,14 +770,14 @@ t_execs			*init_igo(t_sh *sh)
 	return (igo);
 }
 
-void				exec_segment(t_sh *sh, t_execs *igo, int buf)
+void				exec_segment(t_sh *sh, t_execs *igo)
 {
 	if (double_check(igo->head))
 	{
-		assign_redir(igo->head, sh, buf);
+		assign_redir(igo->head, sh);
 		sh->execs = ft_tree_it(igo->head, NULL, 0);
 		igo->tmp2 = sh->execs;
-		execute(sh, buf);
+		execute(sh);
 		while (igo->copy->first != 1)
 			igo->copy = igo->copy->prev;
 		free_list(igo->copy);
@@ -764,13 +789,13 @@ void				exec_segment(t_sh *sh, t_execs *igo, int buf)
 	}
 }
 
-void				exec_last_segment(t_sh *sh, t_execs *igo, int buf)
+void				exec_last_segment(t_sh *sh, t_execs *igo)
 {
 	if (double_check(igo->head))
 	{
-		assign_redir(igo->head, sh, buf);
+		assign_redir(igo->head, sh);
 		sh->execs = ft_tree_it(igo->head, NULL, 0);
-		execute(sh, buf);
+		execute(sh);
 		while (igo->copy->first != 1)
 			igo->copy = igo->copy->prev;
 		free_list(igo->copy);
@@ -813,9 +838,10 @@ int				free_igo(t_execs *igo, int mod)
 	}
 }
 
-int				get_execs(t_sh *sh, int buf)
+int				get_execs(t_sh *sh)
 {
 	t_execs		*igo;
+
 	igo = init_igo(sh);
 	if (check_semi(sh, igo->tmp))
 	{
@@ -823,9 +849,9 @@ int				get_execs(t_sh *sh, int buf)
 		{
 			cut_list(sh, igo);
 			if (igo->tmp->next && igo->tmp->next->prio == SEMICOLON)
-				exec_segment(sh, igo, buf);
+				exec_segment(sh, igo);
 			if (igo->tmp->prio != SEMICOLON && !igo->tmp->next)
-				exec_last_segment(sh, igo, buf);
+				exec_last_segment(sh, igo);
 			igo->tmp = igo->tmp->next;
 		}
 		return (free_igo(igo, 2));
@@ -834,32 +860,32 @@ int				get_execs(t_sh *sh, int buf)
 		return (free_igo(igo, 1));
 }
 
-void				parsing_exing(t_sh *sh, int buf)
+void				parsing_exing(t_sh *sh)
 {
 	if (double_check(sh->list))
 	{
-		assign_redir(sh->list, sh, buf);
+		assign_redir(sh->list, sh);
 		sh->execs = ft_tree_it(sh->list, NULL, 0);
 		if (sh->execs->args)
-			execute(sh, buf);
+			execute(sh);
 		free_list(sh->list);
 		sh->list = NULL;
 	}
 }
 
-void				p_l_x(t_sh *sh, int buf)
+void				p_l_x(t_sh *sh)
 {
 	int			i;
 	int			number;
 
 	i = 0;
 	number = 0;
-	if (parsing_listing(&sh->list, sh->line->line, sh->env))
+	if (parsing_listing(&sh->list, sh->line->line, sh->env, sh))
 	{
-		number = get_execs(sh, buf);
+		number = get_execs(sh);
 		if (number == 1)
 			if (sh->list)
-				parsing_exing(sh, buf);
+				parsing_exing(sh);
 	}
 	if (sh->list)
 	{
@@ -868,20 +894,25 @@ void				p_l_x(t_sh *sh, int buf)
 	}
 }
 
-void				ft_21sh(t_sh *sh, t_norm *values)
+void				ft_21sh(t_sh *sh)
 {
+	int				ret;
+
+
 	ft_prompt(1);
 	init_term();
-	while ((values->ret = read(0, &values->buf, sizeof(int))) &&
-	values->buf != '\n')
+	sh->buf = 0;
+	ret = 0;
+	while ((ret = read(0, &sh->buf, sizeof(int))) &&
+	sh->buf != '\n')
 	{
-		handle_key(values->buf, sh->line, 0);
-		values->buf = 0;
+		handle_key(sh->buf, sh->line, 0);
+		sh->buf = 0;
 	}
 	ft_add_history(sh->line); //add line to history
 	ft_putchar('\n');
 	set_term_back();
-	p_l_x(sh, values->buf);
+	p_l_x(sh);
 	if (ft_strequ(sh->line->line, "clear"))
 		tputs(tgetstr("cl", NULL), 1, ft_pointchar);
 	ft_line_reset(sh->line);
@@ -889,19 +920,21 @@ void				ft_21sh(t_sh *sh, t_norm *values)
 
 int				main(int ac, char **av, char **envp)
 {
-	t_norm		*values;
+	// t_norm		*values;
 	t_sh			*sh;
+	int				i;
 
 	(void)ac;
 	(void)av;
+	i = 0;
 	sh = ft_memalloc(sizeof(t_sh));
 	sh->line = ft_memalloc(sizeof(t_edit));
-	values = ft_memalloc(sizeof(t_norm));
-	init_structs(sh->line, values, &sh->fd);
+	// values = ft_memalloc(sizeof(t_norm));
+	init_structs(sh->line, &sh->fd);
 	listen_signal();
-	while (envp[values->i])
-		ft_push_env(&sh->env, envp[values->i++]);
+	while (envp[i])
+		ft_push_env(&sh->env, envp[i++]);
 	while (42)
-		ft_21sh(sh, values);
+		ft_21sh(sh);
 	return (0);
 }

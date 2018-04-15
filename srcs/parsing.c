@@ -209,7 +209,7 @@ int				test_l_r(t_parsing *data, char *input, t_lexit **list)
 	return (0);
 }
 
-int				parsing_listing(t_lexit **list, char *input, t_env *env)
+int				parsing_listing(t_lexit **list, char *input, t_env *env, t_sh *sh)
 {
 	t_parsing	*data;
 	t_lexit		*tmp;
@@ -223,7 +223,7 @@ int				parsing_listing(t_lexit **list, char *input, t_env *env)
 		data->empty = 1;
 	ft_strdel(&empty);
 	data->len = ft_strlen(input);
-	if (quote_checker(data, input) && !data->empty)
+	if (quote_checker(data, input, sh) && !data->empty)
 	{
 		while (input[++data->index])
 			if ((test_l_r(data, input, list) == -1))
