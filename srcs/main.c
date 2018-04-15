@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 02:32:54 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/15 03:32:44 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -676,15 +676,10 @@ int					check_pipe(t_lexit *node)
 	return (1);
 }
 
-int					check_redirr(t_lexit *node, int *checker)
+int					check_redirr(t_lexit *node, int checker)
 {
-	if (*checker == 0)
-	{
-		if (node->prev->prio != COMMAND)
-			return (ft_errors(6, NULL, node->prev->args[0]));
-		else
-			*checker = 1;
-	}
+	if (!checker)
+		return (ft_errors(6, NULL, node->prev->args[0]));
 	return (1);
 }
 
@@ -706,11 +701,13 @@ int 				double_check(t_lexit *lst)
 	{
 		while(tmp)
 		{
+			if (tmp->prio == COMMAND)
+				checker = 1;
 			if (tmp->prio == PIPE)
 				if (!check_pipe(tmp))
 					return (0);
 			if (tmp->prio == REDIR_R || tmp->prio == REDIR_RR)
-				if (!check_redirr(tmp, &checker))
+				if (!check_redirr(tmp, checker))
 					break ;
 			if (tmp->prio == REDIR_L)
 				if (!check_redirl(tmp))
