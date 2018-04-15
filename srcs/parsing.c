@@ -19,7 +19,8 @@ int				check_left_right(char *input, t_parsing *data)
 	if (data->index == 1)
 		return (0);
 	data->check = data->to_node_op[1] == '\0' ? data->index - data->anex : data->index - (data->anex + 1);
-	data->check = data->to_node_op[0] == '\0' ? data->index - data->anex : data->index - (data->anex + 2);
+	if (data->to_node_op[1] != '\0')
+		data->check = data->to_node_op[0] == '\0' ? data->index - data->anex : data->index - (data->anex + 2);
 	tmp1 = ft_strsub(input, data->anex, data->check);
 	if (!ft_isstrprint(tmp = ft_strtrim(tmp1)))
 	{

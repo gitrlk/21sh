@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 19:51:23 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/15 22:23:41 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -268,6 +268,19 @@ t_parsing		*init_data(void)
 	return (data);
 }
 
+int		isnumber(char *s)
+{
+	int i;
+
+	i = -1;
+	while (s[++i])
+	{
+		if (!(s[i] >= '0' && s[i] <= '9'))
+			return (0);
+	}
+	return (1);
+}
+
 void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 {
 	(void)list;
@@ -287,7 +300,18 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 	{
 		// ft_putstr(list->input);
 		// sh->fd.saved_fd = dup(list->);
-		dup2(sh->fd.saved_file, 1);
+		// ft_putendl(list->next->args[0]);
+		if (list->next->args[0][0] == '>')
+		{
+			//utiliser la sortie standard de la commande
+
+		}
+		else if (isnumber(list->next->args[0][0])
+		{
+			//utiliser le fd correspondant
+			
+		}
+			dup2(sh->fd.saved_fd, 1);
 		// close(sh->fd.saved_file);
 	}
 }
@@ -305,7 +329,7 @@ int				switch_right(t_lexit *list, t_sh *sh, int *mod)
 	}
 	if (list->redirs && (list->redirs->redir_right == 1))
 	{
-		if (ft_isdigit(ft_atoi(list->redirs->right_target)))
+		if (!(isnumber(list->redirs->right_target)))
 		{
 			if ((sh->fd.saved_file = open(list->redirs->right_target, O_WRONLY |
 			O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
@@ -313,7 +337,9 @@ int				switch_right(t_lexit *list, t_sh *sh, int *mod)
 		}
 		else
 		{
-			sh->fd.saved_file = ft_atoi(list->redirs->right_target);
+			sh->fd.saved_fd = ft_atoi(list->redirs->right_target);
+			ft_putnbr(sh->fd.saved_fd);
+			ft_putchar('\n');
 			switch_in_out(sh, 3, list);
 		}
 		switch_in_out(sh, 1, list);
