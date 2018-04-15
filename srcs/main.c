@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 16:09:16 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/15 19:51:23 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ void					init_structs(t_edit *line, t_fday *fd)
 	fd->saved_err = STDERR_FILENO;
 	fd->in = 0;
 	fd->out = 1;
+	fd->saved_fd = 0;
 }
 
 void				ft_print_tree(t_lexit *lexdat)
@@ -76,6 +77,20 @@ void				ft_print_tree(t_lexit *lexdat)
 		if (lexdat->right)
 			ft_print_tree(lexdat->right);
 	}
+}
+
+int				is_redir(char *str)
+{
+	int			i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (ft_strchr(">", str[i]))
+			return(0);
+		i++;
+	}
+	return (1);
 }
 
 int				get_prio(char *str, char **command, char **apaths)
@@ -103,7 +118,7 @@ int				get_prio(char *str, char **command, char **apaths)
 			*command = ft_strdup(str);
 		return (COMMAND);
 	}
-	else if (!ft_strcmp(str, ">"))
+	else if (!ft_strcmp(str, ">") || !is_redir(str))
 		return (REDIR_R);
 	else if (!ft_strcmp(str, ">>"))
 		return (REDIR_RR);
@@ -132,6 +147,11 @@ t_lexit			*add_node(char *input, t_env *env)
 	tmp->right = 0;
 	tmp->input = ft_strtrim(input);
 	tmp->args = ft_prep_input(input);
+	// while (tmp->args[i])
+	// {
+	// 	ft_putendl(tmp->args[i]);
+	// 	i++;
+	// }
 	tmp->redirs = NULL;
 	tmp->checker = 0;
 	tmp->command = NULL;
@@ -202,11 +222,20 @@ void				get_full_op(t_parsing *data, char *input)
 					data->index++;
 				}
 		if (data->to_node_op[0] == '>')
-				if (input[data->index + 1] == '>')
-				{
-					data->to_node_op[1] = '>';
-					data->index++;
-				}
+		{
+			if (input[data->index + 1] == '>')
+			{
+				data->to_node_op[1] = '>';
+				data->index++;
+			}
+			else if (input[data->index + 1] == '&')
+			{
+				data->to_node_op[0] = input[data->index - 1];
+				data->to_node_op[1] = '>';
+				data->to_node_op[2] = '&';
+				data->index++;
+			}
+		}
 		if (data->to_node_op[0] == '<')
 				if (input[data->index + 1] == '<')
 				{
@@ -233,12 +262,15 @@ t_parsing		*init_data(void)
 	data->breaker = 1;
 	data->empty = 0;
 	data->to_node = NULL;
-	data->to_node2 = NULL;
+	data->to_node_op[0] = '\0';
+	data->to_node_op[1] = '\0';
+	data->to_node_op[2] = '\0';
 	return (data);
 }
 
-void				switch_in_out(t_sh *sh, int in_out)
+void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 {
+	(void)list;
 	if (in_out == 1)
 	{
 		sh->fd.saved_out = dup(1);
@@ -251,6 +283,13 @@ void				switch_in_out(t_sh *sh, int in_out)
 		dup2(sh->fd.saved_file, 0);
 		close(sh->fd.saved_file);
 	}
+	if (in_out == 3)
+	{
+		// ft_putstr(list->input);
+		// sh->fd.saved_fd = dup(list->);
+		dup2(sh->fd.saved_file, 1);
+		// close(sh->fd.saved_file);
+	}
 }
 
 int				switch_right(t_lexit *list, t_sh *sh, int *mod)
@@ -261,16 +300,23 @@ int				switch_right(t_lexit *list, t_sh *sh, int *mod)
 		O_APPEND | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
 			return (-1);
 		else
-			switch_in_out(sh, 1);
+			switch_in_out(sh, 1, list);
 		*mod = 1;
 	}
 	if (list->redirs && (list->redirs->redir_right == 1))
 	{
-		if ((sh->fd.saved_file = open(list->redirs->right_target, O_WRONLY |
-		O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
-			return (-1);
+		if (ft_isdigit(ft_atoi(list->redirs->right_target)))
+		{
+			if ((sh->fd.saved_file = open(list->redirs->right_target, O_WRONLY |
+			O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
+				return (-1);
+		}
 		else
-			switch_in_out(sh, 1);
+		{
+			sh->fd.saved_file = ft_atoi(list->redirs->right_target);
+			switch_in_out(sh, 3, list);
+		}
+		switch_in_out(sh, 1, list);
 		*mod = 1;
 	}
 	return (0);
@@ -283,7 +329,7 @@ int				switch_left(t_lexit *list, t_sh *sh, int *mod)
 		if ((sh->fd.saved_file = open(list->redirs->left_target, O_RDONLY)) == -1)
 			return (-1);
 		else
-			switch_in_out(sh, 2);
+			switch_in_out(sh, 2, list);
 		*mod = *mod == 0 ? 2 : 3;
 	}
 	if (list->redirs && (list->redirs->redir_left == 2))
@@ -291,7 +337,7 @@ int				switch_left(t_lexit *list, t_sh *sh, int *mod)
 		if ((sh->fd.saved_file = open("/tmp/heredoc_fd", O_RDONLY)) == -1)
 			return (-1);
 		else
-			switch_in_out(sh, 2);
+			switch_in_out(sh, 2, list);
 		*mod = *mod == 0 ? 2 : 3;
 	}
 	return (0);
@@ -883,6 +929,13 @@ void				p_l_x(t_sh *sh)
 	number = 0;
 	if (parsing_listing(&sh->list, sh->line->line, sh->env, sh))
 	{
+		// while (sh->list)
+		// {
+		// 	ft_putendl(sh->list->input);
+		// 	ft_putnbr(sh->list->prio);
+		// 	ft_putchar('\n');
+		// 	sh->list = sh->list->next;
+		// }
 		number = get_execs(sh);
 		if (number == 1)
 			if (sh->list)
@@ -921,7 +974,6 @@ void				ft_21sh(t_sh *sh)
 
 int				main(int ac, char **av, char **envp)
 {
-	// t_norm		*values;
 	t_sh			*sh;
 	int				i;
 
@@ -930,7 +982,6 @@ int				main(int ac, char **av, char **envp)
 	i = 0;
 	sh = ft_memalloc(sizeof(t_sh));
 	sh->line = ft_memalloc(sizeof(t_edit));
-	// values = ft_memalloc(sizeof(t_norm));
 	init_structs(sh->line, &sh->fd);
 	listen_signal();
 	while (envp[i])

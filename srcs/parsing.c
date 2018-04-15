@@ -19,6 +19,7 @@ int				check_left_right(char *input, t_parsing *data)
 	if (data->index == 1)
 		return (0);
 	data->check = data->to_node_op[1] == '\0' ? data->index - data->anex : data->index - (data->anex + 1);
+	data->check = data->to_node_op[0] == '\0' ? data->index - data->anex : data->index - (data->anex + 2);
 	tmp1 = ft_strsub(input, data->anex, data->check);
 	if (!ft_isstrprint(tmp = ft_strtrim(tmp1)))
 	{
@@ -88,7 +89,8 @@ void			link_nodes(char *input, t_lexit **list, t_parsing *data)
 		ft_strdel(&content);
 		tmp->next->prev = tmp;
 	}
-	if (ft_strchr(OPERATOR, data->to_node_op[0]))
+	if (ft_strchr(OPERATOR, data->to_node_op[0]) || ((data->to_node_op[1] == '>')
+ 	&& data->to_node_op[2] == '&'))
 	{
 		while (tmp->next)
 			tmp = tmp->next;
@@ -96,6 +98,8 @@ void			link_nodes(char *input, t_lexit **list, t_parsing *data)
 		tmp->next->prev = tmp;
 		data->to_node_op[0] = '\0';
 		data->to_node_op[1] = '\0';
+		data->to_node_op[2] = '\0';
+
 	}
 	if (input[data->subber] == '\0')
 		link_last_node(input, list, data);

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/15 15:20:14 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/15 19:45:53 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,8 +127,7 @@ typedef struct			s_parsing
 	int					empty;
 	t_env				*env;
 	char					*to_node;
-	char					*to_node2;
-	char					to_node_op[2];
+	char					to_node_op[3];
 	char					*ptr;
 	char					*ptr2;
 }							t_parsing;
@@ -137,6 +136,7 @@ typedef struct			s_fday
 {
 	int					in;
 	int					out;
+	int					saved_fd;
 	int					saved_file;
 	int					saved_in;
 	int					saved_out;
