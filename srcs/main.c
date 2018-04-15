@@ -6,11 +6,11 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 14:05:12 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/15 16:09:16 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "sh.h"
+#include "../includes/sh.h"
 
 char			**copypasta(char **src, int i)
 {
@@ -140,27 +140,28 @@ t_lexit			*add_node(char *input, t_env *env)
 	return (tmp);
 }
 
-void			do_simple_quotes(char *input, t_sh *sh)
+void			do_simple_quotes(t_sh *sh)
 {
 	int			ret_stop[2];
 
 	ret_stop[0] = 0;
 	ret_stop[1] = 0;
-	(void)input;
+	init_term();
 	while (!ret_stop[1])
 	{
 		ft_prompt(3);
-		// ft_line_reset(sh->line);
 		while ((ret_stop[0] = read(0, &sh->buf, sizeof(int))))
 		{
-			handle_key(sh->buf, sh->line, 1);
+			handle_key(sh->buf, sh->line, 2);
+			if (sh->buf == 39)
+				ret_stop[1] = 1;
 			if (sh->buf == '\n' || sh->buf == 3)
 				break ;
 			sh->buf = 0;
 		}
-		
-		// heredoc_work(valhd.tmp, sh, valhd.ret_stop, list, buf);
+		ft_putchar('\n');
 	}
+	set_term_back();
 }
 
 int				quote_checker(t_parsing *data, char *input, t_sh *sh)
@@ -175,7 +176,7 @@ int				quote_checker(t_parsing *data, char *input, t_sh *sh)
 		if (input[data->quote_checker + 1] == '\0')
 		{
 			if (data->simpleq % 2)
-				do_simple_quotes(input, sh);
+				do_simple_quotes(sh);
 				// return (ft_errors(2, NULL, NULL));
 			if (data->doubleq % 2)
 				// do_double_quotes();

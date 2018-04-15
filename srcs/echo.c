@@ -1,4 +1,4 @@
-#include "sh.h"
+#include "../includes/sh.h"
 
 void			ft_echo(t_lexit *list)
 {

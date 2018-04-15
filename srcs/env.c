@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 02:32:42 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/15 15:20:47 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ void			update_list(t_lexit *list, int i, t_env *env)
 		ft_freetab(apaths);
 }
 
-void			ft_env(t_lexit *list, t_env *env, t_sh *sh, int buf)
+void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
 {
 	t_env		*new_env;
 	int		i;
@@ -198,9 +198,9 @@ void			ft_env(t_lexit *list, t_env *env, t_sh *sh, int buf)
 		{
 			update_list(list, i, new_env);
 			if (check_if_builtin(list))
-				exec_no_fork(list, new_env, sh, buf);
+				exec_no_fork(list, new_env, sh);
 			else if (list->prio != ARG)
-				execs(sh->execs, sh->env, sh, buf);
+				execs(sh->execs, sh->env, sh);
 			else
 				ft_errors(7, NULL, sh->execs->args[0]);
 		}

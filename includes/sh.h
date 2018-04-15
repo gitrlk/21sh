@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/15 13:59:52 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/15 15:20:14 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,6 @@ typedef enum 				e_priorities
 	ARG,
 	ERROR
 }								t_priorities;
-
-// typedef struct				s_norm
-// {
-// 	int						ret;
-// 	int						i;
-// }								t_norm;
 
 typedef	struct			s_edit
 {
@@ -156,7 +150,6 @@ typedef struct			s_sh
 	t_lexit				*lexdat;
 	t_lexit				*execs;
 	t_edit				*line;
-	// t_norm				*values;
 	t_fday				fd;
 	int					buf;
 }							t_sh;
@@ -195,7 +188,8 @@ int 				ft_pre_parser(t_edit *line);
 int 				parse_list(t_lexit *list);
 void			ft_freetab(char **table);
 void 				ft_free_lexdat(t_lexit *lexdat);
-void				ft_env(t_lexit *list, t_env *env, t_sh *sh);char				**ft_set_paths(t_env *env);
+void				ft_env(t_lexit *list, t_env *env, t_sh *sh);
+char				**ft_set_paths(t_env *env);
 int 			ft_errors(int code, char *cmd, char *arg);
 char				**ft_prep_input(char *str);
 char			**ft_fill_envp(t_env *env);

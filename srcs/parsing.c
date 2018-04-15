@@ -1,4 +1,4 @@
-#include "sh.h"
+#include "../includes/sh.h"
 #include<stdio.h>
 
 t_lexit			*single_node(t_lexit *tmp, t_lexit **list, t_env *env, char *input)

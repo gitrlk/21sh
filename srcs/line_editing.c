@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:58 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 02:14:33 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/15 15:25:29 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -146,7 +146,7 @@ static int				check_copy(int buf)
 	return (1);
 }
 
-void sig_trap(t_edit *line, int buf, int heredoc)
+void sig_trap(t_edit *line, int buf, int mode)
 {
 		if (buf == 3)
 		{
@@ -158,7 +158,7 @@ void sig_trap(t_edit *line, int buf, int heredoc)
 			line->select_mode = 0;
 			line->curr = NULL;
 			tputs(tgetstr("cd", NULL), 1, ft_pointchar);
-			if (!heredoc)
+			if (!mode)
 			{
 				ft_putchar('\n');
 				ft_prompt(1);
@@ -173,14 +173,14 @@ void sig_trap(t_edit *line, int buf, int heredoc)
 		}
 }
 
-void handle_key(int buf, t_edit *line, int heredoc)
+void handle_key(int buf, t_edit *line, int mode)
 {
 	if (check_copy(buf))
 		print_cpy(buf, line);
 	else
 	{
 		if (buf == 3 || ((buf == 4) && (line->max_size == 2)))
-			sig_trap(line, buf, heredoc);
+			sig_trap(line, buf, mode);
 		if (buf == PRESS_LEFT)
 			ft_left_arrow(line);
 		else if (buf == PRESS_RIGHT)

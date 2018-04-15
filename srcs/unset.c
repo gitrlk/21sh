@@ -1,4 +1,4 @@
-#include "sh.h"
+#include "../includes/sh.h"
 
 void		ft_lst_add_tenv(t_env **alst, t_env *new)
 {

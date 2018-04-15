@@ -1,4 +1,4 @@
-#include "sh.h"
+#include "../includes/sh.h"
 
 int			find_t_env_str(char *venv, char *str)
 {
