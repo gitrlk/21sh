@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/15 00:02:27 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/15 02:22:52 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -177,9 +177,6 @@ typedef struct			s_execs
 
 
 
-
-
-struct winsize		ft_init(t_edit *line);
 int					ft_pointchar(int c);
 void ft_left_arrow(t_edit *line);
 void ft_right_arrow(t_edit *line);
@@ -196,7 +193,7 @@ void ft_cut(t_edit *line);
 void select_copy_cut(t_edit *line, int buf);
 void ft_prompt(int prompt);
 void add_to_line(t_edit *line, int buf);
-void handle_key(int buf, t_edit *line);
+void handle_key(int buf, t_edit *line, int heredoc);
 void ft_tokenize_it(t_edit *line, t_lexit **lexdat);
 int 				ft_pre_parser(t_edit *line);
 int 				parse_list(t_lexit *list);
@@ -237,7 +234,9 @@ int            find_t_env_array(char *env, char *search);
 void        ft_lst_add_tenv(t_env **alst, t_env *new);
 void				exec_no_fork(t_lexit *list, t_env *env, t_sh *sh, int buf);
 int				check_if_builtin(t_lexit *list);
-
+void			listen_signal(void);
+void				init_term(void);
+void				set_term_back(void);
 
 
 #endif

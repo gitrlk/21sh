@@ -1,3 +1,5 @@
 *.o
 libft.a
-
+21sh.dSYM/
+21sh
+objs/

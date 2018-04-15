@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 00:57:41 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/15 02:22:39 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,20 @@ char			**copypasta(char **src, int i)
 	return (ret);
 }
 
+void init_line_edit(t_edit *line)
+{
+	ioctl(STDERR_FILENO, TIOCGWINSZ, &line->sz);
+	line->select_mode = 0;
+	line->start_select = 0;
+	line->end_select = 0;
+	line->is_highlight = ft_strnew(0);
+}
+
 void					init_structs(t_edit *line, t_norm *values, t_fday *fd)
 {
 	line->hstr = NULL;
 	ft_line_reset(line);
-	line->sz = ft_init(line);
+	init_line_edit(line);
 	values->buf = 0;
 	values->i = 0;
 	values->ret = 0;
@@ -373,20 +382,30 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh, int buf)
 	}
 }
 
-void				heredoc_work(char *input, t_sh *sh, int *ret_stop, t_lexit *list)
+void				heredoc_work(char *i, t_sh *sh, int *ret, t_lexit *list, int buf)
 {
-	input = ft_strdup(sh->line->line);
-	if (ft_strcmp(input, list->redirs->endoff))
+	i = ft_strdup(sh->line->line);
+	if (ft_strcmp(i, list->redirs->endoff) && (buf != 3))
 	{
-		ft_putstr_fd(input, ret_stop[0]);
-		ft_putchar_fd('\n', ret_stop[0]);
+		ft_putstr_fd(i, ret[0]);
+		ft_putchar_fd('\n', ret[0]);
 	}
-	if (!ft_strcmp(input, list->redirs->endoff))
+	if (buf == 3)
+	{
+		close(ret[0]);
+		ft_strdel(&list->redirs->endoff);
+		ret[0] = open("/tmp/heredoc_fd",O_RDONLY | O_WRONLY | O_TRUNC);
+		close(ret[0]);
+		ret[1] = 1;
+		set_term_back();
+	}
+	else if (!ft_strcmp(i, list->redirs->endoff))
 	{
 		ft_strdel(&list->redirs->endoff);
-		ret_stop[1] = 1;
+		ret[1] = 1;
+		set_term_back();
 	}
-	ft_strdel(&input);
+	ft_strdel(&i);
 	ft_putchar('\n');
 }
 
@@ -401,7 +420,9 @@ void				init_valhd(t_hdc *valhd)
 void				do_heredoc(t_lexit *list, t_sh *sh, int buf)
 {
 	t_hdc			valhd;
+
 	init_valhd(&valhd);
+	init_term();
 	if ((valhd.ret_stop[0] = open("/tmp/heredoc_fd", O_WRONLY |
 	O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
 		ft_errors(5, NULL, "heredoc error: couldn't create heredoc");
@@ -413,12 +434,12 @@ void				do_heredoc(t_lexit *list, t_sh *sh, int buf)
 			ft_line_reset(sh->line);
 			while ((valhd.hd = read(0, &buf, sizeof(int))))
 			{
-				handle_key(buf, sh->line);
-				if (buf == '\n')
+				handle_key(buf, sh->line, 1);
+				if (buf == '\n' || buf == 3)
 					break ;
 				buf = 0;
 			}
-			heredoc_work(valhd.tmp, sh, valhd.ret_stop, list);
+			heredoc_work(valhd.tmp, sh, valhd.ret_stop, list, buf);
 		}
 	}
 }
@@ -853,15 +874,17 @@ void				p_l_x(t_sh *sh, int buf)
 void				ft_21sh(t_sh *sh, t_norm *values)
 {
 	ft_prompt(1);
+	init_term();
 	while ((values->ret = read(0, &values->buf, sizeof(int))) &&
 	values->buf != '\n')
 	{
-		handle_key(values->buf, sh->line);
+		handle_key(values->buf, sh->line, 0);
 		values->buf = 0;
 	}
-	ft_putchar('\n');
-	p_l_x(sh, values->buf);
 	ft_add_history(sh->line); //add line to history
+	ft_putchar('\n');
+	set_term_back();
+	p_l_x(sh, values->buf);
 	if (ft_strequ(sh->line->line, "clear"))
 		tputs(tgetstr("cl", NULL), 1, ft_pointchar);
 	ft_line_reset(sh->line);
@@ -878,6 +901,7 @@ int				main(int ac, char **av, char **envp)
 	sh->line = ft_memalloc(sizeof(t_edit));
 	values = ft_memalloc(sizeof(t_norm));
 	init_structs(sh->line, values, &sh->fd);
+	listen_signal();
 	while (envp[values->i])
 		ft_push_env(&sh->env, envp[values->i++]);
 	while (42)

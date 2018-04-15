@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:00 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/14 22:45:21 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/15 01:58:28 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,11 @@ int 			ft_errors(int code, char *cmd, char *arg)
 		ft_putstr_fd("env: command not found: ", 2);
 		ft_putstr_fd(arg, 2);
 		ft_putchar('\n');
+	}
+	if (code == 8)
+	{
+		ft_putendl_fd(cmd, 2);
+		exit(0);
 	}
 	return (1);
 }
