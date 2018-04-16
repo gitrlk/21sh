@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/15 19:45:53 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/16 12:59:15 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,6 +225,8 @@ int				check_if_builtin(t_lexit *list);
 void			listen_signal(void);
 void				init_term(void);
 void				set_term_back(void);
+int				switch_fd(t_lexit *list, t_sh *sh, int *mod);
+void				reset_fd(t_sh *sh, int mod);
 
 
 #endif
