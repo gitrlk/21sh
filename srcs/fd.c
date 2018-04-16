@@ -46,8 +46,8 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 			}
 			else if (ft_isdigit(list->next->args[0][0]))
 			{
-				close (list->next->args[0][0]);
-				close (1);
+				close (0);
+				close (ft_atoi(list->next->args[0]));
 			}
 		}
 		if (list->next->args[0][0] == '>')
@@ -59,7 +59,7 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 		{
 			//utiliser le fd correspondant
 			// if (list->next->args[0][0] > 3 || list->next->args[0][0] < 0)
-			dup2(sh->fd.saved_fd, list->next->args[0][0]);
+			dup2(sh->fd.saved_fd, ft_atoi(list->next->args[0]));
 		}
 		// dup2(sh->fd.saved_fd, 1);
 		// close(sh->fd.saved_file);

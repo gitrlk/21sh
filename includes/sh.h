@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/16 12:59:15 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/16 18:26:35 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ typedef struct			s_lexit
 	char					*command;
 	int					prio;
 	int					first;
+	int					agr;
 	int					checker;
 	struct s_redir		*redirs;
 	struct s_lexit		*left;
