@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/16 18:33:38 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/16 22:09:29 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,20 +76,6 @@ void				ft_print_tree(t_lexit *lexdat)
 	}
 }
 
-int				is_redir(char *str)
-{
-	int			i;
-
-	i = 0;
-	while (str[i])
-	{
-		if (ft_strchr(">", str[i]))
-			return(0);
-		i++;
-	}
-	return (1);
-}
-
 int				get_prio(char *str, char **command, char **apaths)
 {
 	char			*path;
@@ -115,7 +101,7 @@ int				get_prio(char *str, char **command, char **apaths)
 			*command = ft_strdup(str);
 		return (COMMAND);
 	}
-	else if (!ft_strcmp(str, ">") || !is_redir(str))
+	else if (!ft_strcmp(str, ">"))
 		return (REDIR_R);
 	else if (!ft_strcmp(str, ">>"))
 		return (REDIR_RR);
@@ -274,6 +260,7 @@ void				execute_binary(t_lexit *list, t_env *env, t_sh *sh)
 	mod = 0;
 	newenv = ft_fill_envp(env);
 	mod = switch_fd(list, sh, &mod);
+	// ft_putendl("coucou");
 	if (mod != -1)
 	{
 		execve(list->command, list->args, newenv);
@@ -293,12 +280,16 @@ void				do_pipes(t_lexit *list, t_env *env, t_sh *sh)
 	pipid = fork();
 	if (pipid == 0)
 	{
+		ft_putstr("--- NUMBER ONE ---");
+		ft_putendl(list->left->input);
 		dup2(pipefd[1], sh->fd.saved_out);
 		close(pipefd[0]);
 		execs_deep(list->left, env, sh);
 	}
 	else
 	{
+		ft_putstr("--- NUMBER TWO ---");
+		ft_putendl(list->right->input);
 		dup2(pipefd[0], sh->fd.saved_in);
 		close(pipefd[1]);
 		execs_deep(list->right, env, sh);
@@ -573,7 +564,10 @@ void				get_redir(t_lexit *node, t_sh *sh)
 	tmp = node;
 	if (tmp->next && (tmp->next->prio == REDIR_R || tmp->next->prio == REDIR_L ||
 	tmp->next->prio == REDIR_RR || tmp->next->prio == HEREDOC))
+	{
+		ft_putnbr(tmp->next->prio);
 		get_last_redir(tmp->next, sh);
+	}
 }
 
 void				assign_redir(t_lexit *list, t_sh *sh)
@@ -632,9 +626,9 @@ t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
 	return (dst);
 }
 
-int					check_pipe(t_lexit *node)
+int					check_pipe(t_lexit *node, int checker)
 {
-	if ((node->prev->prio != COMMAND && !node->prev->agr) || node->next->prio != COMMAND)
+	if (!checker && (node->prev->prio != COMMAND || node->next->prio != COMMAND))
 		return (node->prev->prio != COMMAND ?
 	ft_errors(6, NULL, node->prev->args[0]) :
 	ft_errors(6, NULL, node->next->args[0]));
@@ -669,7 +663,7 @@ int 				double_check(t_lexit *lst)
 			if (tmp->prio == COMMAND)
 				checker = 1;
 			if (tmp->prio == PIPE)
-				if (!check_pipe(tmp))
+				if (!check_pipe(tmp, checker))
 					return (0);
 			if (tmp->prio == REDIR_R || tmp->prio == REDIR_RR)
 				if (!check_redirr(tmp, checker))

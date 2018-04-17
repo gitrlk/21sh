@@ -18,6 +18,7 @@ int				check_left_right(char *input, t_parsing *data)
 		return (0);
 	if (data->index == 1)
 		return (0);
+
 	data->check = data->to_node_op[1] == '\0' ? data->index - data->anex : data->index - (data->anex + 1);
 	if (data->to_node_op[1] != '\0')
 		data->check = data->to_node_op[0] == '\0' ? data->index - data->anex : data->index - (data->anex + 2);
