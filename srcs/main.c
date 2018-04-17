@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/16 22:09:29 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/17 23:40:37 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,11 +63,26 @@ void				ft_print_tree(t_lexit *lexdat)
 	i = 1;
 	if (lexdat)
 	{
+		// ft_putstr("CURRENT INPUT : ");
+		// ft_putstr(lexdat->input);
+		// ft_putchar('\n');
+		// if (lexdat->redirs)
+		// {
+		// 	ft_putstr("CURRENT REDIR : ");
+		// 	ft_putstr(lexdat->redirs->right_target);
+		// 	ft_putchar('\n');
+		// }
+		if (lexdat->left)
+			ft_print_tree(lexdat->left);
 		ft_putstr("CURRENT INPUT : ");
 		ft_putstr(lexdat->input);
 		ft_putchar('\n');
-		if (lexdat->left)
-			ft_print_tree(lexdat->left);
+		if (lexdat->redirs)
+		{
+			ft_putstr("CURRENT REDIR : ");
+			ft_putstr(lexdat->redirs->right_target);
+			ft_putchar('\n');
+		}
 		// ft_putstr("CURRENT INPUT : ");
 		// ft_putstr(lexdat->input);
 		// ft_putchar('\n');
@@ -130,14 +145,10 @@ t_lexit			*add_node(char *input, t_env *env)
 	tmp->right = 0;
 	tmp->input = ft_strtrim(input);
 	tmp->args = ft_prep_input(input);
-	// while (tmp->args[i])
-	// {
-	// 	ft_putendl(tmp->args[i]);
-	// 	i++;
-	// }
 	tmp->redirs = NULL;
 	tmp->checker = 0;
 	tmp->agr = 0;
+	tmp->is_pipe = 0;
 	tmp->command = NULL;
 	tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
 	ft_freetab(apaths);
@@ -260,7 +271,6 @@ void				execute_binary(t_lexit *list, t_env *env, t_sh *sh)
 	mod = 0;
 	newenv = ft_fill_envp(env);
 	mod = switch_fd(list, sh, &mod);
-	// ft_putendl("coucou");
 	if (mod != -1)
 	{
 		execve(list->command, list->args, newenv);
@@ -278,18 +288,19 @@ void				do_pipes(t_lexit *list, t_env *env, t_sh *sh)
 
 	pipe(pipefd);
 	pipid = fork();
+	list->left->is_pipe = 1;
 	if (pipid == 0)
 	{
-		ft_putstr("--- NUMBER ONE ---");
-		ft_putendl(list->left->input);
+		// ft_putstr("--- NUMBER ONE ---");
+		// ft_putendl(list->left->input);
 		dup2(pipefd[1], sh->fd.saved_out);
 		close(pipefd[0]);
 		execs_deep(list->left, env, sh);
 	}
 	else
 	{
-		ft_putstr("--- NUMBER TWO ---");
-		ft_putendl(list->right->input);
+		// ft_putstr("--- NUMBER TWO ---");
+		// ft_putendl(list->right->input);
 		dup2(pipefd[0], sh->fd.saved_in);
 		close(pipefd[1]);
 		execs_deep(list->right, env, sh);
@@ -335,6 +346,8 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 			exit (0);
 		if (mod)
 			reset_fd(sh, mod);
+		if (list->is_pipe == 1)
+			exit (0);
 	}
 }
 
@@ -564,10 +577,7 @@ void				get_redir(t_lexit *node, t_sh *sh)
 	tmp = node;
 	if (tmp->next && (tmp->next->prio == REDIR_R || tmp->next->prio == REDIR_L ||
 	tmp->next->prio == REDIR_RR || tmp->next->prio == HEREDOC))
-	{
-		ft_putnbr(tmp->next->prio);
 		get_last_redir(tmp->next, sh);
-	}
 }
 
 void				assign_redir(t_lexit *list, t_sh *sh)
@@ -681,6 +691,7 @@ int 				double_check(t_lexit *lst)
 
 void				execute(t_sh *sh)
 {
+
 	if (check_if_builtin(sh->execs))
 		exec_no_fork(sh->execs, sh->env, sh);
 	else if (sh->execs->prio != ARG)
@@ -704,11 +715,39 @@ t_execs			*init_igo(t_sh *sh)
 	return (igo);
 }
 
+void				trim_redir(t_lexit *list)
+{
+	t_lexit *tmp;
+	t_lexit *save;
+
+	tmp = list;
+	while (tmp)
+	{
+		if (tmp->prev && (tmp->prio == REDIR_R || tmp->prio == REDIR_RR ||
+		tmp->prio == REDIR_L))
+		{
+			save = tmp->prev;
+			while (tmp->next && tmp->prio != PIPE && tmp->prio != AND_OR &&
+			tmp->prio != HEREDOC && tmp->prio != COMMAND)
+				tmp = tmp->next;
+			if (!tmp->next)
+				save->next = NULL;
+			else if (tmp->next)
+			{
+				save->next = tmp->next;
+				tmp->next->prev = save;
+			}
+		}
+		tmp = tmp->next;
+	}
+}
+
 void				exec_segment(t_sh *sh, t_execs *igo)
 {
 	if (double_check(igo->head))
 	{
 		assign_redir(igo->head, sh);
+		trim_redir(igo->head);
 		sh->execs = ft_tree_it(igo->head, NULL, 0);
 		igo->tmp2 = sh->execs;
 		execute(sh);
@@ -728,6 +767,7 @@ void				exec_last_segment(t_sh *sh, t_execs *igo)
 	if (double_check(igo->head))
 	{
 		assign_redir(igo->head, sh);
+		trim_redir(igo->head);
 		sh->execs = ft_tree_it(igo->head, NULL, 0);
 		execute(sh);
 		while (igo->copy->first != 1)
@@ -816,13 +856,6 @@ void				p_l_x(t_sh *sh)
 	number = 0;
 	if (parsing_listing(&sh->list, sh->line->line, sh->env, sh))
 	{
-		// while (sh->list)
-		// {
-		// 	ft_putendl(sh->list->input);
-		// 	ft_putnbr(sh->list->prio);
-		// 	ft_putchar('\n');
-		// 	sh->list = sh->list->next;
-		// }
 		number = get_execs(sh);
 		if (number == 1)
 			if (sh->list)

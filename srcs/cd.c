@@ -33,7 +33,7 @@ void		do_cd(char *path, t_env **venv, int mode)
 			ft_putendl_fd("Permission denied", 2);
 	}
 	else
-  {
+  	{
     ft_putstr_fd("no such file or directory : ", 2);
     ft_putendl_fd(path, 2);
   }
@@ -101,8 +101,7 @@ void ft_cd(char **args, t_env **env)
     exec_cd_env(env, "OLDPWD", 2, args);
   else if (!ft_strncmp(args[1], "~/", 2))
     exec_cd_env(env, "HOME", 3, args);
-  // else if (cd_whit_flags())
-  //   do_cd(args[1], env, 1);
   else if (args[1])
     do_cd(args[1], env, 1);
+	exit (0);
 }

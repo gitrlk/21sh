@@ -17,7 +17,7 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 {
 	if (in_out == 1)
 	{
-		if (ft_isdigit(list->next->args[0][0]))
+		if (list->next && ft_isdigit(list->next->args[0][0]))
 		{
 			dup2(sh->fd.saved_file, ft_atoi(list->next->args[0]));
 			close(sh->fd.saved_file);
@@ -39,7 +39,7 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 	{
 		if (list->redirs->right_target[0] == '-')
 		{
-			if (list->next->args[0][0] == '>')
+			if (list->next && list->next->args[0][0] == '>')
 			{
 				close (0);
 				close (1);
@@ -50,12 +50,12 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 				close (ft_atoi(list->next->args[0]));
 			}
 		}
-		if (list->next->args[0][0] == '>')
+		if (list->next && list->next->args[0][0] == '>')
 		{
 			dup2(sh->fd.saved_fd, 1);
 			//utiliser la sortie standard de la command
 		}
-		else if (ft_isdigit(list->next->args[0][0]))
+		else if (list->next && ft_isdigit(list->next->args[0][0]))
 		{
 			//utiliser le fd correspondant
 			// if (list->next->args[0][0] > 3 || list->next->args[0][0] < 0)

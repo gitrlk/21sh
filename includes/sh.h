@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/16 18:26:35 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/17 23:37:29 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ typedef struct			s_lexit
 	char					*input;
 	char					**args;
 	char					*command;
+	int					is_pipe;
 	int					prio;
 	int					first;
 	int					agr;
