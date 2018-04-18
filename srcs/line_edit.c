@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:58 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/18 20:35:21 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/19 00:24:45 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,45 +173,45 @@ void sig_trap(t_edit *line, int buf, int mode)
 		}
 }
 
-void handle_key(int buf, t_edit *line)
+void handle_key(t_sh *sh)
 {
-	if (check_copy(buf))
-		print_cpy(buf, line);
+	if (check_copy(sh->buf))
+		print_cpy(sh->buf, sh->line);
 	else
 	{
-		if (buf == 3 || ((buf == 4) && (line->max_size == 2)))
-			sig_trap(line, buf, line->prompt_mode);
-		if (buf == PRESS_LEFT)
-			ft_left_arrow(line);
-		else if (buf == PRESS_RIGHT)
-			ft_right_arrow(line);
-		else if (buf == PRESS_UP)
-			ft_arrow_up(line);
-		else if (buf == PRESS_DOWN)
-			ft_arrow_down(line);
-		if (!line->select_mode)
+		if (sh->buf == 3 || ((sh->buf == 4) && (sh->line->max_size == 2)) || ((sh->buf == 4) && sh->line->max_size == 2)
+			sig_trap(sh->line, sh->buf, sh->line->prompt_mode);
+		if (sh->buf == PRESS_LEFT)
+			ft_left_arrow(sh->line);
+		else if (sh->buf == PRESS_RIGHT)
+			ft_right_arrow(sh->line);
+		else if (sh->buf == PRESS_UP)
+			ft_arrow_up(sh->line);
+		else if (sh->buf == PRESS_DOWN)
+			ft_arrow_down(sh->line);
+		if (!sh->line->select_mode)
 		{
-			if (ft_isprint(buf))
-				add_to_line(line, buf);
-			else if (buf == PRESS_BACKSPACE)
-				ft_delete(line);
-			else if (buf == PRESS_SHIFT_LEFT)
-				ft_wordleft(line);
-			else if (buf == PRESS_SHIFT_RIGHT)
-				ft_wordright(line);
-			else if (buf == PRESS_HOME)
-				ft_homekey(line);
-			else if (buf == PRESS_END)
-				ft_endkey(line);
+			if (ft_isprint(sh->buf))
+				add_to_line(sh->line, sh->buf);
+			else if (sh->buf == PRESS_BACKSPACE)
+				ft_delete(sh->line);
+			else if (sh->buf == PRESS_SHIFT_LEFT)
+				ft_wordleft(sh->line);
+			else if (sh->buf == PRESS_SHIFT_RIGHT)
+				ft_wordright(sh->line);
+			else if (sh->buf == PRESS_HOME)
+				ft_homekey(sh->line);
+			else if (sh->buf == PRESS_END)
+				ft_endkey(sh->line);
 		}
-		else if (line->select_mode)
+		else if (sh->line->select_mode)
 		{
-			line->end_select = line->cursor_pos - 2;
-			ft_go_start(line);
-			ft_highlight(line);
+			sh->line->end_select = sh->line->cursor_pos - 2;
+			ft_go_start(sh->line);
+			ft_highlight(sh->line);
 		}
-		if (buf == PRESS_ALT_C || buf == PRESS_ALT_V || buf == PRESS_ALT_X
-		|| buf == PRESS_ALT_K)
-			select_copy_cut(line, buf);
+		if (sh->buf == PRESS_ALT_C || sh->buf == PRESS_ALT_V || sh->buf == PRESS_ALT_X
+		|| sh->buf == PRESS_ALT_K)
+			select_copy_cut(sh->line, sh->buf);
 	}
 }

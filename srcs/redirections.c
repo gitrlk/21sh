@@ -112,7 +112,7 @@ void				do_heredoc(t_lexit *list, t_sh *sh)
 			ft_line_reset(sh->line);
 			while ((valhd.hd = read(0, &sh->buf, sizeof(int))))
 			{
-				handle_key(sh->buf, sh->line);
+				handle_key(sh);
 				if (sh->buf == '\n' || sh->buf == 3)
 					break ;
 				sh->buf = 0;

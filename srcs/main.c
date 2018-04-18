@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/18 20:10:17 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/19 00:18:51 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,7 @@ void				ft_21sh(t_sh *sh)
 	while ((ret = read(0, &sh->buf, sizeof(int))) &&
 	sh->buf != '\n')
 	{
-		handle_key(sh->buf, sh->line, 0);
+		handle_key(sh);
 		sh->buf = 0;
 	}
 	ft_add_history(sh->line); //add line to history

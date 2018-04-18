@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/18 20:33:59 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/19 00:18:21 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,13 +49,14 @@ typedef	struct			s_edit
 	int       			   start_select;
 	int	    	       	end_select;
 	int						prompt_mode;
+	int						quote_complete;
 	char						*quote;
 	char 						*line;
 	char						*heredoc;
 	char 						*is_highlight;
 	char						*left;
 	char						*right;
-	char						*mode_str;
+	char						*q_str;
 	struct s_hstr			*hstr; //pointer to the last element added
 	struct s_hstr			*curr; //pointer to current element of the history
 }								t_edit;
@@ -189,7 +190,7 @@ void ft_cut(t_edit *line);
 void select_copy_cut(t_edit *line, int buf);
 void ft_prompt(int prompt);
 void add_to_line(t_edit *line, int buf);
-void handle_key(int buf, t_edit *line, int heredoc);
+void handle_key(t_sh *sh);
 void ft_tokenize_it(t_edit *line, t_lexit **lexdat);
 int 				ft_pre_parser(t_edit *line);
 int 				parse_list(t_lexit *list);
