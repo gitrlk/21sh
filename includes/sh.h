@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/17 23:37:29 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/18 15:03:41 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,9 @@ typedef struct			s_lexit
 	int					first;
 	int					agr;
 	int					checker;
+	int					fdsrc;
+	int					fddst;
+	int					fdclose;
 	struct s_redir		*redirs;
 	struct s_lexit		*left;
 	struct s_lexit		*right;
@@ -98,7 +101,6 @@ typedef struct			s_redir
 	int					redir_left;
 	char					*left_target;
 	char					*endoff;
-	// char					**follow_up;
 	struct s_redir		*next;
 }							t_redir;
 

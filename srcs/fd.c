@@ -17,17 +17,17 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 {
 	if (in_out == 1)
 	{
-		if (list->next && ft_isdigit(list->next->args[0][0]))
-		{
-			dup2(sh->fd.saved_file, ft_atoi(list->next->args[0]));
-			close(sh->fd.saved_file);
-		}
-		else
-		{
+		// if (list->next && ft_isdigit(list->next->args[0][0]))
+		// {
+		// 	dup2(sh->fd.saved_file, ft_atoi(list->next->args[0]));
+		// 	close(sh->fd.saved_file);
+		// }		else
+		// {
+			// sh->fd.saved_out = dup(list->fdsrc);
+			// dup2(sh->fd.saved_file, list->fdsrc);
 			sh->fd.saved_out = dup(1);
 			dup2(sh->fd.saved_file, 1);
 			close(sh->fd.saved_file);
-		}
 	}
 	if (in_out == 2)
 	{
@@ -37,35 +37,11 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 	}
 	if (in_out == 3)
 	{
-		if (list->redirs->right_target[0] == '-')
+		if (list->fdclose == 1)
 		{
-			if (list->next && list->next->args[0][0] == '>')
-			{
-				close (0);
-				close (1);
-			}
-			else if (ft_isdigit(list->next->args[0][0]))
-			{
-				close (0);
-				close (ft_atoi(list->next->args[0]));
-			}
+			close(0);
+			close(list->fdsrc);
 		}
-		if (list->next && list->next->args[0][0] == '>')
-		{
-			dup2(sh->fd.saved_fd, 1);
-			//utiliser la sortie standard de la command
-		}
-		else if (list->next && ft_isdigit(list->next->args[0][0]))
-		{
-			//utiliser le fd correspondant
-			// if (list->next->args[0][0] > 3 || list->next->args[0][0] < 0)
-			sh->fd.saved_out = dup(1);
-			dup2(1, ft_atoi(list->next->args[0]));
-			// close(sh->fd.saved_fd);
-			// close(sh->fd.saved_fd);
-		}
-		// dup2(sh->fd.saved_fd, 1);
-		// close(sh->fd.saved_file);
 	}
 }
 
@@ -89,11 +65,7 @@ int				switch_right(t_lexit *list, t_sh *sh, int *mod)
 				return (-1);
 		}
 		else
-		{
-			if (list->redirs->right_target[0] != '-')
-				sh->fd.saved_fd = ft_atoi(list->redirs->right_target);
 			switch_in_out(sh, 3, list);
-		}
 		switch_in_out(sh, 1, list);
 		*mod = 1;
 	}

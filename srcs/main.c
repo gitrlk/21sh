@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/18 12:51:53 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/18 15:47:14 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ int				get_prio(char *str, char **command, char **apaths)
 			*command = ft_strdup(str);
 		return (COMMAND);
 	}
-	else if (!ft_strcmp(str, ">"))
+	else if (!ft_strcmp(str, ">") || str[0] == '>' || str[1] == '>')
 		return (REDIR_R);
 	else if (!ft_strcmp(str, ">>"))
 		return (REDIR_RR);
@@ -149,6 +149,9 @@ t_lexit			*add_node(char *input, t_env *env)
 	tmp->checker = 0;
 	tmp->agr = 0;
 	tmp->is_pipe = 0;
+	tmp->fdsrc = 1;
+	tmp->fddst = -1;
+	tmp->fdclose = 0;
 	tmp->command = NULL;
 	tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
 	ft_freetab(apaths);
@@ -540,6 +543,19 @@ void				init_redirs(t_lexit *node)
 	// node->redirs->follow_up = NULL;
 }
 
+void				get_std_sd(t_lexit *node)
+{
+	if (node->args && ft_isdigit(node->args[0][0]))
+		node->prev->fdsrc = ft_atoi(node->args[0]);
+	if (node->next && node->next->args)
+	{
+		if (node->next->args[0][0] == '-')
+			node->prev->fdclose = 1;
+		if (ft_isdigit(node->next->args[0][0]))
+			node->prev->fddst = ft_atoi(node->next->args[0]);
+	}
+}
+
 void				get_last_redir(t_lexit *node, t_sh *sh)
 {
 	t_lexit		*tmp;
@@ -555,6 +571,7 @@ void				get_last_redir(t_lexit *node, t_sh *sh)
 			if (node->prev->redirs->right_target)
 				ft_strdel(&node->prev->redirs->right_target);
 			node->prev->redirs->right_target = ft_strdup(tmp->next->input);
+			get_std_sd(node);
 		}
 		if (tmp->next && ((tmp->prio == REDIR_L || tmp->prio == HEREDOC)))
 		{
@@ -744,10 +761,25 @@ void				trim_redir(t_lexit *list)
 
 void				exec_segment(t_sh *sh, t_execs *igo)
 {
+	// t_lexit *tmp;
 	if (double_check(igo->head))
 	{
 		assign_redir(igo->head, sh);
 		trim_redir(igo->head);
+		// tmp = igo->head;
+		// while (tmp)
+		// {
+		// 	ft_putstr("---- FDSRC IS : ");
+		// 	ft_putnbr(tmp->fdsrc);
+		// 	ft_putchar('\n');
+		// 	ft_putstr("---- FDDST IS : ");
+		// 	ft_putnbr(tmp->fddst);
+		// 	ft_putchar('\n');
+		// 	ft_putstr("---- FDCLOSE IS : ");
+		// 	ft_putnbr(tmp->fdclose);
+		// 	ft_putchar('\n');
+		// 	tmp = tmp->next;
+		// }
 		sh->execs = ft_tree_it(igo->head, NULL, 0);
 		igo->tmp2 = sh->execs;
 		execute(sh);
@@ -836,9 +868,27 @@ int				get_execs(t_sh *sh)
 
 void				parsing_exing(t_sh *sh)
 {
+	// t_lexit *tmp;
+
 	if (double_check(sh->list))
 	{
 		assign_redir(sh->list, sh);
+		trim_redir(sh->list);
+		// tmp = sh->list;
+		// while (tmp)
+		// {
+		// 	ft_putstr("---- FDSRC IS : ");
+		// 	ft_putnbr(tmp->fdsrc);
+		// 	ft_putchar('\n');
+		// 	ft_putstr("---- FDDST IS : ");
+		// 	ft_putnbr(tmp->fddst);
+		// 	ft_putchar('\n');
+		// 	ft_putstr("---- FDCLOSE IS : ");
+		// 	ft_putnbr(tmp->fdclose);
+		// 	ft_putchar('\n');
+		// 	tmp = tmp->next;
+		// }
+		//
 		sh->execs = ft_tree_it(sh->list, NULL, 0);
 		if (sh->execs->args)
 			execute(sh);
