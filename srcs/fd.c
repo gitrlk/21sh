@@ -42,6 +42,14 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 			close(0);
 			close(list->fdsrc);
 		}
+		else
+		{
+			sh->fd.saved_out = dup(list->fdsrc);
+			dup2(list->fddst, list->fdsrc);
+			close(list->fddst);
+			close(0);
+		}
+		// close(list->fddst);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/18 15:47:14 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/18 16:20:27 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,16 +294,12 @@ void				do_pipes(t_lexit *list, t_env *env, t_sh *sh)
 	list->left->is_pipe = 1;
 	if (pipid == 0)
 	{
-		// ft_putstr("--- NUMBER ONE ---");
-		// ft_putendl(list->left->input);
 		dup2(pipefd[1], sh->fd.saved_out);
 		close(pipefd[0]);
 		execs_deep(list->left, env, sh);
 	}
 	else
 	{
-		// ft_putstr("--- NUMBER TWO ---");
-		// ft_putendl(list->right->input);
 		dup2(pipefd[0], sh->fd.saved_in);
 		close(pipefd[1]);
 		execs_deep(list->right, env, sh);
@@ -761,25 +757,10 @@ void				trim_redir(t_lexit *list)
 
 void				exec_segment(t_sh *sh, t_execs *igo)
 {
-	// t_lexit *tmp;
 	if (double_check(igo->head))
 	{
 		assign_redir(igo->head, sh);
 		trim_redir(igo->head);
-		// tmp = igo->head;
-		// while (tmp)
-		// {
-		// 	ft_putstr("---- FDSRC IS : ");
-		// 	ft_putnbr(tmp->fdsrc);
-		// 	ft_putchar('\n');
-		// 	ft_putstr("---- FDDST IS : ");
-		// 	ft_putnbr(tmp->fddst);
-		// 	ft_putchar('\n');
-		// 	ft_putstr("---- FDCLOSE IS : ");
-		// 	ft_putnbr(tmp->fdclose);
-		// 	ft_putchar('\n');
-		// 	tmp = tmp->next;
-		// }
 		sh->execs = ft_tree_it(igo->head, NULL, 0);
 		igo->tmp2 = sh->execs;
 		execute(sh);
@@ -868,27 +849,10 @@ int				get_execs(t_sh *sh)
 
 void				parsing_exing(t_sh *sh)
 {
-	// t_lexit *tmp;
-
 	if (double_check(sh->list))
 	{
 		assign_redir(sh->list, sh);
 		trim_redir(sh->list);
-		// tmp = sh->list;
-		// while (tmp)
-		// {
-		// 	ft_putstr("---- FDSRC IS : ");
-		// 	ft_putnbr(tmp->fdsrc);
-		// 	ft_putchar('\n');
-		// 	ft_putstr("---- FDDST IS : ");
-		// 	ft_putnbr(tmp->fddst);
-		// 	ft_putchar('\n');
-		// 	ft_putstr("---- FDCLOSE IS : ");
-		// 	ft_putnbr(tmp->fdclose);
-		// 	ft_putchar('\n');
-		// 	tmp = tmp->next;
-		// }
-		//
 		sh->execs = ft_tree_it(sh->list, NULL, 0);
 		if (sh->execs->args)
 			execute(sh);
