@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   line_editing.c                                     :+:      :+:    :+:   */
+/*   line_edit.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:58 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 15:25:29 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/18 20:35:21 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,14 +173,14 @@ void sig_trap(t_edit *line, int buf, int mode)
 		}
 }
 
-void handle_key(int buf, t_edit *line, int mode)
+void handle_key(int buf, t_edit *line)
 {
 	if (check_copy(buf))
 		print_cpy(buf, line);
 	else
 	{
 		if (buf == 3 || ((buf == 4) && (line->max_size == 2)))
-			sig_trap(line, buf, mode);
+			sig_trap(line, buf, line->prompt_mode);
 		if (buf == PRESS_LEFT)
 			ft_left_arrow(line);
 		else if (buf == PRESS_RIGHT)

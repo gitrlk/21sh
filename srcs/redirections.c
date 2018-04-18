@@ -100,6 +100,7 @@ void				do_heredoc(t_lexit *list, t_sh *sh)
 
 	init_valhd(&valhd);
 	init_term();
+	sh->line->prompt_mode = 1;
 	if ((valhd.ret_stop[0] = open("/tmp/heredoc_fd", O_WRONLY |
 	O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
 		ft_errors(5, NULL, "heredoc error: couldn't create heredoc");
@@ -111,7 +112,7 @@ void				do_heredoc(t_lexit *list, t_sh *sh)
 			ft_line_reset(sh->line);
 			while ((valhd.hd = read(0, &sh->buf, sizeof(int))))
 			{
-				handle_key(sh->buf, sh->line, 1);
+				handle_key(sh->buf, sh->line);
 				if (sh->buf == '\n' || sh->buf == 3)
 					break ;
 				sh->buf = 0;

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/18 20:09:53 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/18 20:33:59 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,17 @@ typedef	struct			s_edit
 	struct winsize 		sz;
 	int						cursor_pos;
 	int						max_size;
+	int 						select_mode;
+	int       			   start_select;
+	int	    	       	end_select;
+	int						prompt_mode;
+	char						*quote;
 	char 						*line;
 	char						*heredoc;
-int 							select_mode;
-	int       			    start_select;
-	int	    	       	end_select;
 	char 						*is_highlight;
 	char						*left;
 	char						*right;
+	char						*mode_str;
 	struct s_hstr			*hstr; //pointer to the last element added
 	struct s_hstr			*curr; //pointer to current element of the history
 }								t_edit;
