@@ -17,14 +17,6 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 {
 	if (in_out == 1)
 	{
-		// if (list->next && ft_isdigit(list->next->args[0][0]))
-		// {
-		// 	dup2(sh->fd.saved_file, ft_atoi(list->next->args[0]));
-		// 	close(sh->fd.saved_file);
-		// }		else
-		// {
-			// sh->fd.saved_out = dup(list->fdsrc);
-			// dup2(sh->fd.saved_file, list->fdsrc);
 			sh->fd.saved_out = dup(1);
 			dup2(sh->fd.saved_file, 1);
 			close(sh->fd.saved_file);
@@ -42,13 +34,14 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 			close(0);
 			close(list->fdsrc);
 		}
-		else
-		{
-			sh->fd.saved_out = dup(list->fdsrc);
-			dup2(list->fddst, list->fdsrc);
-			close(list->fddst);
-			close(0);
-		}
+		// else
+		// {
+			// ft_putendl("coucou");
+			// sh->fd.saved_out = dup(1);
+			// dup2(2, 1);
+			// close(list->fdsrc);
+			// close(2);
+		// }
 		// close(list->fddst);
 	}
 }

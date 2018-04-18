@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/18 16:20:27 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/18 19:18:03 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -294,7 +294,8 @@ void				do_pipes(t_lexit *list, t_env *env, t_sh *sh)
 	list->left->is_pipe = 1;
 	if (pipid == 0)
 	{
-		dup2(pipefd[1], sh->fd.saved_out);
+		if (list->left)
+			dup2(pipefd[1], list->left->fdsrc);
 		close(pipefd[0]);
 		execs_deep(list->left, env, sh);
 	}
@@ -747,8 +748,8 @@ void				trim_redir(t_lexit *list)
 				save->next = NULL;
 			else if (tmp->next)
 			{
-				save->next = tmp->next;
-				tmp->next->prev = save;
+				save->next = tmp;
+				tmp->prev = save;
 			}
 		}
 		tmp = tmp->next;
