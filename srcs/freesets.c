@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:03 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 02:32:37 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/18 20:09:09 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,83 @@ void			ft_line_reset(t_edit *line)
 	line->line = ft_memalloc(sizeof(char));
 	line->select_mode = 0;
 	line->curr = NULL;
+}
+
+void				free_tree(t_lexit *lexdat)
+{
+	if (lexdat)
+	{
+		if (lexdat->left)
+			free_tree(lexdat->left);
+		if (lexdat->right)
+			free_tree(lexdat->right);
+		if (lexdat->input && lexdat->input[0])
+			ft_strdel(&lexdat->input);
+		if (lexdat->command && lexdat->command[0])
+			ft_strdel(&lexdat->command);
+		if (lexdat->redirs && lexdat->redirs->right_target)
+			ft_strdel(&lexdat->redirs->right_target);
+		if (lexdat->redirs && lexdat->redirs->left_target)
+			ft_strdel(&lexdat->redirs->left_target);
+	}
+}
+
+void				clean_list(t_lexit *tmp, int *checker)
+{
+	if (tmp->input)
+		ft_strdel(&tmp->input);
+	if (tmp->args)
+		ft_freetab(tmp->args);
+	if (tmp->command)
+		ft_strdel(&tmp->command);
+	if (tmp->checker && tmp->redirs->right_target)
+	{
+		ft_strdel(&tmp->redirs->right_target);
+		*checker = 1;
+	}
+	if (tmp->checker && tmp->redirs->left_target)
+	{
+		ft_strdel(&tmp->redirs->left_target);
+		*checker = 1;
+		if (tmp->redirs->redir_left == 2)
+			ft_strdel(&tmp->redirs->endoff);
+	}
+}
+
+void				free_list(t_lexit *list)
+{
+	t_lexit		*tmp;
+	int			checker;
+
+	checker = 0;
+	tmp = list;
+	if (tmp)
+	{
+		while(list)
+		{
+			tmp = list;
+			list = list->next;
+			clean_list(tmp, &checker);
+				free(tmp->redirs);
+			if (tmp)
+				free(tmp);
+		}
+	}
+}
+
+int				free_igo(t_execs *igo, int mod)
+{
+	int			exec_number;
+
+	exec_number = igo->exec_number;
+	if (mod == 1)
+	{
+		free(igo);
+		return (1);
+	}
+	else
+	{
+		free(igo);
+		return (exec_number);
+	}
 }
