@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 15:20:47 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/18 13:01:32 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,17 +164,28 @@ void			update_list(t_lexit *list, int i, t_env *env)
 {
 	char		**apaths;
 	char		**tmp;
-
+	t_lexit *tmp1;
+	tmp1 = list;
+	// int j = 0;
 	apaths = ft_set_paths(env);
-	ft_strdel(&list->input);
-	ft_strdel(&list->command);
-	list->input = ft_strdup(list->args[i]);
-
-	tmp = copypasta(list->args, i);
-	ft_freetab(list->args);
+	if (tmp1->input)
+		ft_strdel(&tmp1->input);
+	if (tmp1->command)
+		ft_strdel(&tmp1->command);
+	tmp1->input = ft_strdup(tmp1->args[i]);
+	tmp = copypasta(tmp1->args, i);
+	// while (tmp[j])
+	// {
+	// 	ft_putstr(" ----> ");
+	// 	ft_putendl(tmp[j]);
+	// 	j++;
+	// }
+	ft_freetab(tmp1->args);
 	list->args = copypasta(tmp, 0);
+	// ft_putstr("post copy pasta is : ");
+	// ft_putendl(tmp1->args[0]);
 	ft_freetab(tmp);
-	list->prio = get_prio(list->args[0], &list->command, apaths);
+	tmp1->prio = get_prio(tmp1->args[0], &list->command, apaths);
 	if (apaths)
 		ft_freetab(apaths);
 }
@@ -196,11 +207,20 @@ void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
 			ft_env_with_var(&new_env, list->args[i++]);
 		if (list->args[i])
 		{
+			// ft_putendl(list->input);
 			update_list(list, i, new_env);
+			// ft_putendl(list->input);
+			// ft_putendl(list->args[0]);
 			if (check_if_builtin(list))
+			// {
+			// 	ft_putendl("COUCOU");
 				exec_no_fork(list, new_env, sh);
+			// }
 			else if (list->prio != ARG)
+			// {
+			// 	ft_putendl("OULALA");
 				execs(sh->execs, sh->env, sh);
+			// }
 			else
 				ft_errors(7, NULL, sh->execs->args[0]);
 		}

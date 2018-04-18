@@ -103,5 +103,4 @@ void ft_cd(char **args, t_env **env)
     exec_cd_env(env, "HOME", 3, args);
   else if (args[1])
     do_cd(args[1], env, 1);
-	exit (0);
 }

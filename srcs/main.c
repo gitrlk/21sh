@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/17 23:40:37 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/18 12:51:53 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char			**copypasta(char **src, int i)
 	j = 0;
 	while (src[size])
 		size++;
-	if (!(ret = (char **)malloc(sizeof(char *) * size)))
+	if (!(ret = (char **)malloc(sizeof(char *) * (size + 1))))
 		return (NULL);
 	while (src[i])
 	{
