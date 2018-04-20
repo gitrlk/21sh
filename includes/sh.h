@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/19 00:18:21 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/20 05:54:02 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,22 @@ typedef	struct			s_edit
 {
 	struct winsize 		sz;
 	int						cursor_pos;
+	int						cur_mod_pos;
 	int						max_size;
-	int 						select_mode;
-	int       			   start_select;
-	int	    	       	end_select;
+	int						max_mod_size;
+	int 					select_mode;
+	int       		start_select;
+	int	    	    end_select;
 	int						prompt_mode;
 	int						quote_complete;
-	char						*quote;
-	char 						*line;
-	char						*heredoc;
-	char 						*is_highlight;
-	char						*left;
-	char						*right;
-	char						*q_str;
+	int           array_size;
+	char					*quote;
+	char 					*line;
+	char					*heredoc;
+	char 					*is_highlight;
+	char					*left;
+	char					*right;
+	char					*q_str;
 	struct s_hstr			*hstr; //pointer to the last element added
 	struct s_hstr			*curr; //pointer to current element of the history
 }								t_edit;
@@ -91,6 +94,7 @@ typedef struct			s_lexit
 	int					fdsrc;
 	int					fddst;
 	int					fdclose;
+	int					quote;
 	struct s_redir		*redirs;
 	struct s_lexit		*left;
 	struct s_lexit		*right;
@@ -159,7 +163,9 @@ typedef struct			s_sh
 	t_lexit				*execs;
 	t_edit				*line;
 	t_fday				fd;
+
 	int					buf;
+	int					buf2;
 }							t_sh;
 
 typedef struct			s_execs
@@ -209,9 +215,9 @@ t_lexit 			*ft_tree_it(t_lexit *lexdat, t_lexit *list, int prio);
 int 				ft_isstrprint(char *str);
 char				*find_cmd(char **apaths, char *cmd);
 int				parsing_listing(t_lexit **list, char *input, t_env *env, t_sh *sh);
-t_lexit			*add_node(char *input, t_env *env);
+t_lexit			*add_node(char *input, t_sh *sh);
 t_parsing		*init_data(void);
-int				quote_checker(t_parsing *data, char *input, t_sh *sh);
+int				quote_checker(char *input, t_sh *sh);
 int				check_first_node(t_parsing *data, char *input);
 void				get_full_op(t_parsing *data, char *input);
 void				execs_deep(t_lexit *list, t_env *env, t_sh *sh);
@@ -255,7 +261,7 @@ void				exec_segment(t_sh *sh, t_execs *igo);
 void				exec_last_segment(t_sh *sh, t_execs *igo);
 int				free_igo(t_execs *igo, int mod);
 void				trim_redir(t_lexit *list);
-
-
+void swap_quote(t_execs *igo, t_sh *sh);
+char **ft_replace_quote(char **array, t_sh *sh, char **input);
 
 #endif

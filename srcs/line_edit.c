@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:58 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/19 00:24:45 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/19 04:59:02 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,8 @@ void sig_trap(t_edit *line, int buf, int mode)
 				ft_putchar('\n');
 				ft_prompt(1);
 			}
+			else
+				line->prompt_mode = 0;
 		}
 		if (buf == 4)
 		{
@@ -179,7 +181,7 @@ void handle_key(t_sh *sh)
 		print_cpy(sh->buf, sh->line);
 	else
 	{
-		if (sh->buf == 3 || ((sh->buf == 4) && (sh->line->max_size == 2)) || ((sh->buf == 4) && sh->line->max_size == 2)
+		if (sh->buf == 3 || ((sh->buf == 4) && (sh->line->max_size == 2)) || ((sh->buf == 4) && (sh->line->cur_mod_pos == 6)))
 			sig_trap(sh->line, sh->buf, sh->line->prompt_mode);
 		if (sh->buf == PRESS_LEFT)
 			ft_left_arrow(sh->line);

@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:50 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/18 20:35:25 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/19 04:47:04 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,11 @@ void add_to_line(t_edit *line, int buf)
 	line->cursor_pos++;
 	if (line->cursor_pos == line->max_size)
 	{
-		line->line = ft_freejoinstr(line->line, buf2);
+		if (line->prompt_mode != 2)
+			line->line = ft_freejoinstr(line->line, buf2);
 		ft_putchar_fd(buf, STDOUT_FILENO);
 	}
 	else if (line->cursor_pos != line->max_size)
 		ft_insert(buf, line);
+
 }

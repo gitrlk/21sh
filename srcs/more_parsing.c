@@ -38,7 +38,7 @@ t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
 {
 	t_lexit		*dst;
 
-	dst = add_node(src->input, sh->env);
+	dst = add_node(src->input, sh);
 	dst->redirs = src->redirs;
 	return (dst);
 }
