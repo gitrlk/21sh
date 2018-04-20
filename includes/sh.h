@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/20 05:54:02 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/20 20:15:43 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,5 +263,6 @@ int				free_igo(t_execs *igo, int mod);
 void				trim_redir(t_lexit *list);
 void swap_quote(t_execs *igo, t_sh *sh);
 char **ft_replace_quote(char **array, t_sh *sh, char **input);
+char			**ft_strsplit_21(char const *s, char c, char d);
 
 #endif

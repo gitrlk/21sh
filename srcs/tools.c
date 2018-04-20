@@ -17,6 +17,85 @@ void				cut_list(t_sh *sh, t_execs *igo)
 	}
 }
 
+static int		ft_cnt_parts(const char *s, char c, char d)
+{
+	int		cnt;
+	int		in_substring;
+
+	in_substring = 0;
+	cnt = 0;
+	while (*s != '\0')
+	{
+		if (*s == d)
+		{
+			s++;
+			while (*s != d)
+				s++;
+			cnt++;
+		}
+		if (in_substring == 1 && *s == c)
+			in_substring = 0;
+		if (in_substring == 0 && *s != c && *s != d)
+		{
+			in_substring = 1;
+			cnt++;
+		}
+		s++;
+	}
+	return (cnt);
+}
+
+static int		ft_wlen(const char *s, char c)
+{
+	int		len;
+
+	len = 0;
+	while (*s != c && *s != '\0')
+	{
+		len++;
+		s++;
+	}
+	return (len);
+}
+
+char			**ft_strsplit_21(char const *s, char c, char d)
+{
+	char	**t;
+	int		nb_word;
+	int		index;
+
+	if (s == NULL)
+		return (NULL);
+	index = 0;
+	nb_word = ft_cnt_parts((const char *)s, c, d);
+	t = (char **)malloc(sizeof(*t) * (nb_word + 1));
+	if (t == NULL)
+		return (NULL);
+	while (nb_word--)
+	{
+		while (*s == c && *s != '\0')
+			s++;
+		if (*s == d)
+		{
+			s++;
+			t[index] = ft_strsub((const char *)s, 0, ft_wlen((const char *)s, d));
+			index++;
+			s = s + ft_wlen(s, d);
+		}
+		else
+		{
+			t[index] = ft_strsub((const char *)s, 0, ft_wlen((const char *)s, c));
+			index++;
+			s = s + ft_wlen(s, c);
+		}
+		if (t[index] == NULL)
+			return (NULL);
+	}
+	t[index] = NULL;
+	return (t);
+}
+
+
 char			**ft_fill_envp(t_env *env)
 {
 	char		**ret;
@@ -133,65 +212,6 @@ void 				add_quote_to_args(char **args, char *str)
 // 	return (cnt);
 // }
 
-static int		ft_cnt_parts(const char *s, char c)
-{
-	int		cnt;
-	int 	i;
-	int		in_substring;
-
-	i = 0;
-	in_substring = 0;
-	cnt = 0;
-	while (s[i] != '\0')
-	{
-		if (in_substring == 1 && s[i] == c)
-			in_substring = 0;
-		if (in_substring == 0 && s[i] != c)
-		{
-			in_substring = 1;
-			cnt++;
-		}
-		i++;
-	}
-	return (cnt);
-}
-
-static int		wlen(const char *s, char c)
-{
-	int		len;
-
-	len = 0;
-	while (*s != c && *s != '\0')
-	{
-		len++;
-		s++;
-	}
-	return (len);
-}
-
-char **split_quote(char const *s, char c, t_sh *sh)
-{
-	int		index;
-	int   i;
-	char  **t;
-	int   nb_word;
-
-	i = 0;
-	index = 0;
-	sh->line->array_size = ft_cnt_parts((const char *)s, c);
-	nb_word = sh->line->array_size;
-	t = (char **)malloc(sizeof(*t) * (sh->line->array_size + 1));
-	while (nb_word--)
-	{
-		while (*s == c && *s != '\0')
-			s++;
-		t[index] = ft_strsub((const char *)s, 0, wlen((const char *)s, c));
-		s = s + wlen(s, c);
-		index++;
-	}
-	t[index] = NULL;
-	return (t);
-}
 
 t_lexit			*add_node(char *input, t_sh *sh)
 {
@@ -214,30 +234,30 @@ t_lexit			*add_node(char *input, t_sh *sh)
 	apaths = ft_set_paths(sh->env);
 	// ft_putnbr(sh->line->quote_complete);
 	// ft_putendl("quote_complete");
-	if (sh->line->quote_complete && ft_strchr(input,'\''))
-	{
-				tmp->input = ft_strtrim(input);
-				buffer = split_quote(tmp->input, '\'', sh);
-				// ft_putnbr(sh->line->array_size);
-				// ft_putendl("NUMBER");
-				tmp->args = ft_replace_quote(buffer, sh, tmp->args);
-				i = 0;
-				tmp->next = NULL;
-				tmp->redirs = NULL;
-				tmp->checker = 0;
-				tmp->agr = 0;
-				tmp->is_pipe = 0;
-				tmp->fdsrc = 1;
-				tmp->fddst = -1;
-				tmp->fdclose = 0;
-				tmp->command = NULL;
-				tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
-				sh->line->quote_complete = 0;
-				ft_freetab(apaths);
-				return (tmp);
-	}
-	else
-	{
+	// if (sh->line->quote_complete && ft_strchr(input,'\''))
+	// {
+	// 			tmp->input = ft_strtrim(input);
+	// 			buffer = split_quote(tmp->input, '\'', sh);
+	// 			// ft_putnbr(sh->line->array_size);
+	// 			// ft_putendl("NUMBER");
+	// 			tmp->args = ft_replace_quote(buffer, sh, tmp->args);
+	// 			i = 0;
+	// 			tmp->next = NULL;
+	// 			tmp->redirs = NULL;
+	// 			tmp->checker = 0;
+	// 			tmp->agr = 0;
+	// 			tmp->is_pipe = 0;
+	// 			tmp->fdsrc = 1;
+	// 			tmp->fddst = -1;
+	// 			tmp->fdclose = 0;
+	// 			tmp->command = NULL;
+	// 			tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
+	// 			sh->line->quote_complete = 0;
+	// 			ft_freetab(apaths);
+	// 			return (tmp);
+	// }
+	// else
+	// {
 		tmp->input = ft_strtrim(input);
 		tmp->args = ft_prep_input(input);
 		tmp->next = NULL;
@@ -253,7 +273,7 @@ t_lexit			*add_node(char *input, t_sh *sh)
 		tmp->command = NULL;
 		tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
 		// ft_freetab(apaths);
-	}
+	// }
 	ft_freetab(apaths);
 	return (tmp);
 }

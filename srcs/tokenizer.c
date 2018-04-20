@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/20 01:33:23 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/20 20:28:08 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,18 +39,18 @@ char        **string_to_tab(char *str)
 char				**ft_prep_input(char *str)
 {
 	char			**tmp;
-	char			*tmp1;
+	// char			*tmp1;
 	int			i;
 
 	i = 0;
-	tmp = ft_strsplit(str, ' ');
-	while (tmp[i])
-	{
-		tmp1 = ft_strtrim(tmp[i]);
-		ft_strdel(&tmp[i]);
-		tmp[i] = tmp1;
-		i++;
-	}
+	tmp = ft_strsplit_21(str, ' ', '\'');
+	// while (tmp[i])
+	// {
+	// 	tmp1 = ft_strtrim(tmp[i]);
+	// 	ft_strdel(&tmp[i]);
+	// 	tmp[i] = tmp1;
+	// 	i++;
+	// }
 	return (tmp);
 }
 
