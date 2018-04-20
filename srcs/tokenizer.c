@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/20 20:28:08 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/20 21:39:57 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ char				**ft_prep_input(char *str)
 	int			i;
 
 	i = 0;
-	tmp = ft_strsplit_21(str, ' ', '\'');
+	tmp = ft_strsplit_21(str, ' ', '\'', '\"');
 	// while (tmp[i])
 	// {
 	// 	tmp1 = ft_strtrim(tmp[i]);

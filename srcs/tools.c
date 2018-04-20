@@ -17,7 +17,7 @@ void				cut_list(t_sh *sh, t_execs *igo)
 	}
 }
 
-static int		ft_cnt_parts(const char *s, char c, char d)
+static int		ft_cnt_parts(const char *s, char c, char d, char e)
 {
 	int		cnt;
 	int		in_substring;
@@ -33,9 +33,16 @@ static int		ft_cnt_parts(const char *s, char c, char d)
 				s++;
 			cnt++;
 		}
+		if (*s == e)
+		{
+			s++;
+			while (*s != e)
+				s++;
+			cnt++;
+		}
 		if (in_substring == 1 && *s == c)
 			in_substring = 0;
-		if (in_substring == 0 && *s != c && *s != d)
+		if (in_substring == 0 && *s != c && *s != d && *s != e)
 		{
 			in_substring = 1;
 			cnt++;
@@ -58,7 +65,7 @@ static int		ft_wlen(const char *s, char c)
 	return (len);
 }
 
-char			**ft_strsplit_21(char const *s, char c, char d)
+char			**ft_strsplit_21(char const *s, char c, char d, char e)
 {
 	char	**t;
 	int		nb_word;
@@ -69,7 +76,7 @@ char			**ft_strsplit_21(char const *s, char c, char d)
 	if (s == NULL)
 		return (NULL);
 	index = 0;
-	nb_word = ft_cnt_parts((const char *)s, c, d);
+	nb_word = ft_cnt_parts((const char *)s, c, d, e);
 	t = (char **)malloc(sizeof(*t) * (nb_word + 1));
 	t[nb_word] = NULL;
 	if (t == NULL)
@@ -84,6 +91,14 @@ char			**ft_strsplit_21(char const *s, char c, char d)
 			t[index] = ft_strsub((const char *)s, 0, ft_wlen((const char *)s, d));
 			index++;
 			s = s + ft_wlen(s, d);
+			s++;
+		}
+		else if (*s == e)
+		{
+			s++;
+			t[index] = ft_strsub((const char *)s, 0, ft_wlen((const char *)s, e));
+			index++;
+			s = s + ft_wlen(s, e);
 			s++;
 		}
 		else

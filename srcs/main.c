@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/20 15:40:40 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/20 21:14:05 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int				get_prio(char *str, char **command, char **apaths)
 			*command = ft_strdup(str);
 		return (COMMAND);
 	}
-	else if (!ft_strcmp(str, ">") || str[0] == '>' || str[1] == '>')
+	else if (!ft_strcmp(str, ">") || (str[0] == '>' && str[1] == '&') || (str[1] == '>' && str[2] == '&'))
 		return (REDIR_R);
 	else if (!ft_strcmp(str, ">>"))
 		return (REDIR_RR);
