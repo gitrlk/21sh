@@ -24,6 +24,7 @@ static int		ft_cnt_parts(const char *s, char c, char d, char e)
 
 	in_substring = 0;
 	cnt = 0;
+	// ft_putendl(s);
 	while (*s != '\0')
 	{
 		if (*s == d)
@@ -233,63 +234,27 @@ t_lexit			*add_node(char *input, t_sh *sh)
 {
 	t_lexit		*tmp;
 	char			**apaths;
-	int				*array_size;
-
-	char 			**buffer;
-	int       i;
-
-	i = 0;
-	array_size = 0;
-	buffer = NULL;
 
 	if (!input)
 		return (NULL);
 	if (!(tmp = ft_memalloc(sizeof(t_lexit))))
 		return (NULL);
-
+	(void)sh;
 	apaths = ft_set_paths(sh->env);
-	// ft_putnbr(sh->line->quote_complete);
-	// ft_putendl("quote_complete");
-	// if (sh->line->quote_complete && ft_strchr(input,'\''))
-	// {
-	// 			tmp->input = ft_strtrim(input);
-	// 			buffer = split_quote(tmp->input, '\'', sh);
-	// 			// ft_putnbr(sh->line->array_size);
-	// 			// ft_putendl("NUMBER");
-	// 			tmp->args = ft_replace_quote(buffer, sh, tmp->args);
-	// 			i = 0;
-	// 			tmp->next = NULL;
-	// 			tmp->redirs = NULL;
-	// 			tmp->checker = 0;
-	// 			tmp->agr = 0;
-	// 			tmp->is_pipe = 0;
-	// 			tmp->fdsrc = 1;
-	// 			tmp->fddst = -1;
-	// 			tmp->fdclose = 0;
-	// 			tmp->command = NULL;
-	// 			tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
-	// 			sh->line->quote_complete = 0;
-	// 			ft_freetab(apaths);
-	// 			return (tmp);
-	// }
-	// else
-	// {
-		tmp->input = ft_strtrim(input);
-		tmp->args = ft_prep_input(input);
-		tmp->next = NULL;
-		tmp->left = 0;
-		tmp->right = 0;
-		tmp->redirs = NULL;
-		tmp->checker = 0;
-		tmp->agr = 0;
-		tmp->is_pipe = 0;
-		tmp->fdsrc = 1;
-		tmp->fddst = -1;
-		tmp->fdclose = 0;
-		tmp->command = NULL;
-		tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
-		// ft_freetab(apaths);
-	// }
+	tmp->input = ft_strtrim(input);
+	tmp->args = ft_prep_input(input);
+	tmp->next = NULL;
+	tmp->left = 0;
+	tmp->right = 0;
+	tmp->redirs = NULL;
+	tmp->checker = 0;
+	tmp->agr = 0;
+	tmp->is_pipe = 0;
+	tmp->fdsrc = 1;
+	tmp->fddst = -1;
+	tmp->fdclose = 0;
+	tmp->command = NULL;
+	tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
 	ft_freetab(apaths);
 	return (tmp);
 }

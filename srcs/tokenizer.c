@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/20 21:39:57 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/20 22:52:16 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,33 +23,27 @@ int 				ft_isstrprint(char *str)
 	return (i);
 }
 
-char        **string_to_tab(char *str)
-{
-	char	**t;
-
-	t = (char **)malloc(sizeof(*t) * 2);
-	if (t == NULL)
-		return (NULL);
-	t[0] = ft_strdup(str);
-	// ft_strdel(&str);
-	t[1] = NULL;
-	return(t);
-}
+// char        **string_to_tab(char *str)
+// {
+// 	char	**t;
+//
+// 	t = (char **)malloc(sizeof(*t) * 2);
+// 	if (t == NULL)
+// 		return (NULL);
+// 	t[0] = ft_strdup(str);
+// 	// ft_strdel(&str);
+// 	t[1] = NULL;
+// 	return(t);
+// }
 
 char				**ft_prep_input(char *str)
 {
 	char			**tmp;
-	// char			*tmp1;
-	int			i;
 
-	i = 0;
 	tmp = ft_strsplit_21(str, ' ', '\'', '\"');
-	// while (tmp[i])
+	// if(sh->line->q_str)
 	// {
-	// 	tmp1 = ft_strtrim(tmp[i]);
-	// 	ft_strdel(&tmp[i]);
-	// 	tmp[i] = tmp1;
-	// 	i++;
+   //
 	// }
 	return (tmp);
 }

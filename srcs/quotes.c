@@ -74,13 +74,13 @@ int del_quote(t_sh *sh)
         i++;
 				if (sh->line->line[i + 1] == '\'')
         {
-						// ft_putnbr(i);
-						sh->line->quote_complete = 1;
-						new[j] = '\0';
-						sh->line->q_str = ft_strsub(sh->line->line, start, j);
-						return (0);
+					// ft_putnbr(i);
+				sh->line->quote_complete = 1;
+				new[j] = '\0';
+				sh->line->q_str = ft_strsub(sh->line->line, start, j);
+				return (0);
 
-				}
+			}
     }
     new[j] = '\n';
     new[j + 1] = '\0';
