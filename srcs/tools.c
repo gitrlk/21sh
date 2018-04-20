@@ -192,7 +192,7 @@ char **split_quote(char const *s, char c, t_sh *sh)
 		index++;
 	}
 	t[index] = NULL;
-	ft_putendl("in split quote:");
+	ft_putendl("after split quote:");
 	while (t[i])
 		ft_putendl(t[i++]);
 	ft_putnbr(sh->line->array_size);
@@ -219,17 +219,14 @@ t_lexit			*add_node(char *input, t_sh *sh)
 		return (NULL);
 
 	apaths = ft_set_paths(sh->env);
-	ft_putnbr(sh->line->quote_complete);
-	ft_putendl("quote_complete");
+	// ft_putnbr(sh->line->quote_complete);
+	// ft_putendl("quote_complete");
 	if (sh->line->quote_complete && ft_strchr(input,'\''))
 	{
 				tmp->input = ft_strtrim(input);
 				buffer = split_quote(tmp->input, '\'', sh);
-				ft_putnbr(sh->line->array_size);
-				ft_putendl("NUMBER");
-				ft_putendl("after_split_quote");
-				while (buffer[i])
-					ft_putendl(buffer[i++]);
+				// ft_putnbr(sh->line->array_size);
+				// ft_putendl("NUMBER");
 				tmp->args = ft_replace_quote(buffer, sh, tmp->args);
 				i = 0;
 				ft_putchar('\n');
