@@ -63,12 +63,15 @@ char			**ft_strsplit_21(char const *s, char c, char d)
 	char	**t;
 	int		nb_word;
 	int		index;
+	int		i;
 
+	i = 0;
 	if (s == NULL)
 		return (NULL);
 	index = 0;
 	nb_word = ft_cnt_parts((const char *)s, c, d);
 	t = (char **)malloc(sizeof(*t) * (nb_word + 1));
+	t[nb_word] = NULL;
 	if (t == NULL)
 		return (NULL);
 	while (nb_word--)
@@ -79,8 +82,11 @@ char			**ft_strsplit_21(char const *s, char c, char d)
 		{
 			s++;
 			t[index] = ft_strsub((const char *)s, 0, ft_wlen((const char *)s, d));
+			ft_putstr("cocuouc\n");
+			ft_putendl(t[index]);
 			index++;
 			s = s + ft_wlen(s, d);
+			ft_putendl("oula");
 		}
 		else
 		{
@@ -88,10 +94,16 @@ char			**ft_strsplit_21(char const *s, char c, char d)
 			index++;
 			s = s + ft_wlen(s, c);
 		}
-		if (t[index] == NULL)
-			return (NULL);
+		// if (t[index] == NULL)
+		// 	return (NULL);
 	}
-	t[index] = NULL;
+	// t[index] = NULL;
+	while (t[i])
+	{
+		ft_putstr("THIS IS TAB[I] : ");
+		ft_putendl(t[i]);
+		i++;
+	}
 	return (t);
 }
 
