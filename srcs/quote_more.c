@@ -43,12 +43,14 @@ char **ft_replace_quote(char **array, t_sh *sh, char **ret)
 	i = -1;
 	nbr = -1;
 	if (sh->line->array_size > 1)
+	{
 		while(start[++i])
 			ret[++nbr] = ft_strdup(start[i]);
+		ret[++nbr] = ft_strdup(array[1]);
+	}
 	if (sh->line->array_size > 2)
 	{
 		i = -1;
-		ret[++nbr] = ft_strdup(array[1]);
 		while(end[++i])
 			ret[++nbr] = ft_strdup(end[i]);
 	}
