@@ -15,8 +15,6 @@ char **ft_replace_quote(char **array, t_sh *sh, char **ret)
 	if (sh->line->array_size > 1)
 	{
 		trimed = ft_strtrim(array[0]);
-    ft_putstr("trimed1:");
-    ft_putendl(trimed);
 		if (trimed)
 		{
 			start = ft_strsplit(trimed, ' ');

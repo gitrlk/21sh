@@ -180,8 +180,6 @@ char **split_quote(char const *s, char c, t_sh *sh)
 	index = 0;
 	sh->line->array_size = ft_cnt_parts((const char *)s, c);
 	nb_word = sh->line->array_size;
-	ft_putnbr(sh->line->array_size);
-	ft_putendl(" ");
 	t = (char **)malloc(sizeof(*t) * (sh->line->array_size + 1));
 	while (nb_word--)
 	{
@@ -192,11 +190,6 @@ char **split_quote(char const *s, char c, t_sh *sh)
 		index++;
 	}
 	t[index] = NULL;
-	ft_putendl("after split quote:");
-	while (t[i])
-		ft_putendl(t[i++]);
-	ft_putnbr(sh->line->array_size);
-	ft_putendl(" ");
 	return (t);
 }
 
@@ -229,19 +222,7 @@ t_lexit			*add_node(char *input, t_sh *sh)
 				// ft_putendl("NUMBER");
 				tmp->args = ft_replace_quote(buffer, sh, tmp->args);
 				i = 0;
-				ft_putchar('\n');
-				ft_putendl("after_replace_quote");
-				ft_putendl("before segfault i can print ");
-				while (tmp->args[i])
-				{
-					ft_putstr("index:");
-					ft_putnbr(i);
-					ft_putstr("  content:");
-					ft_putendl(tmp->args[i]);
-					i++;
-				}
 				tmp->next = NULL;
-				tmp->args = NULL;
 				tmp->redirs = NULL;
 				tmp->checker = 0;
 				tmp->agr = 0;
@@ -250,11 +231,10 @@ t_lexit			*add_node(char *input, t_sh *sh)
 				tmp->fddst = -1;
 				tmp->fdclose = 0;
 				tmp->command = NULL;
-				ft_putendl("segfault sur get_prio");
 				tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
 				sh->line->quote_complete = 0;
 				ft_freetab(apaths);
-				return (NULL);
+				return (tmp);
 	}
 	else
 	{
