@@ -9,11 +9,7 @@ void				execute(t_sh *sh)
 	else if (sh->execs->prio != ARG)
 		execs(sh->execs, sh->env, sh);
 	else
-	{
-		ft_putnbr(sh->execs->prio);
-		ft_putnbr(ARG);
 		ft_errors(6, NULL, sh->execs->args[0]);
-	}
 }
 
 void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)

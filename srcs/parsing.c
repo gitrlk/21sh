@@ -151,7 +151,11 @@ int				check_if_over(char *input, t_parsing *data)
 		return (1);
 	}
 	if (ft_strchr(OPERATOR, tmp[0]))
+	{
+		ft_strdel(&tmp);
+		ft_strdel(&tmp1);
 		return (-1);
+	}
 	ft_strdel(&tmp);
 	ft_strdel(&tmp1);
 	data->last = 0;
@@ -248,7 +252,11 @@ int				parsing_listing(t_lexit **list, char *input, t_env *env, t_sh *sh)
 	{
 		while (input[++data->index])
 			if ((test_l_r(data, input, list, sh) == -1))
-				return(ft_errors(1, &data->ptr[0], NULL));
+			{
+				ft_errors(1, &data->ptr[0], NULL);
+				free(data);
+				return (0);
+		}
 		if (input && !*(list))
 			tmp = single_node(tmp, list, sh, input);
 	}
