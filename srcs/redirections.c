@@ -222,7 +222,6 @@ void				trim_redir(t_lexit *list)
 				tmp->prev = save;
 				break;
 			}
-			printf("*****|%s", to_free->input);
 		}
 		// else if (tmp)
 		// {

@@ -251,19 +251,16 @@ int				parsing_listing(t_lexit **list, char *input, t_env *env, t_sh *sh)
 		data->empty = 1;
 	ft_strdel(&empty);
 	data->len = ft_strlen(input);
-	printf("LEN is :%d", data->len);
 	if (quote_checker(input, sh) && !data->empty)
 	{
 		while (((data->index + 1) <= data->len) && input[++data->index])
 		{
-			printf("BFR[%d](%c)\n", data->index, input[data->index]);//
 			if ((test_l_r(data, input, list, sh) == -1))
 			{
 				ft_errors(1, &data->ptr[0], NULL);
 				free(data);
 				return (0);
 			}
-			printf("AFT[%d](%c)\n", data->index, input[data->index]);//
 		}
 		if (input && !*(list))
 			tmp = single_node(tmp, list, sh, input);
