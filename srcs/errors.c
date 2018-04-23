@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:00 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/19 23:00:28 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/23 16:11:23 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,12 @@ int 			ft_errors(int code, char *cmd, char *arg)
 	{
 		ft_putendl_fd(cmd, 2);
 		exit(0);
+	}
+	if (code == 9)
+	{
+		ft_putstr_fd("cd: permission denied for oldpwd", 2);
+		ft_putchar('\n');
+		return (0);
 	}
 	return (1);
 }

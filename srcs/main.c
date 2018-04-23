@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/20 21:14:05 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/23 16:30:12 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,8 @@ void				parsing_exing(t_sh *sh)
 			execute(sh);
 		free_list(sh->list);
 		sh->list = NULL;
+		if (sh->hd_state)
+			ft_strdel(&sh->hd_state);
 	}
 }
 
@@ -157,6 +159,8 @@ void				p_l_x(t_sh *sh)
 		free_list(sh->list);
 		sh->list = NULL;
 	}
+	if (sh->hd_state)
+		ft_strdel(&sh->hd_state);
 }
 
 void				ft_21sh(t_sh *sh)

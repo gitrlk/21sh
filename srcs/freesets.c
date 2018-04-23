@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:03 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/19 04:52:01 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/23 15:34:33 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void				free_tree(t_lexit *lexdat)
 	}
 }
 
-void				clean_list(t_lexit *tmp, int *checker)
+void				clean_list(t_lexit *tmp)
 {
 	if (tmp->input)
 		ft_strdel(&tmp->input);
@@ -67,14 +67,10 @@ void				clean_list(t_lexit *tmp, int *checker)
 	if (tmp->command)
 		ft_strdel(&tmp->command);
 	if (tmp->checker && tmp->redirs->right_target)
-	{
 		ft_strdel(&tmp->redirs->right_target);
-		*checker = 1;
-	}
 	if (tmp->checker && tmp->redirs->left_target)
 	{
 		ft_strdel(&tmp->redirs->left_target);
-		*checker = 1;
 		if (tmp->redirs->redir_left == 2)
 			ft_strdel(&tmp->redirs->endoff);
 	}
@@ -93,7 +89,7 @@ void				free_list(t_lexit *list)
 		{
 			tmp = list;
 			list = list->next;
-			clean_list(tmp, &checker);
+			clean_list(tmp);
 				free(tmp->redirs);
 			if (tmp)
 				free(tmp);

@@ -18,23 +18,28 @@ void		do_cd(char *path, t_env **venv, int mode)
 	char	*oldpwd;
 
   (void)venv;
-	oldpwd = getcwd(tmp, 1024);
+  if (!(oldpwd = getcwd(tmp, 1024)))
+  		ft_errors(9, NULL, NULL);
 	if (!access(path, F_OK))
 	{
 		if (chdir(path) == 0)
 		{
-			ft_modify_tenv(venv, "OLDPWD=", oldpwd);
-			cwd = getcwd(tmp, 1024);
+			if (oldpwd)
+				ft_modify_tenv(venv, "OLDPWD=", oldpwd);
+			if (!(cwd = getcwd(tmp, 1024)))
+		   		ft_errors(9, NULL, NULL);
+			// cwd = getcwd(tmp, 1024);
       if (mode == 2)
         ft_putendl(cwd);
+		if (cwd)
 			ft_modify_tenv(venv, "PWD=", cwd);
 		}
 		else
-			ft_putendl_fd("Permission denied", 2);
+			ft_putendl_fd("cd : permission denied", 2);
 	}
 	else
   	{
-    ft_putstr_fd("no such file or directory : ", 2);
+    ft_putstr_fd("cd : no such file or directory : ", 2);
     ft_putendl_fd(path, 2);
   }
 }
@@ -87,9 +92,9 @@ int exec_cd_env(t_env **env,char *search, int mode, char **args)
     tmp = tmp->next;
   }
   if (mode == 1 || mode == 3)
-    ft_putendl_fd("HOME not set", 2);
+    ft_putendl_fd("cd : HOME not set", 2);
   else if (mode == 2)
-    ft_putendl_fd("OLDPWD not set", 2);
+    ft_putendl_fd("cd : OLDPWD not set", 2);
   return (1);
 }
 

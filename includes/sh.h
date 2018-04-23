@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/20 22:52:33 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/23 15:38:20 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,7 @@ typedef struct			s_sh
 	t_lexit				*execs;
 	t_edit				*line;
 	t_fday				fd;
+	char					*hd_state;
 
 	int					buf;
 	int					buf2;
@@ -264,5 +265,6 @@ void				trim_redir(t_lexit *list);
 void swap_quote(t_execs *igo, t_sh *sh);
 char **ft_replace_quote(char **array, t_sh *sh, char **input);
 char			**ft_strsplit_21(char const *s, char c, char d, char e);
+void				clean_list(t_lexit *tmp);
 
 #endif

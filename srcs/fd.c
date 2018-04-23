@@ -26,6 +26,8 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 		sh->fd.saved_in = dup(0);
 		dup2(sh->fd.saved_file, 0);
 		close(sh->fd.saved_file);
+		if (sh->hd_state)
+			ft_strdel(&sh->hd_state);
 	}
 	if (in_out == 3)
 	{
@@ -76,7 +78,7 @@ int				switch_left(t_lexit *list, t_sh *sh, int *mod)
 	}
 	if (list->redirs && (list->redirs->redir_left == 2))
 	{
-		if ((sh->fd.saved_file = open("./.heredoc_fd", O_RDONLY)) == -1)
+		if ((sh->fd.saved_file = open(sh->hd_state, O_RDONLY)) == -1)
 			return (-1);
 		else
 			switch_in_out(sh, 2, list);

@@ -94,6 +94,42 @@ void				assign_redir(t_lexit *list, t_sh *sh)
 	}
 }
 
+int				open_heredoc(t_sh *sh)
+{
+	int			fd;
+	char			*path;
+	int			random;
+	char			*tmp;
+
+	path = ft_strdup("/tmp/.");
+	random = 0;
+	while (42)
+	{
+		tmp = ft_itoa(random);
+		path = ft_freejoinstr(path, tmp);
+		ft_strdel(&tmp);
+		if ((fd = open(path, O_WRONLY |
+		O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
+		{
+			random++;
+			if (random > 10)
+			{
+				ft_strdel(&path);
+				path = ft_strdup("/tmp/.");
+			}
+		}
+		else
+		{
+			if (sh->hd_state)
+				ft_strdel(&sh->hd_state);
+			sh->hd_state = ft_strdup(path);
+			ft_strdel(&path);
+			break ;
+		}
+	}
+	return (fd);
+}
+
 void				do_heredoc(t_lexit *list, t_sh *sh)
 {
 	t_hdc			valhd;
@@ -101,24 +137,19 @@ void				do_heredoc(t_lexit *list, t_sh *sh)
 	init_valhd(&valhd);
 	init_term();
 	sh->line->prompt_mode = 0;
-	if ((valhd.ret_stop[0] = open("./.heredoc_fd", O_WRONLY |
-	O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)
-		ft_errors(5, NULL, "heredoc error: couldn't create heredoc");
-	else
+	valhd.ret_stop[0] = open_heredoc(sh);
+	while (!valhd.ret_stop[1])
 	{
-		while (!valhd.ret_stop[1])
+		ft_prompt(2);
+		ft_line_reset(sh->line);
+		while ((valhd.hd = read(0, &sh->buf, sizeof(int))))
 		{
-			ft_prompt(2);
-			ft_line_reset(sh->line);
-			while ((valhd.hd = read(0, &sh->buf, sizeof(int))))
-			{
-				handle_key(sh);
-				if (sh->buf == '\n' || sh->buf == 3)
-					break ;
-				sh->buf = 0;
-			}
-			heredoc_work(sh, list, &valhd);
+			handle_key(sh);
+			if (sh->buf == '\n' || sh->buf == 3)
+				break ;
+			sh->buf = 0;
 		}
+		heredoc_work(sh, list, &valhd);
 	}
 }
 
@@ -134,7 +165,7 @@ void				heredoc_work(t_sh *sh, t_lexit *list, t_hdc *valhd)
 	{
 		close(valhd->ret_stop[0]);
 		ft_strdel(&list->redirs->endoff);
-		valhd->ret_stop[0] = open("/tmp/heredoc_fd",O_RDONLY | O_WRONLY | O_TRUNC);
+		valhd->ret_stop[0] = open(sh->hd_state, O_RDONLY | O_WRONLY | O_TRUNC);
 		close(valhd->ret_stop[0]);
 		valhd->ret_stop[1] = 1;
 		sh->line->prompt_mode = 0;
@@ -163,8 +194,10 @@ void				trim_redir(t_lexit *list)
 {
 	t_lexit *tmp;
 	t_lexit *save;
+	t_lexit *to_free;
 
 	tmp = list;
+	to_free = NULL;
 	while (tmp)
 	{
 		if (tmp->prev && (tmp->prio == REDIR_R || tmp->prio == REDIR_RR ||
@@ -172,8 +205,15 @@ void				trim_redir(t_lexit *list)
 		{
 			save = tmp->prev;
 			while (tmp->next && tmp->prio != PIPE && tmp->prio != AND_OR &&
-			tmp->prio != HEREDOC && tmp->prio != COMMAND)
+			tmp->prio != HEREDOC && tmp->prio != COMMAND && tmp->prio != SEMICOLON)
+			{
+				save->next = tmp->next;
+				tmp->next->prev = save;
+				to_free = tmp;
 				tmp = tmp->next;
+				// clean_list(to_free);
+
+			}
 			if (!tmp->next)
 				save->next = NULL;
 			else if (tmp->next)

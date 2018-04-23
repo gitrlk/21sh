@@ -108,7 +108,6 @@ void			link_nodes(char *input, t_lexit **list, t_parsing *data, t_sh *sh)
 		data->to_node_op[2] = '\0';
 
 	}
-	ft_putendl("HIHI");
 	if (input[data->subber] == '\0' && data->wordsize)
 		link_last_node(input, list, data, sh);
 	data->index++;
