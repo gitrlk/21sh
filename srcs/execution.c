@@ -116,24 +116,6 @@ int				get_execs(t_sh *sh)
 		return (free_igo(igo, 1));
 }
 
-// void swap_quote(t_execs *igo, t_sh *sh)
-// {
-// 	ft_putendl("SWAP QUOTE");
-// 	if (sh->line->quote_complete)
-// 	{
-// 		ft_putendl("SWAP IN");
-// 		while (igo->head->input && !ft_strchr(igo->head->input, '\''))
-// 			igo->head = igo->head->next;
-// 		if (igo->head->input && sh->line->quote_complete)
-// 		{
-// 				ft_strdel(&igo->head->input);
-// 				ft_strdel(&igo->head->args[0]);
-// 				igo->head->args[0] = sh->line->q_str;
-// 				igo->head->input = sh->line->q_str;
-// 		}
-// 	}
-// }
-
 void				exec_segment(t_sh *sh, t_execs *igo)
 {
 	if (double_check(igo->head))

@@ -34,15 +34,6 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 			close(0);
 			close(list->fdsrc);
 		}
-		// else
-		// {
-			// ft_putendl("coucou");
-			// sh->fd.saved_out = dup(1);
-			// dup2(2, 1);
-			// close(list->fdsrc);
-			// close(2);
-		// }
-		// close(list->fddst);
 	}
 }
 

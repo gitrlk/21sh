@@ -17,7 +17,6 @@ int				check_left_right(char *input, t_parsing *data)
 		return (0);
 	if (data->index == 1)
 		return (0);
-
 	data->check = data->to_node_op[1] == '\0' ? data->index - data->anex : data->index - (data->anex + 1);
 	if (data->to_node_op[1] != '\0')
 		data->check = data->to_node_op[0] == '\0' ? data->index - data->anex : data->index - (data->anex + 2);
@@ -42,7 +41,7 @@ int				check_left_right(char *input, t_parsing *data)
 	tmp1 = ft_strsub(input, data->index, (data->subber - data->index));
 	// ft_putstr("tmp right\n");
 	// ft_putendl(tmp1);
-	if (!ft_isstrprint(tmp = ft_strtrim(tmp1)) && data->to_node_op[0] != ';')
+	if ((!ft_isstrprint(tmp = ft_strtrim(tmp1)) && data->to_node_op[0] != ';') || tmp[0] == '\'' || tmp[0] == '\"')
 	{
 		ft_strdel(&tmp);
 		ft_strdel(&tmp1);
@@ -64,7 +63,6 @@ void			link_last_node(char *input, t_lexit **list, t_parsing *data, t_sh *sh)
 	t_lexit		*tmp;
 
 	tmp = *list;
-	// if (!data->wordsize)
 	content = ft_strsub(input, (data->index + 1), (data->subber - data->index));
 	while (tmp->next)
 		tmp = tmp->next;
@@ -82,12 +80,11 @@ void			link_nodes(char *input, t_lexit **list, t_parsing *data, t_sh *sh)
 	data->index--;
 	content = ft_strsub(input, data->anex, data->check);
 	data->anex = data->index + 1;
-	// ft_putendl(content);
 	if (!tmp)
 	{
-		// ft_putendl(content);
 		*list = add_node(content, sh);
-		ft_strdel(&content);
+		if (content)
+			ft_strdel(&content);
 		tmp = *list;
 	}
 	else
@@ -95,7 +92,8 @@ void			link_nodes(char *input, t_lexit **list, t_parsing *data, t_sh *sh)
 		while (tmp->next)
 			tmp = tmp->next;
 		tmp->next = add_node(content, sh);
-		ft_strdel(&content);
+		if (content)
+			ft_strdel(&content);
 		tmp->next->prev = tmp;
 	}
 	if (ft_strchr(OPERATOR, data->to_node_op[0]) || ((data->to_node_op[1] == '>')
@@ -110,6 +108,7 @@ void			link_nodes(char *input, t_lexit **list, t_parsing *data, t_sh *sh)
 		data->to_node_op[2] = '\0';
 
 	}
+	ft_putendl("HIHI");
 	if (input[data->subber] == '\0' && data->wordsize)
 		link_last_node(input, list, data, sh);
 	data->index++;
@@ -211,6 +210,7 @@ int				test_l_r(t_parsing *data, char *input, t_lexit **list, t_sh *sh)
 	mem = 0;
 	if ((data->ptr = ft_strchr(OPERATOR, input[data->index])))
 	{
+		// ft_putstr("IHIHI");
 		data->to_node_op[0] = data->ptr[0];
 		get_full_op(data, input);
 		if (data->ptr[0] != ';')
