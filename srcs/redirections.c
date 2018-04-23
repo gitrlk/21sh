@@ -198,30 +198,36 @@ void				trim_redir(t_lexit *list)
 
 	tmp = list;
 	to_free = NULL;
-	while (tmp)
+	if (tmp->prev && (tmp->prio == REDIR_R || tmp->prio == REDIR_RR ||
+	tmp->prio == REDIR_L))
 	{
-		if (tmp->prev && (tmp->prio == REDIR_R || tmp->prio == REDIR_RR ||
-		tmp->prio == REDIR_L))
+		save = tmp->prev;
+		while (tmp && tmp->prio != PIPE && tmp->prio != AND_OR &&
+		tmp->prio != HEREDOC && tmp->prio != COMMAND && tmp->prio != SEMICOLON)
 		{
-			save = tmp->prev;
-			while (tmp->next && tmp->prio != PIPE && tmp->prio != AND_OR &&
-			tmp->prio != HEREDOC && tmp->prio != COMMAND && tmp->prio != SEMICOLON)
+			if (tmp->next && tmp->next->prio != PIPE && tmp->next->prio != AND_OR &&
+			tmp->next->prio != HEREDOC && tmp->next->prio != COMMAND && tmp->next->prio != SEMICOLON)
 			{
 				save->next = tmp->next;
-				tmp->next->prev = save;
-				to_free = tmp;
-				tmp = tmp->next;
-				// clean_list(to_free);
-
+				if (tmp->input)
+					ft_strdel(&tmp->input);
+				if (tmp->args)
+					ft_freetab(tmp->args);
+				free(tmp);
+				tmp = save->next;
 			}
-			if (!tmp->next)
-				save->next = NULL;
-			else if (tmp->next)
+			else
 			{
 				save->next = tmp;
 				tmp->prev = save;
+				break;
 			}
+			printf("*****|%s", to_free->input);
 		}
-		tmp = tmp->next;
+		// else if (tmp)
+		// {
+		// 	save->next = tmp;
+		// 	tmp->prev = save;
+		// }
 	}
 }
