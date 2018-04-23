@@ -223,10 +223,5 @@ void				trim_redir(t_lexit *list)
 				break;
 			}
 		}
-		// else if (tmp)
-		// {
-		// 	save->next = tmp;
-		// 	tmp->prev = save;
-		// }
 	}
 }

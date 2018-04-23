@@ -33,8 +33,7 @@ void simple_quote_work(t_sh *sh, int *ret_stop)
     if (sh->buf == 3)
     {
         *ret_stop = 1;
-        // ft_strdel(&sh->line->q_str);
-        sh->line->quote_complete = 0;
+        ft_strdel(&sh->line->q_str);
         sh->line->prompt_mode = 0;
         set_term_back();
     }
@@ -50,8 +49,8 @@ void simple_quote_work(t_sh *sh, int *ret_stop)
     {
       reset_line_mode(sh);
       sh->line->q_str = ft_freejoinstr(sh->line->q_str, "\n");
-	  sh->buf = 0;
-	  ft_putchar('\n');
+	  	sh->buf = 0;
+	  	ft_putchar('\n');
     }
 }
 
