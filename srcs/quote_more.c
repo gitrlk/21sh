@@ -27,8 +27,6 @@ char **ft_replace_quote(char **array, t_sh *sh, char **ret)
 	{
 		i = -1;
 		trimed = ft_strtrim(array[2]);
-    ft_putstr("trimed2:");
-    ft_putendl(trimed);
 		if (trimed)
 		{
 			end = ft_strsplit(trimed, ' ');

@@ -61,7 +61,12 @@ int					check_redirr(t_lexit *node, int checker)
 
 int					check_redirl(t_lexit *node)
 {
-	if ((open(node->next->args[0], O_RDONLY)) == -1)
+	if (node->prio == HEREDOC)
+	{
+		if (node->prev->prio != COMMAND)
+			return(ft_errors(6, NULL, node->prev->args[0]));
+	}
+	else if ((open(node->next->args[0], O_RDONLY)) == -1)
 		return(ft_errors(4, NULL, node->next->args[0]));
 	return (1);
 }
@@ -85,7 +90,7 @@ int 				double_check(t_lexit *lst)
 			if (tmp->prio == REDIR_R || tmp->prio == REDIR_RR)
 				if (!check_redirr(tmp, checker))
 					break ;
-			if (tmp->prio == REDIR_L)
+			if (tmp->prio == REDIR_L || tmp->prio == HEREDOC)
 				if (!check_redirl(tmp))
 					break ;
 			tmp = tmp->next;

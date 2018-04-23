@@ -41,17 +41,17 @@ void simple_quote_work(t_sh *sh, int *ret_stop)
     if (ft_strchr(sh->line->q_str, '\''))
     {
         *ret_stop = 1;
+		sh->line->prompt_mode = 0;
         set_term_back();
         del_after_quote(sh);
-        sh->line->quote_complete = 1;
-        sh->line->prompt_mode = 0;
         ft_putchar('\n');
     }
     else if (sh->buf == 10)
     {
       reset_line_mode(sh);
-      ft_putchar('\n');
       sh->line->q_str = ft_freejoinstr(sh->line->q_str, "\n");
+	  sh->buf = 0;
+	  ft_putchar('\n');
     }
 }
 
@@ -103,9 +103,10 @@ int            do_quotes(t_sh *sh, char quote)
 
 	(void)quote;
 	del_quote(sh);
-
 	init_term();
+	sh->buf = 0;
 	sh->line->prompt_mode = 2;
+	sh->line->cur_mod_pos = 6;
 	while (!ret_stop[1])
 	{
 			reset_line_mode(sh);
@@ -117,14 +118,17 @@ int            do_quotes(t_sh *sh, char quote)
 				handle_key(sh);
 				tputs(tgetstr("cd", NULL), 1, ft_pointchar);
 				if (sh->buf == 10)
+				{
+					sh->line->cur_mod_pos++;
+					sh->line->max_mod_size++;
 					break ;
+				}
 				if (sh->buf == 3)
 				{
 					ft_putchar('\n');
+					sh->line->prompt_mode = 0;
 					return (0);
 				}
-				if (ft_isprint(sh->buf) || sh->buf == 10)
-					sh->line->q_str = ft_freejoinstr(sh->line->q_str, buf2);
 				sh->buf = 0;
 			}
 			simple_quote_work(sh, &ret_stop[1]);

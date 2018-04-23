@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:58 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/19 04:59:02 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/23 03:17:47 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,47 +64,130 @@ void ft_delete(t_edit *line)
 	int i;
 
 	i = 0;
-	if ((line->cursor_pos == line->max_size) && (line->cursor_pos > 2))
+	if (line->prompt_mode == 0 || line->prompt_mode == 1)
 	{
-		tmp = ft_strndup(line->line, ft_strlen(line->line) - 1);
-		free (line->line);
-		line->line = tmp;
-		ft_move_it(line, 0);
-	}
-	else if ((line->cursor_pos != line->max_size) && (line->cursor_pos > 2))
-	{
-		tmp = ft_strndup(line->line, (line->cursor_pos - 3));
-		tmp2 = ft_strsub(line->line, (line->cursor_pos - 2),
-				(ft_strlen(line->line) - line->cursor_pos) + 3);
-		free (line->line);
-		line->line = ft_freejoinstr(tmp, tmp2);
-		ft_move_it(line, 0);
-		while ((size_t)i < ft_strlen(tmp2))
+		if ((line->cursor_pos == line->max_size) && (line->cursor_pos > 2))
 		{
-			ft_left_arrow(line);
-			i++;
+			tmp = ft_strndup(line->line, ft_strlen(line->line) - 1);
+			free (line->line);
+			line->line = tmp;
+			ft_move_it(line, 0);
+		}
+		else if ((line->cursor_pos != line->max_size) && (line->cursor_pos > 2))
+		{
+			tmp = ft_strndup(line->line, (line->cursor_pos - 3));
+			tmp2 = ft_strsub(line->line, (line->cursor_pos - 2),
+					(ft_strlen(line->line) - line->cursor_pos) + 3);
+			free (line->line);
+			line->line = ft_freejoinstr(tmp, tmp2);
+			ft_move_it(line, 0);
+			while ((size_t)i < ft_strlen(tmp2))
+			{
+				ft_left_arrow(line);
+				i++;
+			}
 		}
 	}
+	else if (line->prompt_mode == 2)
+	{
+		if ((line->cur_mod_pos == line->max_mod_size) && (line->cur_mod_pos > 6))
+		{
+			tmp = ft_strndup(line->q_str, ft_strlen(line->q_str) - 1);
+			free (line->q_str);
+			line->q_str = tmp;
+			// while ((size_t)i < ft_strlen(tmp2))
+			// {
+			// 	ft_left_arrow(line);
+			// 	i++;
+			// }
+			ft_move_it(line, 0);
+		}
+		// else if ((line->cur_mod_pos != line->max_mod_size) && (line->cur_mod_pos > 6))
+		// {
+		// 	tmp = ft_strndup(line->q_str, (line->cursor_pos - 7));
+		// 	tmp2 = ft_strsub(line->q_str, (line->cursor_pos - 6),
+		// 			(ft_strlen(line->q_str) - line->cursor_pos) + 7);
+		// 	free (line->q_str);
+		// 	line->q_str = ft_freejoinstr(tmp, tmp2);
+		// 	ft_putstr("c ici ksa part en couillers --- \n");
+		// 	ft_putendl(line->q_str);
+		// 	ft_putstr("-------------------------------- \n");
+		// 	ft_move_it(line, 0);
+		// 	while ((size_t)i < ft_strlen(tmp2))
+		// 	{
+		// 		ft_left_arrow(line);
+		// 		i++;
+		// 	}
+		// }
+	}
+
+}
+
+char	*get_quote_str(char *line)
+{
+	int i;
+	int subber;
+	char *result;
+
+	i = 0;
+	subber = 0;
+	result = NULL;
+	while (line[i])
+		i++;
+	i--;
+	while (line[i] && line[i] != '\n')
+	{
+		subber++;
+		i--;
+	}
+	result = ft_strsub(line, i+1, subber);
+	return (result);
 }
 
 void ft_move_it(t_edit *line, int check)
 {
 	int i;
+	char *tmp;
 
+	tmp = NULL;
 	i = 0;
-	while (i < line->max_size)
+	// tputs(tgetstr("cd", NULL), 1, ft_pointchar);
+	if (line->prompt_mode == 0 || line->prompt_mode == 1)
 	{
-		ft_left_arrow(line);
-		i++;
+		while (i < line->max_size)
+		{
+			ft_left_arrow(line);
+			i++;
+		}
+		if (check == 0)
+		{
+			line->cursor_pos--;
+			line->max_size--;
+		}
+		ft_putstr_fd(line->line, STDOUT_FILENO);
+		line->cursor_pos = ft_strlen(line->line) + 2;
+		tputs(tgetstr("cd", NULL), 1, ft_pointchar);
 	}
-	if (check == 0)
+	else if (line->prompt_mode == 2)
 	{
-		line->cursor_pos--;
-		line->max_size--;
+		while (i < (line->max_mod_size - 6))
+		{
+			ft_left_arrow(line);
+			i++;
+		}
+		tputs(tgetstr("cd", NULL), 1, ft_pointchar);
+		if (check == 0)
+		{
+			line->cur_mod_pos--;
+			line->max_mod_size--;
+		}
+		tmp = get_quote_str(line->q_str);
+		ft_putstr_fd(tmp, STDOUT_FILENO);
+		line->cur_mod_pos = ft_strlen(tmp) + 6;
+		line->max_mod_size = ft_strlen(tmp) + 6;
+		ft_strdel(&tmp);
 	}
-	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
-	ft_putstr_fd(line->line, STDOUT_FILENO);
-	line->cursor_pos = ft_strlen(line->line) + 2;
+
 }
 
 static void			print_cpy(int buf, t_edit *line)
@@ -183,7 +266,7 @@ void handle_key(t_sh *sh)
 	{
 		if (sh->buf == 3 || ((sh->buf == 4) && (sh->line->max_size == 2)) || ((sh->buf == 4) && (sh->line->cur_mod_pos == 6)))
 			sig_trap(sh->line, sh->buf, sh->line->prompt_mode);
-		if (sh->buf == PRESS_LEFT)
+		if (sh->buf == PRESS_LEFT && sh->line->prompt_mode != 2)
 			ft_left_arrow(sh->line);
 		else if (sh->buf == PRESS_RIGHT)
 			ft_right_arrow(sh->line);

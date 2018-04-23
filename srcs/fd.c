@@ -85,7 +85,7 @@ int				switch_left(t_lexit *list, t_sh *sh, int *mod)
 	}
 	if (list->redirs && (list->redirs->redir_left == 2))
 	{
-		if ((sh->fd.saved_file = open("/tmp/heredoc_fd", O_RDONLY)) == -1)
+		if ((sh->fd.saved_file = open("./.heredoc_fd", O_RDONLY)) == -1)
 			return (-1);
 		else
 			switch_in_out(sh, 2, list);
