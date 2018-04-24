@@ -15,32 +15,20 @@ void del_after_quote(t_sh * sh)
     while (sh->line->q_str[i])
         i++;
     i--;
-    // ft_putchar(sh->line->q_str[i]);
     while (sh->line->q_str[i] && (sh->line->q_str[i] != '\''))
         i--;
-    // ft_putchar(sh->line->q_str[i]);
     tmp = ft_strsub(sh->line->q_str, 0 , (i));
-    // ft_putstr("RESULT:");
-    // ft_strdel(&sh->line->q_str);
+    ft_strdel(&sh->line->q_str);
     sh->line->q_str = tmp;
 
 }
 
 void simple_quote_work(t_sh *sh, int *ret_stop)
 {
-    // ft_putstr("input:");
-    // ft_putendl(sh->line->q_str);
-    if (sh->buf == 3)
+    if (sh->line->q_str && ft_strchr(sh->line->q_str, '\''))
     {
         *ret_stop = 1;
-        ft_strdel(&sh->line->q_str);
-        sh->line->prompt_mode = 0;
-        set_term_back();
-    }
-    if (ft_strchr(sh->line->q_str, '\''))
-    {
-        *ret_stop = 1;
-		sh->line->prompt_mode = 0;
+			sh->line->prompt_mode = 0;
         set_term_back();
         del_after_quote(sh);
         ft_putchar('\n');
@@ -137,14 +125,14 @@ int            do_quotes(t_sh *sh, char quote)
 
 int				quote_checker(char *input, t_sh *sh)
 {
-	int i;
+	size_t i;
 	int sq;
 	int dq;
 
-  	i = 0;
+  i = 0;
 	sq = 0;
 	dq = 0;
-	while (input[i])
+	while (i <= (ft_strlen(input)))
 	{
 		if (input[i] == '\'')
 		{
@@ -152,16 +140,16 @@ int				quote_checker(char *input, t_sh *sh)
 			sq++;
 			while (input[i] && input[i] != '\'')
 				i++;
-			if (input[i] != '\0')
+			if (input[i] && input[i] != '\0')
 				sq++;
 		}
-		if (input[i] == '\"')
+		if (input[i] && input[i] == '\"')
 		{
 			i++;
 			dq++;
 			while (input[i] && input[i] != '\"')
 				i++;
-		if (input[i] != '\0')
+		if (input[i] && input[i] != '\0')
 			dq++;
 		}
 		i++;
@@ -172,3 +160,41 @@ int				quote_checker(char *input, t_sh *sh)
   		return (do_quotes(sh, '\"'));
 	return (1);
 }
+//
+// int				quote_checker(char *input, t_sh *sh)
+// {
+// 	int i;
+// 	int sq;
+// 	int dq;
+//
+//   	i = 0;
+// 	sq = 0;
+// 	dq = 0;
+// 	while (input[i])
+// 	{
+// 		if (input[i] == '\'')
+// 		{
+// 			i++;
+// 			sq++;
+// 			while (input[i] && input[i] != '\'')
+// 				i++;
+// 			if (input[i] != '\0')
+// 				sq++;
+// 		}
+// 		if (input[i] == '\"')
+// 		{
+// 			i++;
+// 			dq++;
+// 			while (input[i] && input[i] != '\"')
+// 				i++;
+// 		if (input[i] != '\0')
+// 			dq++;
+// 		}
+// 		i++;
+// 	}
+// 	if (sq % 2 != 0)
+//   		return (do_quotes(sh, '\''));
+// 	if (dq % 2 != 0)
+//   		return (do_quotes(sh, '\"'));
+// 	return (1);
+// }

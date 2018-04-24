@@ -136,7 +136,8 @@ void				do_heredoc(t_lexit *list, t_sh *sh)
 
 	init_valhd(&valhd);
 	init_term();
-	sh->line->prompt_mode = 0;
+	sh->line->prompt_mode = 1;
+	sh->buf = 0;
 	valhd.ret_stop[0] = open_heredoc(sh);
 	while (!valhd.ret_stop[1])
 	{
@@ -145,7 +146,7 @@ void				do_heredoc(t_lexit *list, t_sh *sh)
 		while ((valhd.hd = read(0, &sh->buf, sizeof(int))))
 		{
 			handle_key(sh);
-			if (sh->buf == '\n' || sh->buf == 3)
+			if (sh->buf == '\n' || sh->buf == 3 || sh->buf == 4)
 				break ;
 			sh->buf = 0;
 		}
@@ -171,7 +172,7 @@ void				heredoc_work(t_sh *sh, t_lexit *list, t_hdc *valhd)
 		sh->line->prompt_mode = 0;
 		set_term_back();
 	}
-	else if (!ft_strcmp(valhd->tmp, list->redirs->endoff))
+	else if (!ft_strcmp(valhd->tmp, list->redirs->endoff) || ((sh->buf == 4) && (sh->line->cursor_pos == 2)))
 	{
 		ft_strdel(&list->redirs->endoff);
 		valhd->ret_stop[1] = 1;

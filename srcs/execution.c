@@ -118,17 +118,17 @@ int				get_execs(t_sh *sh)
 
 void				exec_segment(t_sh *sh, t_execs *igo)
 {
+	t_lexit 		*tete;
+
+	tete = igo->head;
 	if (double_check(igo->head))
 	{
 		assign_redir(igo->head, sh);
 		trim_redir(igo->head);
-		// swap_quote(igo, sh);
 		sh->execs = ft_tree_it(igo->head, NULL, 0);
 		igo->tmp2 = sh->execs;
 		execute(sh);
-		while (igo->copy->first != 1)
-			igo->copy = igo->copy->prev;
-		free_list(igo->copy);
+		free_list(tete);
 		sh->execs = NULL;
 		igo->copy = NULL;
 		igo->head = NULL;
@@ -139,16 +139,18 @@ void				exec_segment(t_sh *sh, t_execs *igo)
 
 void				exec_last_segment(t_sh *sh, t_execs *igo)
 {
+	t_lexit		*tete;
+
+	tete = igo->head;
 	if (double_check(igo->head))
 	{
 		assign_redir(igo->head, sh);
 		trim_redir(igo->head);
-		// swap_quote(igo, sh);
 		sh->execs = ft_tree_it(igo->head, NULL, 0);
 		execute(sh);
-		while (igo->copy->first != 1)
-			igo->copy = igo->copy->prev;
-		free_list(igo->copy);
+		// while (igo->copy->first != 1)
+		// 	igo->copy = igo->copy->prev;
+		free_list(tete);
 		igo->copy = NULL;
 		sh->execs = NULL;
 	}

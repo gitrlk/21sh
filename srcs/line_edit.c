@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:58 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/24 16:23:32 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/24 21:32:46 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -207,10 +207,12 @@ static int				check_copy(int buf)
 	return (1);
 }
 
-void sig_trap(t_edit *line, int buf, int mode)
+void sig_trap(t_edit *line, int buf)
 {
 		if (buf == 3)
 		{
+			if (line->prompt_mode == 2)
+					ft_strdel(&line->q_str);
 			ft_strdel(&line->line);
 			free(line->line);
 			line->cursor_pos = 2;
@@ -219,7 +221,7 @@ void sig_trap(t_edit *line, int buf, int mode)
 			line->select_mode = 0;
 			line->curr = NULL;
 			tputs(tgetstr("cd", NULL), 1, ft_pointchar);
-			if (!mode)
+			if (line->prompt_mode == 0)
 			{
 				ft_putchar('\n');
 				ft_prompt(1);
@@ -227,14 +229,57 @@ void sig_trap(t_edit *line, int buf, int mode)
 			else
 				line->prompt_mode = 0;
 		}
-		if (buf == 4)
+		else if (((line->max_mod_size == 6) || (line->max_size == 2)) && (line->prompt_mode == 0) && buf == 4)
 		{
 			ft_strdel(&line->line);
+			ft_strdel(&line->q_str);
 			free(line->line);
 			set_term_back();
 			exit(0);
 		}
 }
+
+//
+// void sig_trap(t_edit *line, int buf, int mode)
+// {
+//         if (buf == 3)
+//         {
+//             if (line->prompt_mode == 2)
+//                     ft_strdel(&line->q_str);
+//             ft_strdel(&line->line);
+//             free(line->line);
+//             line->cursor_pos = 2;
+//             line->max_size = 2;
+//             line->line = ft_memalloc(sizeof(char));
+//             line->select_mode = 0;
+//             line->curr = NULL;
+//             tputs(tgetstr("cd", NULL), 1, ft_pointchar);
+//             if (!mode)
+//             {
+//                 ft_putchar('\n');
+//                 ft_prompt(1);
+//             }
+//             else
+//                 line->prompt_mode = 0;
+//         }
+//         if (buf == 4)
+//         {
+//             ft_strdel(&line->line);
+//             free(line->line);
+//             set_term_back();
+//             if (!mode)
+//                 exit(0);
+//             else
+//             {
+//                 if (line->prompt_mode == 2)
+//                         ft_strdel(&line->q_str);
+//                 line->prompt_mode = 0;
+//                 ft_putchar('\n');
+//                 ft_prompt(1);
+//                 ft_line_reset(line);
+//             }
+//         }
+// }
 
 void handle_key(t_sh *sh)
 {
@@ -242,15 +287,15 @@ void handle_key(t_sh *sh)
 		print_cpy(sh->buf, sh->line);
 	else
 	{
-		if (sh->buf == 3 || ((sh->buf == 4) && (sh->line->max_size == 2)) || ((sh->buf == 4) && (sh->line->cur_mod_pos == 6)))
-			sig_trap(sh->line, sh->buf, sh->line->prompt_mode);
+		if (sh->buf == 3 || sh->buf == 4)
+			sig_trap(sh->line, sh->buf);
 		if (sh->buf == PRESS_LEFT && sh->line->prompt_mode != 2)
 			ft_left_arrow(sh->line);
 		else if (sh->buf == PRESS_RIGHT)
 			ft_right_arrow(sh->line);
-		else if (sh->buf == PRESS_UP)
+		else if (sh->buf == PRESS_UP && sh->line->prompt_mode == 0)
 			ft_arrow_up(sh->line);
-		else if (sh->buf == PRESS_DOWN)
+		else if (sh->buf == PRESS_DOWN && sh->line->prompt_mode == 0)
 			ft_arrow_down(sh->line);
 		if (!sh->line->select_mode)
 		{

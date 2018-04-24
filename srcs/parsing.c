@@ -225,10 +225,8 @@ int				test_l_r(t_parsing *data, char *input, t_lexit **list, t_sh *sh)
 			mem = data->index;
 			if ((ret = check_if_over(input, data)) != -1)
 				data->index = mem;
-				// last_node(list, input, data);
 			else if (ret == -1)
 				return (ret);
-			// if (ret == 0)
 			node_lro(input, list, data, sh);
 		}
 	}

@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/24 15:34:56 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/24 20:40:12 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,10 @@ int				get_prio(char *str, char **command, char **apaths)
 	else if (!ft_strcmp(str, "<<"))
 		return (HEREDOC);
 	else if (ft_isstrprint(str))
+	{
+		
 		return (ARG);
+	}
 	else
 		return (-1);
 }

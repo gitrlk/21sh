@@ -9,7 +9,7 @@ int				check_semi(t_sh *sh, t_lexit *lst)
 	i = 0;
 	while (tmp)
 	{
-		if (tmp->prio == SEMICOLON)
+		if (tmp->next && tmp->prio == SEMICOLON)
 			return (1);
 		if (!tmp->next)
 		{

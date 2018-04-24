@@ -21,47 +21,49 @@ int		ft_cnt_parts(const char *s, char c, char d, char e)
 {
 	int		cnt;
 	int		in_substring;
+	int		i;
 
+	i = 0;
 	in_substring = 0;
 	cnt = 0;
-	while (*s != '\0')
+	while (i < ((int)ft_strlen(s)))
 	{
-		if (*s == d)
+		if (s[i] == d)
 		{
-			s++;
-			while (*s != d)
+			i++;
+			while (s[i] != d)
 			{
-				if (*s == '\0')
+				if (s[i] == '\0')
 				{
 					cnt--;
 					break ;
 				}
-				s++;
+				i++;
 			}
 			cnt++;
 		}
-		if (*s == e)
+		if (s[i] == e)
 		{
-			s++;
-			while (*s != e)
+			i++;
+			while (s[i] != e)
 			{
-				if (*s == '\0')
+				if (s[i] == '\0')
 				{
 					cnt--;
 					break ;
 				}
-				s++;
+				i++;
 			}
 			cnt++;
 		}
-		if (in_substring == 1 && *s == c)
+		if (in_substring == 1 && s[i] == c)
 			in_substring = 0;
-		if (in_substring == 0 && *s != c && *s != d && *s != e)
+		if (in_substring == 0 && s[i] != c && s[i] != d && s[i] != e)
 		{
 			in_substring = 1;
 			cnt++;
 		}
-		s++;
+		i++;
 	}
 	return (cnt);
 }

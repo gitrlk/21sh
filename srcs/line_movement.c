@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:16:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/23 03:15:57 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/24 21:23:31 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,14 @@
 
 void ft_left_arrow(t_edit *line)
 {
-	if (line->prompt_mode == 0 && line->cursor_pos >= 3)
+	if (line->prompt_mode == 0 && line->cursor_pos > 2)
 	{
 		line->cursor_pos--;
 		ft_putstr_fd("\033[1D", STDOUT_FILENO);
 	}
-	if (line->cur_mod_pos >= 9 && line->prompt_mode == 1)
+	if (line->cursor_pos > 2 && line->prompt_mode == 1)
 	{
-		line->cur_mod_pos--;
+		line->cursor_pos--;
 		ft_putstr_fd("\033[1D", STDOUT_FILENO);
 	}
 	if (line->cur_mod_pos > 6 && line->prompt_mode == 2)
@@ -47,7 +47,7 @@ void ft_right_arrow(t_edit *line)
 
 void ft_endkey(t_edit *line)
 {
-	if (line->prompt_mode == 0)
+	if (line->prompt_mode == 0 || line->prompt_mode == 1)
 		while (line->cursor_pos < line->max_size)
 			ft_right_arrow(line);
 	else
@@ -57,7 +57,7 @@ void ft_endkey(t_edit *line)
 
 void ft_homekey(t_edit *line)
 {
-	if (line->prompt_mode == 0)
+	if (line->prompt_mode == 0 || line->prompt_mode == 1)
 		while (line->cursor_pos > 2)
 			ft_left_arrow(line);
 	else
