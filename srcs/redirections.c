@@ -190,6 +190,7 @@ void				init_valhd(t_hdc *valhd)
 	valhd->tmp = NULL;
 }
 
+
 void				trim_redir(t_lexit *list)
 {
 	t_lexit *tmp;
@@ -198,30 +199,36 @@ void				trim_redir(t_lexit *list)
 
 	tmp = list;
 	to_free = NULL;
-	if (tmp->prev && (tmp->prio == REDIR_R || tmp->prio == REDIR_RR ||
-	tmp->prio == REDIR_L))
+	while (tmp)
 	{
-		save = tmp->prev;
-		while (tmp && tmp->prio != PIPE && tmp->prio != AND_OR &&
-		tmp->prio != HEREDOC && tmp->prio != COMMAND && tmp->prio != SEMICOLON)
+		if (tmp->prev && (tmp->prio == REDIR_R || tmp->prio == REDIR_RR ||
+		tmp->prio == REDIR_L))
 		{
-			if (tmp->next && tmp->next->prio != PIPE && tmp->next->prio != AND_OR &&
-			tmp->next->prio != HEREDOC && tmp->next->prio != COMMAND && tmp->next->prio != SEMICOLON)
+			save = tmp->prev;
+			while (tmp->next && tmp->prio != PIPE && tmp->prio != AND_OR &&
+			tmp->prio != HEREDOC && tmp->prio != COMMAND && tmp->prio != SEMICOLON)
 			{
 				save->next = tmp->next;
-				if (tmp->input)
-					ft_strdel(&tmp->input);
-				if (tmp->args)
-					ft_freetab(tmp->args);
+				tmp->next->prev = save;
+				to_free = tmp;
+				if (to_free)
+					ft_strdel(&to_free->input);
+				if (to_free->args[0])
+					ft_freetab(to_free->args);
 				free(tmp);
 				tmp = save->next;
 			}
-			else
+			if (!tmp->next)
 			{
-				save->next = tmp;
-				tmp->prev = save;
+				if (tmp->input)
+					ft_strdel(&tmp->input);
+				if (tmp->args[0])
+					ft_freetab(tmp->args);
+				free(tmp);
+				save->next = NULL;
 				break;
 			}
 		}
+		tmp = tmp->next;
 	}
 }

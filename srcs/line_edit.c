@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:58 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/23 03:17:47 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/24 16:23:32 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ void ft_delete(t_edit *line)
 				ft_left_arrow(line);
 				i++;
 			}
+			ft_strdel(&tmp2);
 		}
 	}
 	else if (line->prompt_mode == 2)
@@ -95,30 +96,8 @@ void ft_delete(t_edit *line)
 			tmp = ft_strndup(line->q_str, ft_strlen(line->q_str) - 1);
 			free (line->q_str);
 			line->q_str = tmp;
-			// while ((size_t)i < ft_strlen(tmp2))
-			// {
-			// 	ft_left_arrow(line);
-			// 	i++;
-			// }
 			ft_move_it(line, 0);
 		}
-		// else if ((line->cur_mod_pos != line->max_mod_size) && (line->cur_mod_pos > 6))
-		// {
-		// 	tmp = ft_strndup(line->q_str, (line->cursor_pos - 7));
-		// 	tmp2 = ft_strsub(line->q_str, (line->cursor_pos - 6),
-		// 			(ft_strlen(line->q_str) - line->cursor_pos) + 7);
-		// 	free (line->q_str);
-		// 	line->q_str = ft_freejoinstr(tmp, tmp2);
-		// 	ft_putstr("c ici ksa part en couillers --- \n");
-		// 	ft_putendl(line->q_str);
-		// 	ft_putstr("-------------------------------- \n");
-		// 	ft_move_it(line, 0);
-		// 	while ((size_t)i < ft_strlen(tmp2))
-		// 	{
-		// 		ft_left_arrow(line);
-		// 		i++;
-		// 	}
-		// }
 	}
 
 }
@@ -151,7 +130,6 @@ void ft_move_it(t_edit *line, int check)
 
 	tmp = NULL;
 	i = 0;
-	// tputs(tgetstr("cd", NULL), 1, ft_pointchar);
 	if (line->prompt_mode == 0 || line->prompt_mode == 1)
 	{
 		while (i < line->max_size)

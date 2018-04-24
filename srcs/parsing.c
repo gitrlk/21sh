@@ -19,10 +19,11 @@ int				check_left_right(char *input, t_parsing *data)
 		return (0);
 	data->check = data->to_node_op[1] == '\0' ? data->index - data->anex : data->index - (data->anex + 1);
 	if (data->to_node_op[1] != '\0')
-		data->check = data->to_node_op[0] == '\0' ? data->index - data->anex : data->index - (data->anex + 2);
+	{
+		if (ft_isdigit(data->to_node_op[0]))
+			data->check = data->to_node_op[0] == '\0' ? data->index - data->anex : data->index - (data->anex + 2);
+	}
 	tmp1 = ft_strsub(input, data->anex, data->check);
-	// ft_putstr("tmp left\n");
-	// ft_putendl(tmp1);
 	if (!ft_isstrprint(tmp = ft_strtrim(tmp1)))
 	{
 		ft_strdel(&tmp1);
@@ -42,8 +43,6 @@ int				check_left_right(char *input, t_parsing *data)
 	while (input[data->subber] && (!ft_strchr(OPERATOR, input[data->subber])))
 		data->subber++;
 	tmp1 = ft_strsub(input, data->index, (data->subber - data->index));
-	// ft_putstr("tmp right\n");
-	// ft_putendl(tmp1);
 	if ((!ft_isstrprint(tmp = ft_strtrim(tmp1)) && data->to_node_op[0] != ';') || tmp[0] == '\'' || tmp[0] == '\"')
 	{
 
@@ -57,7 +56,6 @@ int				check_left_right(char *input, t_parsing *data)
 		data->wordsize = ft_strlen(tmp);
 	ft_strdel(&tmp);
 	ft_strdel(&tmp1);
-	// ft_putstr("KIKOU");
 	return (1);
 }
 
