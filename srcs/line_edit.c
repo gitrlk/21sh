@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:58 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/25 15:08:52 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/25 15:36:09 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -289,7 +289,7 @@ void handle_key(t_sh *sh)
 	{
 		if (sh->buf == 3 || sh->buf == 4)
 			sig_trap(sh->line, sh->buf);
-		if (sh->buf == PRESS_LEFT && sh->line->prompt_mode != 2)
+		if (sh->buf == PRESS_LEFT && sh->line->prompt_mode != 2 && !sh->line->select_mode)
 			ft_left_arrow(sh->line);
 		else if (sh->buf == PRESS_RIGHT)
 			ft_right_arrow(sh->line);

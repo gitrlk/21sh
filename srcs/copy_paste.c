@@ -6,20 +6,20 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:27 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 02:32:44 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/25 15:38:34 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
 
-static void swap_norme(t_edit *line)
-{
-    int swap;
-
-    swap = line->end_select;
-    line->end_select = line->start_select;
-    line->start_select = swap + 1;
-}
+// static void swap_norme(t_edit *line)
+// {
+//     int swap;
+//
+//     swap = line->end_select;
+//     line->end_select = line->start_select;
+//     line->start_select = swap + 1;
+// }
 
 void ft_highlight(t_edit *line)
 {
@@ -31,13 +31,13 @@ void ft_highlight(t_edit *line)
 	tmp = ft_strndup(line->line, line->start_select);
 	ft_putstr_fd(tmp, STDOUT_FILENO);
 	ft_putstr_fd(tgetstr("mr", NULL), STDOUT_FILENO);
-    if (line->start_select > line->end_select)
-      swap_norme(line); // remplacer par un ternaire
+  // if (line->start_select > line->end_select)
+  //   swap_norme(line); // remplacer par un ternaire
 	tmp2 = ft_strsub(line->line, line->start_select , (line->end_select - line->start_select));
 	ft_putstr_fd(tmp2, STDOUT_FILENO);
 	free(tmp);
 	ft_putstr_fd(tgetstr("me", NULL), STDOUT_FILENO);
-	tmp = ft_strsub(line->line, line->end_select , (line->max_size - 3));
+	tmp = ft_strsub(line->line, line->end_select , ((line->max_size - 2) - line->end_select));
 	ft_putstr_fd(tmp, STDOUT_FILENO);
 	line->cursor_pos = line->max_size;
 	while ((size_t)++i <= ft_strlen(tmp))
@@ -71,7 +71,7 @@ void ft_go_start(t_edit *line)
    tmp = ft_strndup(line->line, line->cursor_pos - 2);
    tmp2 = ft_freejoinstr(tmp, line->is_highlight);
    free (line->line);
-   tmp = ft_strsub(line->line, line->cursor_pos - 2 , line->max_size);
+   tmp = ft_strsub(line->line, line->cursor_pos - 2 , ((line->max_size) -line->cursor_pos));
    line->line = ft_freejoinstr(tmp2, tmp);
    ft_go_start(line);
  	 ft_putstr_fd(line->line, STDOUT_FILENO);
@@ -95,7 +95,7 @@ void ft_cut(t_edit *line)
     i = 0;
     tmp = ft_strndup(line->line, line->start_select);
     ft_putstr_fd(tmp, STDOUT_FILENO);
-    tmp2 = ft_strsub(line->line, line->end_select , (line->max_size - 3));
+    tmp2 = ft_strsub(line->line, line->end_select , ((line->max_size - 2) - line->end_select));
     ft_putstr_fd(tmp2, STDOUT_FILENO);
     free(line->line);
     line->max_size -= ft_strlen(line->is_highlight);
