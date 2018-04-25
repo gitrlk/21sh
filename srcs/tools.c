@@ -192,10 +192,13 @@ char				*find_cmd(char **apaths, char *cmd)
 
 	i = 0;
 	may = NULL;
-	if ((lstat(cmd, &s) != -1) && !access(cmd, F_OK) && !ft_strstr(BUILTIN, cmd) && !(S_ISDIR(s.st_mode)))
+	if (!access(cmd, F_OK))
 	{
-		may = ft_strdup(cmd);
-		return (may);
+		if (lstat(cmd, &s) != -1 && !(S_ISDIR(s.st_mode)) && !access(cmd, X_OK) && !ft_strstr(BUILTIN, cmd))
+		{
+			may = ft_strdup(cmd);
+			return (may);
+		}
 	}
 	if (apaths)
 	{
