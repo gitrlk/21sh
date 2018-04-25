@@ -52,7 +52,8 @@ int				switch_right(t_lexit *list, t_sh *sh, int *mod)
 	}
 	if (list->redirs && (list->redirs->redir_right == 1))
 	{
-		if (!(isnumber(list->redirs->right_target)) && list->redirs->right_target[0] != '-')
+		if (!(isnumber(list->redirs->right_target)) &&
+		list->redirs->right_target[0] != '-')
 		{
 			if ((sh->fd.saved_file = open(list->redirs->right_target, O_WRONLY |
 			O_TRUNC | O_CREAT, S_IRUSR | S_IRGRP | S_IWGRP | S_IWUSR)) == -1)

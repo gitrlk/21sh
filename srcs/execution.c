@@ -8,7 +8,7 @@ void				execute(t_sh *sh)
 		exec_no_fork(sh->execs, sh->env, sh);
 	else if (sh->execs->prio != ARG)
 		execs(sh->execs, sh->env, sh);
-	else
+	else if (sh->execs->prio == ARG)
 		ft_errors(6, NULL, sh->execs->args[0]);
 }
 

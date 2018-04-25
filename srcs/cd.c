@@ -11,29 +11,31 @@ int			find_t_env_str(char *venv, char *str)
 	return (0);
 }
 
+
+void				cd_success(t_cd *dcd, t_env **env, int mode)
+{
+	if (dcd->oldpwd)
+		ft_modify_tenv(env, "OLDPWD=", dcd->oldpwd);
+	if (!(dcd->cwd = getcwd(dcd->tmp, 1024)))
+			ft_errors(9, NULL, NULL);
+	// cwd = getcwd(tmp, 1024);
+	if (mode == 2)
+		ft_putendl(dcd->cwd);
+	if (dcd->cwd)
+		ft_modify_tenv(env, "PWD=", dcd->cwd);
+}
+
+
 void		do_cd(char *path, t_env **venv, int mode)
 {
-	char	tmp[1024 + 1];
-	char	*cwd;
-	char	*oldpwd;
+	t_cd	dcd;
 
-  (void)venv;
-  if (!(oldpwd = getcwd(tmp, 1024)))
+  if (!(dcd.oldpwd = getcwd(dcd.tmp, 1024)))
   		ft_errors(9, NULL, NULL);
 	if (!access(path, F_OK))
 	{
 		if (chdir(path) == 0)
-		{
-			if (oldpwd)
-				ft_modify_tenv(venv, "OLDPWD=", oldpwd);
-			if (!(cwd = getcwd(tmp, 1024)))
-		   		ft_errors(9, NULL, NULL);
-			// cwd = getcwd(tmp, 1024);
-      if (mode == 2)
-        ft_putendl(cwd);
-		if (cwd)
-			ft_modify_tenv(venv, "PWD=", cwd);
-		}
+			cd_success(&dcd, venv, mode);
 		else
 			ft_putendl_fd("cd : permission denied", 2);
 	}

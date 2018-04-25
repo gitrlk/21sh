@@ -247,9 +247,11 @@ void			replace_quote(t_lexit *node, t_sh *sh)
 		if (node->args[i][0] == '\'' || node->args[i][0] == '\"')
 		{
 			ft_strdel(&node->args[i]);
-			node->args[i] = ft_strdup(sh->line->q_str);
 			if (sh->line->q_str)
+			{
+				node->args[i] = ft_strdup(sh->line->q_str);
 				ft_strdel(&sh->line->q_str);
+			}
 		}
 		i++;
 	}

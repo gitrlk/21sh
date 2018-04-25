@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/25 17:49:27 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/25 20:58:47 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,6 @@ void				ft_print_tree(t_lexit *lexdat)
 	i = 1;
 	if (lexdat)
 	{
-		// ft_putstr("CURRENT INPUT : ");
-		// ft_putstr(lexdat->input);
-		// ft_putchar('\n');
-		// if (lexdat->redirs)
-		// {
-		// 	ft_putstr("CURRENT REDIR : ");
-		// 	ft_putstr(lexdat->redirs->right_target);
-		// 	ft_putchar('\n');
-		// }
 		if (lexdat->left)
 			ft_print_tree(lexdat->left);
 		ft_putstr("CURRENT INPUT : ");
@@ -61,12 +52,27 @@ void				ft_print_tree(t_lexit *lexdat)
 			ft_putstr(lexdat->redirs->right_target);
 			ft_putchar('\n');
 		}
-		// ft_putstr("CURRENT INPUT : ");
-		// ft_putstr(lexdat->input);
-		// ft_putchar('\n');
 		if (lexdat->right)
 			ft_print_tree(lexdat->right);
 	}
+}
+
+int				get_more_prio(char *str)
+{
+	if ((ft_isstrprint(str)) && (!ft_strcmp(str, ">") ||
+	(str[0] == '>' && str[1] == '&') ||
+	(str[1] == '>' && str[2] == '&')))
+		return (REDIR_R);
+	else if (!ft_strcmp(str, ">>"))
+		return (REDIR_RR);
+	else if (!ft_strcmp(str, "<"))
+		return (REDIR_L);
+	else if (!ft_strcmp(str, "<<"))
+		return (HEREDOC);
+	else if (ft_isstrprint(str))
+		return (ARG);
+	else
+		return (-1);
 }
 
 int				get_prio(char *str, char **command, char **apaths)
@@ -94,21 +100,7 @@ int				get_prio(char *str, char **command, char **apaths)
 			*command = ft_strdup(str);
 		return (COMMAND);
 	}
-	else if (!ft_strcmp(str, ">") || (str[0] == '>' && str[1] == '&') || (str[1] == '>' && str[2] == '&'))
-		return (REDIR_R);
-	else if (!ft_strcmp(str, ">>"))
-		return (REDIR_RR);
-	else if (!ft_strcmp(str, "<"))
-		return (REDIR_L);
-	else if (!ft_strcmp(str, "<<"))
-		return (HEREDOC);
-	else if (ft_isstrprint(str))
-	{
-
-		return (ARG);
-	}
-	else
-		return (-1);
+	return (get_more_prio(str));
 }
 
 int				check_if_builtin(t_lexit *list)
@@ -133,11 +125,6 @@ void				parsing_exing(t_sh *sh)
 	{
 		assign_redir(sh->list, sh);
 		trim_redir(sh->list);
-		// while (sh->list)
-		// {
-		// 	ft_putendl(sh->list->args[0]);
-		// 	sh->list = sh->list->next;
-		// }
 		sh->execs = ft_tree_it(sh->list, NULL, 0);
 		if (sh->execs && sh->execs->args)
 			execute(sh);

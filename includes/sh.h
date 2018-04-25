@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/23 15:38:20 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/25 21:04:32 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -164,7 +164,6 @@ typedef struct			s_sh
 	t_edit				*line;
 	t_fday				fd;
 	char					*hd_state;
-
 	int					buf;
 	int					buf2;
 }							t_sh;
@@ -179,7 +178,21 @@ typedef struct			s_execs
 	int			exec_number;
 }							t_execs;
 
+typedef struct			s_cd
+{
+	char					tmp[1024 +1];
+	char					*cwd;
+	char					*oldpwd;
+}							t_cd;
 
+typedef struct			s_insert
+{
+	char					*tmp;
+	char					*tmp2;
+	char					*tmp3;
+	char					buf2[2];
+	int					i;
+}							t_insert;
 
 int					ft_pointchar(int c);
 void ft_left_arrow(t_edit *line);
@@ -266,5 +279,9 @@ void swap_quote(t_execs *igo, t_sh *sh);
 char **ft_replace_quote(char **array, t_sh *sh, char **input);
 char			**ft_strsplit_21(char const *s, char c, char d, char e);
 void				clean_list(t_lexit *tmp);
+void 	del_quote(t_sh *sh, char quote);
+void reset_line_mode(t_sh *sh);
+void simple_quote_work(t_sh *sh, int *ret_stop, char quote);
+
 
 #endif

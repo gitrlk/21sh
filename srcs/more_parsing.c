@@ -43,12 +43,12 @@ t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
 	return (dst);
 }
 
-int					check_pipe(t_lexit *node, int checker)
+int					check_pipe(t_lexit *node)
 {
-	if (!checker && (node->prev->prio != COMMAND || node->next->prio != COMMAND))
+	if (node->prev->prio != COMMAND || node->next->prio != COMMAND)
 		return (node->prev->prio != COMMAND ?
-	ft_errors(6, NULL, node->prev->args[0]) :
-	ft_errors(6, NULL, node->next->args[0]));
+		ft_errors(6, NULL, node->prev->args[0]) :
+		ft_errors(6, NULL, node->next->args[0]));
 	return (1);
 }
 
@@ -85,7 +85,7 @@ int 				double_check(t_lexit *lst)
 			if (tmp->prio == COMMAND)
 				checker = 1;
 			if (tmp->prio == PIPE)
-				if (!check_pipe(tmp, checker))
+				if (!check_pipe(tmp))
 					return (0);
 			if (tmp->prio == REDIR_R || tmp->prio == REDIR_RR)
 				if (!check_redirr(tmp, checker))
@@ -95,8 +95,7 @@ int 				double_check(t_lexit *lst)
 					break ;
 			tmp = tmp->next;
 		}
-		if (!tmp)
-			return (1);
+		return (!tmp ? 1 : 0);
 	}
 	return (0);
 }

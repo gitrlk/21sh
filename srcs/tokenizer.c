@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/20 22:52:16 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/25 20:46:46 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,28 +23,11 @@ int 				ft_isstrprint(char *str)
 	return (i);
 }
 
-// char        **string_to_tab(char *str)
-// {
-// 	char	**t;
-//
-// 	t = (char **)malloc(sizeof(*t) * 2);
-// 	if (t == NULL)
-// 		return (NULL);
-// 	t[0] = ft_strdup(str);
-// 	// ft_strdel(&str);
-// 	t[1] = NULL;
-// 	return(t);
-// }
-
 char				**ft_prep_input(char *str)
 {
 	char			**tmp;
 
 	tmp = ft_strsplit_21(str, ' ', '\'', '\"');
-	// if(sh->line->q_str)
-	// {
-   //
-	// }
 	return (tmp);
 }
 
@@ -52,7 +35,6 @@ t_lexit 			*ft_tree_it(t_lexit *list, t_lexit *delim, int prio)
 {
 	t_lexit	*keep;
 	t_lexit	*tmp;
-
 
 	keep = NULL;
 	tmp = list;

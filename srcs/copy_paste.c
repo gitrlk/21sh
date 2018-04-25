@@ -6,20 +6,11 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:27 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/25 17:37:26 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/25 18:52:26 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
-
-// static void swap_norme(t_edit *line)
-// {
-//     int swap;
-//
-//     swap = line->end_select;
-//     line->end_select = line->start_select;
-//     line->start_select = swap + 1;
-// }
 
 void ft_highlight(t_edit *line)
 {
