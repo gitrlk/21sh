@@ -186,8 +186,17 @@ char				*find_cmd(char **apaths, char *cmd)
 {
 	int	i;
 	char	*tmp_path;
+	char	*may;
+	struct stat	s;
+
 
 	i = 0;
+	may = NULL;
+	if ((lstat(cmd, &s) != -1) && !access(cmd, F_OK) && !ft_strstr(BUILTIN, cmd) && !(S_ISDIR(s.st_mode)))
+	{
+		may = ft_strdup(cmd);
+		return (may);
+	}
 	if (apaths)
 	{
 		while (apaths[i])
