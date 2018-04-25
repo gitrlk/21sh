@@ -6,7 +6,7 @@ void reset_line_mode(t_sh *sh)
 	sh->line->max_mod_size = 6;
 }
 
-void del_after_quote(t_sh * sh)
+void del_after_quote(t_sh * sh, char quote)
 {
     int i;
     char *tmp;
@@ -15,7 +15,7 @@ void del_after_quote(t_sh * sh)
     while (sh->line->q_str[i])
         i++;
     i--;
-    while (sh->line->q_str[i] && (sh->line->q_str[i] != '\''))
+    while (sh->line->q_str[i] && (sh->line->q_str[i] != quote))
         i--;
     tmp = ft_strsub(sh->line->q_str, 0 , (i));
     ft_strdel(&sh->line->q_str);
@@ -23,14 +23,14 @@ void del_after_quote(t_sh * sh)
 
 }
 
-void simple_quote_work(t_sh *sh, int *ret_stop)
+void simple_quote_work(t_sh *sh, int *ret_stop, char quote)
 {
-    if (sh->line->q_str && ft_strchr(sh->line->q_str, '\''))
+    if (sh->line->q_str && ft_strchr(sh->line->q_str, quote))
     {
         *ret_stop = 1;
 			sh->line->prompt_mode = 0;
         set_term_back();
-        del_after_quote(sh);
+        del_after_quote(sh, quote);
         ft_putchar('\n');
     }
     else if (sh->buf == 10)
@@ -43,7 +43,7 @@ void simple_quote_work(t_sh *sh, int *ret_stop)
 }
 
 
-void 	del_quote(t_sh *sh)
+void 	del_quote(t_sh *sh, char quote)
 {
     int i;
     int j;
@@ -54,9 +54,9 @@ void 	del_quote(t_sh *sh)
     while (sh->line->line[i])
         i++;
 	i--;
-	while (sh->line->line[i] && (sh->line->line[i] != '\'' || sh->line->line[i] == '\"'))
+	while (sh->line->line[i] && (sh->line->line[i] != quote))
 		i--;
-	if (sh->line->line[i] == '\'' || sh->line->line[i] == '\"')
+	if (sh->line->line[i] && sh->line->line[i] == quote)
     {
 		i++;
 		sh->line->q_str = ft_freejoinstr(sh->line->q_str, &sh->line->line[i]);
@@ -89,7 +89,7 @@ int            do_quotes(t_sh *sh, char quote)
     char buf2[2];
 
 	(void)quote;
-	del_quote(sh);
+	del_quote(sh, quote);
 	init_term();
 	sh->buf = 0;
 	sh->line->prompt_mode = 2;
@@ -118,7 +118,7 @@ int            do_quotes(t_sh *sh, char quote)
 				}
 				sh->buf = 0;
 			}
-			simple_quote_work(sh, &ret_stop[1]);
+			simple_quote_work(sh, &ret_stop[1], quote);
 	}
 	return (1);
 }
