@@ -45,13 +45,16 @@ int				check_left_right(char *input, t_parsing *data)
 	tmp1 = ft_strsub(input, data->index, (data->subber - data->index));
 	if ((!ft_isstrprint(tmp = ft_strtrim(tmp1)) && data->to_node_op[0] != ';') || tmp[0] == '\'' || tmp[0] == '\"')
 	{
-
 		ft_strdel(&tmp);
 		ft_strdel(&tmp1);
 		return (0);
 	}
 	if (ft_strchr(OPERATOR, tmp[0]) && tmp[0] != '\0')
+	{
+		ft_strdel(&tmp);
+		ft_strdel(&tmp1);
 		return (0);
+	}
 	if (input[data->subber] == '\0')
 		data->wordsize = ft_strlen(tmp);
 	ft_strdel(&tmp);

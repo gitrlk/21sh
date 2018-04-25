@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/25 16:01:53 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/25 17:49:27 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,6 +186,7 @@ void				ft_21sh(t_sh *sh)
 		handle_key(sh);
 		sh->buf = 0;
 	}
+	ft_endkey(sh->line);
 	ft_add_history(sh->line); //add line to history
 	ft_putchar('\n');
 	set_term_back();

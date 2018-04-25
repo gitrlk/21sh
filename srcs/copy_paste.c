@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:27 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/25 15:38:34 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/25 17:37:26 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void select_copy_cut(t_edit *line, int buf)
     ft_go_start(line);
     ft_cut(line);
   }
-  else if (buf == PRESS_ALT_V)
+  else if (buf == PRESS_ALT_V && !line->select_mode)
   {
     line->select_mode = 0;
     ft_paste(line);
