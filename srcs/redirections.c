@@ -37,6 +37,25 @@ void				get_std_sd(t_lexit *node)
 	}
 }
 
+void 				last_right_redir(t_lexit *node, t_lexit *tmp)
+{
+	node->prev->redirs->redir_right = tmp->prio == REDIR_R ? 1 : 2;
+	if (node->prev->redirs->right_target)
+		ft_strdel(&node->prev->redirs->right_target);
+	node->prev->redirs->right_target = ft_strdup(tmp->next->input);
+	get_std_sd(node);
+}
+
+void				last_left_redir(t_lexit *node, t_lexit *tmp, t_sh *sh)
+{
+	node->prev->redirs->redir_left = tmp->prio == REDIR_L ? 1 : 2;
+	if (tmp->prio == HEREDOC)
+		get_eof(tmp, sh);
+	if (node->prev->redirs->left_target)
+		ft_strdel(&node->prev->redirs->left_target);
+	node->prev->redirs->left_target = ft_strdup(tmp->next->input);
+}
+
 void				get_last_redir(t_lexit *node, t_sh *sh)
 {
 	t_lexit		*tmp;
@@ -47,22 +66,9 @@ void				get_last_redir(t_lexit *node, t_sh *sh)
 	PIPE && tmp->prio != COMMAND))
 	{
 		if (tmp->next && ((tmp->prio == REDIR_R || tmp->prio == REDIR_RR)))
-		{
-			node->prev->redirs->redir_right = tmp->prio == REDIR_R ? 1 : 2;
-			if (node->prev->redirs->right_target)
-				ft_strdel(&node->prev->redirs->right_target);
-			node->prev->redirs->right_target = ft_strdup(tmp->next->input);
-			get_std_sd(node);
-		}
+			last_right_redir(node, tmp);
 		if (tmp->next && ((tmp->prio == REDIR_L || tmp->prio == HEREDOC)))
-		{
-			node->prev->redirs->redir_left = tmp->prio == REDIR_L ? 1 : 2;
-			if (tmp->prio == HEREDOC)
-				get_eof(tmp, sh);
-			if (node->prev->redirs->left_target)
-				ft_strdel(&node->prev->redirs->left_target);
-			node->prev->redirs->left_target = ft_strdup(tmp->next->input);
-		}
+			last_left_redir(node, tmp, sh);
 		tmp = tmp->next;
 	}
 }
