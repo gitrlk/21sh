@@ -78,5 +78,4 @@ void		exec_unsetenv(char **commands, t_env **venv)
   }
 	if (i == 0)
 		ft_putendl_fd("usage : unset <environment variable>", 2);
-
 }

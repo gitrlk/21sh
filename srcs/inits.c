@@ -1,6 +1,6 @@
 #include "../includes/sh.h"
 
-void init_line_edit(t_edit *line)
+void			init_line_edit(t_edit *line)
 {
 	ioctl(STDERR_FILENO, TIOCGWINSZ, &line->sz);
 	line->select_mode = 0;
@@ -13,7 +13,7 @@ void init_line_edit(t_edit *line)
 	line->is_highlight = ft_strnew(0);
 }
 
-void					init_structs(t_edit *line, t_fday *fd)
+void			init_structs(t_edit *line, t_fday *fd)
 {
 	line->hstr = NULL;
 	ft_line_reset(line);
@@ -28,7 +28,7 @@ void					init_structs(t_edit *line, t_fday *fd)
 
 t_parsing		*init_data(void)
 {
-	t_parsing *data;
+	t_parsing	*data;
 
 	data = ft_memalloc(sizeof(t_parsing));
 	data->env = NULL;

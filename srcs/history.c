@@ -6,15 +6,15 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:40 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 02:32:34 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/26 19:34:59 by tchapka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
 
-void ft_arrow_up(t_edit *line)
+void		ft_arrow_up(t_edit *line)
 {
-  int cnt;
+  int		cnt;
 
   cnt = 0;
 
@@ -37,9 +37,9 @@ void ft_arrow_up(t_edit *line)
   line->cursor_pos = line->max_size;
 }
 
-void ft_arrow_down(t_edit *line)
+void		ft_arrow_down(t_edit *line)
 {
-  int cnt;
+  int		cnt;
 
   cnt = 0;
   if (line->cursor_pos == line->max_size && line->curr)
@@ -65,10 +65,10 @@ void ft_arrow_down(t_edit *line)
 }
 
 
-void ft_add_history(t_edit *line)
+void		ft_add_history(t_edit *line)
 {
-  t_hstr  *tmp;
-  t_hstr  *new;
+  t_hstr	*tmp;
+  t_hstr	*new;
 
   if (line->line[0] == '\0')
       return ;

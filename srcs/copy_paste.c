@@ -6,24 +6,22 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:27 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/25 18:52:26 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/26 19:35:06 by tchapka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
 
-void ft_highlight(t_edit *line)
+void		ft_highlight(t_edit *line)
 {
-	int i;
-	char *tmp;
-	char *tmp2;
+	int		i;
+	char	*tmp;
+	char	*tmp2;
 
 	i = 0;
 	tmp = ft_strndup(line->line, line->start_select);
 	ft_putstr_fd(tmp, STDOUT_FILENO);
 	ft_putstr_fd(tgetstr("mr", NULL), STDOUT_FILENO);
-  // if (line->start_select > line->end_select)
-  //   swap_norme(line); // remplacer par un ternaire
 	tmp2 = ft_strsub(line->line, line->start_select , (line->end_select - line->start_select));
 	ft_putstr_fd(tmp2, STDOUT_FILENO);
 	free(tmp);
@@ -38,9 +36,9 @@ void ft_highlight(t_edit *line)
 	line->is_highlight = tmp2;
 }
 
-void ft_go_start(t_edit *line)
+void		ft_go_start(t_edit *line)
 {
-	int i;
+	int		i;
 
 	i = 0;
 	while (i < line->max_size)
@@ -51,12 +49,11 @@ void ft_go_start(t_edit *line)
 	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
 }
 
-
- void ft_paste(t_edit *line)
+void		ft_paste(t_edit *line)
  {
-   char *tmp;
-   char *tmp2;
-   int i;
+   char		*tmp;
+   char		*tmp2;
+   int		i;
 
    i = 0;
    tmp = ft_strndup(line->line, line->cursor_pos - 2);
@@ -76,12 +73,11 @@ void ft_go_start(t_edit *line)
    free(tmp);
 }
 
-
-void ft_cut(t_edit *line)
+void		ft_cut(t_edit *line)
 {
-	int i;
-	char *tmp;
-    char *tmp2;
+	int		i;
+	char	*tmp;
+    char	*tmp2;
 
     i = 0;
     tmp = ft_strndup(line->line, line->start_select);
@@ -95,7 +91,7 @@ void ft_cut(t_edit *line)
     line->cursor_pos = (ft_strlen(line->line) + 2);
 }
 
-void select_copy_cut(t_edit *line, int buf)
+void		select_copy_cut(t_edit *line, int buf)
 {
 	if (!line->select_mode && buf == PRESS_ALT_K)
 	{

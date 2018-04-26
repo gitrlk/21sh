@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/26 03:30:40 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/26 19:35:00 by tchapka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ char			**copypasta(char **src, int i)
 
 void				ft_print_tree(t_lexit *lexdat)
 {
-	int			i;
+	int				i;
 
 	i = 1;
 	if (lexdat)

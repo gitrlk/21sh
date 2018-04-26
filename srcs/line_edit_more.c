@@ -50,7 +50,7 @@ void				insert_hd(t_insert *vals, int buf, t_edit *line)
 	free(vals->tmp2);
 }
 
-void ft_insert(int buf, t_edit *line)
+void				ft_insert(int buf, t_edit *line)
 {
 	t_insert		vals;
 
@@ -79,9 +79,9 @@ void				add_to_line_std(t_edit *line, int buf, char *buf2)
 		ft_insert(buf, line);
 }
 
-void add_to_line(t_edit *line, int buf)
+void				add_to_line(t_edit *line, int buf)
 {
-	char buf2[2];
+	char			buf2[2];
 
 	buf2[0] = (char)buf;
 	buf2[1] = '\0';

@@ -21,7 +21,7 @@ int				check_semi(t_sh *sh, t_lexit *lst)
 	return (0);
 }
 
-int			get_number(t_sh *sh)
+int				get_number(t_sh *sh)
 {
 	char		**tmp;
 	int			i;
@@ -43,7 +43,7 @@ t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
 	return (dst);
 }
 
-int					check_pipe(t_lexit *node)
+int				check_pipe(t_lexit *node)
 {
 	if (node->prev->prio != COMMAND || node->next->prio != COMMAND)
 		return (node->prev->prio != COMMAND ?
@@ -52,14 +52,14 @@ int					check_pipe(t_lexit *node)
 	return (1);
 }
 
-int					check_redirr(t_lexit *node, int checker)
+int				check_redirr(t_lexit *node, int checker)
 {
 	if (!checker)
 		return (ft_errors(6, NULL, node->prev->args[0]));
 	return (1);
 }
 
-int					check_redirl(t_lexit *node)
+int				check_redirl(t_lexit *node)
 {
 	if (node->prio == HEREDOC)
 	{
@@ -71,10 +71,10 @@ int					check_redirl(t_lexit *node)
 	return (1);
 }
 
-int 				double_check(t_lexit *lst)
+int 			double_check(t_lexit *lst)
 {
-	int checker;
-	t_lexit *tmp;
+	int			checker;
+	t_lexit		*tmp;
 
 	checker = 0;
 	tmp = lst;

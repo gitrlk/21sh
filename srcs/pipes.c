@@ -1,10 +1,10 @@
 #include "../includes/sh.h"
 
-void				do_pipes(t_lexit *list, t_env *env, t_sh *sh)
+void		do_pipes(t_lexit *list, t_env *env, t_sh *sh)
 {
-	pid_t pipid;
-	int pipefd[2];
-	int status;
+	pid_t 	pipid;
+	int 	pipefd[2];
+	int 	status;
 
 	pipe(pipefd);
 	pipid = fork();

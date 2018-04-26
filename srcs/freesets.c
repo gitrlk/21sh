@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:03 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/23 19:07:20 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/26 19:34:57 by tchapka          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void			ft_line_reset(t_edit *line)
 	line->curr = NULL;
 }
 
-void				free_tree(t_lexit *lexdat)
+void			free_tree(t_lexit *lexdat)
 {
 	if (lexdat)
 	{
@@ -58,7 +58,7 @@ void				free_tree(t_lexit *lexdat)
 	}
 }
 
-void				clean_list(t_lexit *tmp)
+void			clean_list(t_lexit *tmp)
 {
 	if (tmp->input)
 		ft_strdel(&tmp->input);
@@ -76,7 +76,7 @@ void				clean_list(t_lexit *tmp)
 	}
 }
 
-void				free_list(t_lexit *list)
+void			free_list(t_lexit *list)
 {
 	t_lexit		*tmp;
 	int			checker;

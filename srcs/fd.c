@@ -1,8 +1,8 @@
 #include "../includes/sh.h"
 
-int		isnumber(char *s)
+int			isnumber(char *s)
 {
-	int i;
+	int		i;
 
 	i = -1;
 	while (s[++i])
@@ -13,7 +13,7 @@ int		isnumber(char *s)
 	return (1);
 }
 
-void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
+void		switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 {
 	if (in_out == 1)
 	{
@@ -39,7 +39,7 @@ void				switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 	}
 }
 
-int				switch_right(t_lexit *list, t_sh *sh, int *mod)
+int			switch_right(t_lexit *list, t_sh *sh, int *mod)
 {
 	if (list->redirs && (list->redirs->redir_right == 2))
 	{
@@ -67,7 +67,7 @@ int				switch_right(t_lexit *list, t_sh *sh, int *mod)
 	return (0);
 }
 
-int				switch_left(t_lexit *list, t_sh *sh, int *mod)
+int			switch_left(t_lexit *list, t_sh *sh, int *mod)
 {
 	if (list->redirs && (list->redirs->redir_left == 1))
 	{
@@ -88,7 +88,7 @@ int				switch_left(t_lexit *list, t_sh *sh, int *mod)
 	return (0);
 }
 
-int				switch_fd(t_lexit *list, t_sh *sh, int *mod)
+int			switch_fd(t_lexit *list, t_sh *sh, int *mod)
 {
 	if ((switch_right(list, sh, mod) == -1))
 		ft_errors(5, NULL, list->redirs->right_target);
@@ -97,7 +97,7 @@ int				switch_fd(t_lexit *list, t_sh *sh, int *mod)
 	return (*mod);
 }
 
-void				reset_fd(t_sh *sh, int mod)
+void		reset_fd(t_sh *sh, int mod)
 {
 	if (mod == 1)
 	{
@@ -115,5 +115,4 @@ void				reset_fd(t_sh *sh, int mod)
 		close(sh->fd.saved_out);
 		dup2(sh->fd.saved_in, 0);
 		close(sh->fd.saved_in);
-	}
-}
+	}}

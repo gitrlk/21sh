@@ -1,8 +1,8 @@
 #include "../includes/sh.h"
 
-void			ft_echo(t_lexit *list)
+void		t_echo(t_lexit *list)
 {
-	int			i;
+	int		i;
 
 	if (!list->args[1])
 		ft_putchar('\n');

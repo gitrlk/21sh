@@ -195,7 +195,7 @@ void			exec_env(t_lexit *list, int i, t_env *new_env, t_sh *sh)
 void			ft_env(t_lexit *list, t_env *env, t_sh *sh)
 {
 	t_env		*new_env;
-	int		i;
+	int			i;
 
 	i = 1;
 	new_env = (env ? ft_copy_list(env) : NULL);

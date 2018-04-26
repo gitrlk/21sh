@@ -1,6 +1,5 @@
 #include "../includes/sh.h"
 
-
 void				execute(t_sh *sh)
 {
 
@@ -80,7 +79,7 @@ void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 void				execute_binary(t_lexit *list, t_env *env, t_sh *sh)
 {
 	char			**newenv;
-	int			mod;
+	int				mod;
 
 	mod = 0;
 	newenv = ft_fill_envp(env);
@@ -139,7 +138,7 @@ void				exec_segment(t_sh *sh, t_execs *igo)
 
 void				exec_last_segment(t_sh *sh, t_execs *igo)
 {
-	t_lexit		*tete;
+	t_lexit			*tete;
 
 	tete = igo->head;
 	if (double_check(igo->head))

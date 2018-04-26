@@ -1,6 +1,6 @@
 #include "../includes/sh.h"
 
-int 			quote_loop(t_sh *sh, int *ret_stop, char quote)
+int 		quote_loop(t_sh *sh, int *ret_stop, char quote)
 {
 	reset_line_mode(sh);
 	ft_prompt(3);
@@ -26,9 +26,9 @@ int 			quote_loop(t_sh *sh, int *ret_stop, char quote)
 	return (1);
 }
 
-int            do_quotes(t_sh *sh, char quote)
+int			do_quotes(t_sh *sh, char quote)
 {
-    int            ret_stop[2];
+    int		ret_stop[2];
 
     ret_stop[0] = 0;
     ret_stop[1] = 0;
@@ -43,7 +43,7 @@ int            do_quotes(t_sh *sh, char quote)
 	return (1);
 }
 
-void 			get_matching_quotes(size_t *i, int *sq, int *dq, char *input)
+void 		get_matching_quotes(size_t *i, int *sq, int *dq, char *input)
 {
 	if (input[*i] == '\'')
 	{
@@ -66,11 +66,11 @@ void 			get_matching_quotes(size_t *i, int *sq, int *dq, char *input)
 	(*i)++;
 }
 
-int				quote_checker(char *input, t_sh *sh)
+int			quote_checker(char *input, t_sh *sh)
 {
-	size_t i;
-	int sq;
-	int dq;
+	size_t	i;
+	int 	sq;
+	int 	dq;
 
   	i = 0;
 	sq = 0;

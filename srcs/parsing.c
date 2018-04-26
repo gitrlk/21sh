@@ -36,7 +36,7 @@ int 			check_left(char *tmp, char *tmp1, t_parsing *data, char *input)
 	return (1);
 }
 
-int		check_right(char *tmp, char *tmp1, t_parsing *data, char *input)
+int				check_right(char *tmp, char *tmp1, t_parsing *data, char *input)
 {
 	if (input[data->subber])
 		if (input[data->subber + 1] != '\0' &&
@@ -65,7 +65,7 @@ int		check_right(char *tmp, char *tmp1, t_parsing *data, char *input)
 	return (1);
 }
 
-int				check_left_right(char *input, t_parsing *data)
+int					check_left_right(char *input, t_parsing *data)
 {
 	char			*tmp;
 	char			*tmp1;
@@ -78,10 +78,10 @@ int				check_left_right(char *input, t_parsing *data)
 	return (0);
 }
 
-void			link_last_node(char *input, t_lexit **list, t_parsing *data, t_sh *sh)
+void				link_last_node(char *input, t_lexit **list, t_parsing *data, t_sh *sh)
 {
-	char 		*content;
-	t_lexit		*tmp;
+	char 			*content;
+	t_lexit			*tmp;
 
 	tmp = *list;
 	content = ft_strsub(input, (data->index + 1), (data->subber - data->index));
@@ -92,7 +92,7 @@ void			link_last_node(char *input, t_lexit **list, t_parsing *data, t_sh *sh)
 	tmp->next->prev = tmp;
 }
 
-void			link_non_op(t_parsing *data, t_lexit **tmp, t_lexit **list, t_sh *sh)
+void				link_non_op(t_parsing *data, t_lexit **tmp, t_lexit **list, t_sh *sh)
 {
 	if (!(*tmp))
 	{
@@ -112,9 +112,9 @@ void			link_non_op(t_parsing *data, t_lexit **tmp, t_lexit **list, t_sh *sh)
 	}
 }
 
-void			link_nodes(char *input, t_lexit **list, t_parsing *data, t_sh *sh)
+void				link_nodes(char *input, t_lexit **list, t_parsing *data, t_sh *sh)
 {
-	t_lexit		*tmp;
+	t_lexit			*tmp;
 
 	tmp = *list;
 	data->index--;
@@ -190,7 +190,7 @@ int				check_if_over(char *input, t_parsing *data)
 	return (0);
 }
 
-void	link_last_non_op(t_parsing *data, t_sh *sh, t_lexit **tmp, t_lexit **list)
+void			link_last_non_op(t_parsing *data, t_sh *sh, t_lexit **tmp, t_lexit **list)
 {
 	if (!(*tmp))
 	{
@@ -262,7 +262,7 @@ int				test_l_r(t_parsing *data, char *input, t_lexit **list, t_sh *sh)
 	return (0);
 }
 
-void 		setup_parsing(t_parsing *data, t_env *env, char *input)
+void 			setup_parsing(t_parsing *data, t_env *env, char *input)
 {
 	data->env = env;
 	data->empty_input = ft_strtrim(input);

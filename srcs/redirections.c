@@ -74,7 +74,7 @@ void				get_last_redir(t_lexit *node, t_sh *sh)
 }
 
 
-void				get_redir(t_lexit *node, t_sh *sh)
+void			get_redir(t_lexit *node, t_sh *sh)
 {
 	t_lexit		*tmp;
 
