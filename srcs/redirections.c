@@ -9,8 +9,6 @@ void				get_eof(t_lexit *node, t_sh *sh)
 	node->redirs->right_target = NULL;
 	node->redirs->left_target = NULL;
 	node->redirs->endoff = NULL;
-	// node->redirs->follow_up = NULL;
-
 	node->redirs->endoff = ft_strdup(node->next->args[0]);
 	do_heredoc(node, sh);
 }
@@ -24,7 +22,6 @@ void				init_redirs(t_lexit *node)
 	node->redirs->right_target = NULL;
 	node->redirs->left_target = NULL;
 	node->redirs->endoff = NULL;
-	// node->redirs->follow_up = NULL;
 }
 
 void				get_std_sd(t_lexit *node)

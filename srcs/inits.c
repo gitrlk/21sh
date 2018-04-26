@@ -44,6 +44,9 @@ t_parsing		*init_data(void)
 	data->breaker = 1;
 	data->empty = 0;
 	data->to_node = NULL;
+	data->content = NULL;
+	data->tmpn = NULL;
+	data->empty_input = NULL;
 	data->to_node_op[0] = '\0';
 	data->to_node_op[1] = '\0';
 	data->to_node_op[2] = '\0';

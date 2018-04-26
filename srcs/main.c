@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/25 20:58:47 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/26 03:30:40 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +161,6 @@ void				p_l_x(t_sh *sh)
 void				ft_21sh(t_sh *sh)
 {
 	int				ret;
-
 
 	ft_prompt(1);
 	init_term();

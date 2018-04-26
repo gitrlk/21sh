@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/25 21:04:32 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/26 03:26:18 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,9 @@ typedef struct			s_parsing
 	char					to_node_op[3];
 	char					*ptr;
 	char					*ptr2;
+	char					*content;
+	char					*tmpn;
+	char					*empty_input;
 }							t_parsing;
 
 typedef struct			s_fday
