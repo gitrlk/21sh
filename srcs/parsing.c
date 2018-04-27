@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:11:47 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 19:26:32 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/27 20:04:35 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void			lnk_last_noop(t_parsing *d, t_sh *sh, t_lexit **t, t_lexit **l)
 	}
 }
 
-void			last_node(t_lexit **list, char *i, t_parsing *data, t_sh *sh)
+void			last_node(t_lexit **list, char *s, t_parsing *data, t_sh *sh)
 {
 	int			i;
 	int			j;
@@ -51,12 +51,12 @@ void			last_node(t_lexit **list, char *i, t_parsing *data, t_sh *sh)
 	j = 0;
 	while (i > 0)
 	{
-		if (ft_strchr(OPERATOR, i[i - 1]))
+		if (ft_strchr(OPERATOR, s[i - 1]))
 			break ;
 		i--;
 		j++;
 	}
-	data->tmpn = ft_strsub(i, i, j);
+	data->tmpn = ft_strsub(s, i, j);
 	if (!sh->line->quote_complete)
 		data->content = ft_strtrim(data->tmpn);
 	lnk_last_noop(data, sh, &tmp, list);
@@ -72,27 +72,27 @@ void			setup_parsing(t_parsing *data, t_env *env, char *input)
 	data->len = ft_strlen(input);
 }
 
-int				parsing_listing(t_lexit **list, char *i, t_env *env, t_sh *sh)
+int				parsing_listing(t_lexit **list, char *s, t_env *env, t_sh *sh)
 {
 	t_parsing	*data;
 	t_lexit		*tmp;
 
 	tmp = *list;
 	data = init_data();
-	setup_parsing(data, env, i);
-	if (quote_checker(i, sh) && !data->empty)
+	setup_parsing(data, env, s);
+	if (quote_checker(s, sh) && !data->empty)
 	{
-		while (((data->index + 1) <= data->len) && i[++data->index])
+		while (((data->index + 1) <= data->len) && s[++data->index])
 		{
-			if ((test_l_r(data, i, list, sh) == -1))
+			if ((test_l_r(data, s, list, sh) == -1))
 			{
 				ft_errors(1, &data->ptr[0], NULL);
 				free(data);
 				return (0);
 			}
 		}
-		if (i && !*(list))
-			tmp = single_node(tmp, list, sh, i);
+		if (s && !*(list))
+			tmp = single_node(tmp, list, sh, s);
 	}
 	ft_memdel((void **)&data);
 	return (1);
