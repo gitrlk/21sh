@@ -1,6 +1,6 @@
 #include "../includes/sh.h"
 
-void		t_echo(t_lexit *list)
+void		ft_echo(t_lexit *list)
 {
 	int		i;
 

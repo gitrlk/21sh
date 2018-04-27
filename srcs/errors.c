@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:00 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/26 19:34:49 by tchapka          ###   ########.fr       */
+/*   Updated: 2018/04/27 01:43:08 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,5 +82,5 @@ int 		ft_errors(int code, char *cmd, char *arg)
 		ft_putstr_fd("21sh: unmatched \"\n", 2);
 		return (0);
 	}
-	return(ft_error_2(code, cmd, arg));
+	return(ft_error2(code, cmd, arg));
 }

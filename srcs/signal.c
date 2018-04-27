@@ -10,6 +10,17 @@ void			listen_signal(void)
 	signal(SIGINT, sig_int);
 }
 
+void 				hd_sig(t_hdc *valhd, t_lexit *list, t_sh *sh)
+{
+	close(valhd->ret_stop[0]);
+	ft_strdel(&list->redirs->endoff);
+	valhd->ret_stop[0] = open(sh->hd_state, O_RDONLY | O_WRONLY | O_TRUNC);
+	close(valhd->ret_stop[0]);
+	valhd->ret_stop[1] = 1;
+	sh->line->prompt_mode = 0;
+	set_term_back();
+}
+
 void				init_term(void)
 {
 	const char			*name;

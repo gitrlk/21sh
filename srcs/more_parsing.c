@@ -21,19 +21,6 @@ int				check_semi(t_sh *sh, t_lexit *lst)
 	return (0);
 }
 
-int				get_number(t_sh *sh)
-{
-	char		**tmp;
-	int			i;
-
-	i = 0;
-	tmp = ft_strsplit(sh->line->line, ';');
-	while (tmp[i])
-		i++;
-	ft_freetab(tmp);
-	return (i);
-}
-
 t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
 {
 	t_lexit		*dst;

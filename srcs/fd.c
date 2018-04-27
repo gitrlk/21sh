@@ -1,18 +1,5 @@
 #include "../includes/sh.h"
 
-int			isnumber(char *s)
-{
-	int		i;
-
-	i = -1;
-	while (s[++i])
-	{
-		if (!(s[i] >= '0' && s[i] <= '9'))
-			return (0);
-	}
-	return (1);
-}
-
 void		switch_in_out(t_sh *sh, int in_out, t_lexit *list)
 {
 	if (in_out == 1)

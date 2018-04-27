@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/26 03:26:18 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/27 03:53:15 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -259,7 +259,7 @@ void				set_term_back(void);
 int				switch_fd(t_lexit *list, t_sh *sh, int *mod);
 void				reset_fd(t_sh *sh, int mod);
 void				do_pipes(t_lexit *list, t_env *env, t_sh *sh);
-int			get_number(t_sh *sh);
+int			get_segment_number(t_sh *sh);
 int 				double_check(t_lexit *lst);
 t_lexit			*copy_segment(t_sh *sh, t_lexit *src);
 int				check_semi(t_sh *sh, t_lexit *lst);
@@ -285,6 +285,39 @@ void				clean_list(t_lexit *tmp);
 void 	del_quote(t_sh *sh, char quote);
 void reset_line_mode(t_sh *sh);
 void simple_quote_work(t_sh *sh, int *ret_stop, char quote);
+int			exec_cd_env(t_env **env,char *search, int mode, char **args);
+int			find_t_env_str(char *venv, char *str);
+void		do_cd(char *path, t_env **venv, int mode);
+int				ft_get_egal_pos(char *vartoadd);
+void			ft_refresh_link(t_env **tmp, char *vartoadd);
+void			ft_refresh_link_cd(t_env **tmp, char *vartoadd);
+void			update_list(t_lexit *list, int i, t_env *env);
+t_env			*ft_copy_list(t_env *env);
+void			ft_env_with_var(t_env **env, char *vartoadd);
+void			exec_env(t_lexit *list, int i, t_env *new_env, t_sh *sh);
+int				isnumber(char *s);
+void			free_env(t_env *lst);
+char			*get_quote_str(char *line);
+void		ft_wordleft(t_edit *line);
+void		ft_wordright(t_edit *line);
+void		print_cpy(int buf, t_edit *line);
+int		check_copy(int buf);
+int 				ft_isstrprint(char *str);
+void				init_redirs(t_lexit *node);
+void				init_valhd(t_hdc *valhd);
+void				get_eof(t_lexit *node, t_sh *sh);
+void				do_heredoc(t_lexit *list, t_sh *sh);
+int				open_heredoc(t_sh *sh);
+void 				hd_sig(t_hdc *valhd, t_lexit *list, t_sh *sh);
+int				test_l_r(t_parsing *data, char *input, t_lexit **list, t_sh *sh);
+int 		its_over(t_insert *vals, t_parsing *data, char *input);
+int				node_lro(char *input, t_lexit **list, t_parsing *data, t_sh *sh);
+int					check_left_right(char *input, t_parsing *data);
+void			get_redir(t_lexit *node, t_sh *sh);
+
+
+
+
 
 
 #endif

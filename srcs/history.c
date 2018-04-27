@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:40 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/26 19:34:59 by tchapka          ###   ########.fr       */
+/*   Updated: 2018/04/27 03:36:31 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,28 +67,28 @@ void		ft_arrow_down(t_edit *line)
 
 void		ft_add_history(t_edit *line)
 {
-  t_hstr	*tmp;
-  t_hstr	*new;
+	  t_hstr	*tmp;
+	  t_hstr	*new;
 
-  if (line->line[0] == '\0')
-      return ;
-  new = ft_memalloc(sizeof(t_hstr));
-  new->cmd = ft_strdup(line->line);
-  new->up = NULL;
-  new->down = NULL;
+	  if (line->line[0] == '\0')
+	      return ;
+	  new = ft_memalloc(sizeof(t_hstr));
+	  new->cmd = ft_strdup(line->line);
+	  new->up = NULL;
+	  new->down = NULL;
 
-  if (!line->hstr)
-    line->hstr = new;
-  else if (ft_strcmp(line->line, line->hstr->cmd) != 0) //(line->curr != line->hstr) //avoid add in history last saved element
-  {
-    tmp = line->hstr;
-    tmp->down = new;
-    new->up = tmp;
-    line->hstr = new;
-  }
-  else
-  {
-    free(new->cmd);
-    free(new);
-  }
+	  if (!line->hstr)
+	    line->hstr = new;
+	  else if (ft_strcmp(line->line, line->hstr->cmd) != 0) //(line->curr != line->hstr) //avoid add in history last saved element
+	  {
+	    tmp = line->hstr;
+	    tmp->down = new;
+	    new->up = tmp;
+	    line->hstr = new;
+	  }
+	  else
+	  {
+	    free(new->cmd);
+	    free(new);
+	  }
 }

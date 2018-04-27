@@ -63,7 +63,26 @@ t_execs			*init_igo(t_sh *sh)
 	igo->copy = NULL;
 	igo->head = NULL;
 	igo->tmp2 = NULL;
-	igo->exec_number = get_number(sh);
+	igo->exec_number = get_segment_number(sh);
 	sh->execs = NULL;
 	return (igo);
 }
+
+void				init_redirs(t_lexit *node)
+{
+	node->redirs = (t_redir *)malloc(sizeof(t_redir));
+	node->checker = 1;
+	node->redirs->redir_right = 0;
+	node->redirs->redir_left = 0;
+	node->redirs->right_target = NULL;
+	node->redirs->left_target = NULL;
+	node->redirs->endoff = NULL;
+}
+
+// void				init_valhd(t_hdc *valhd)
+// {
+// 	valhd->ret_stop[0] = 0;
+// 	valhd->hd = 0;
+// 	valhd->ret_stop[1] = 0;
+// 	valhd->tmp = NULL;
+// }

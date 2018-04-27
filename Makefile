@@ -6,7 +6,7 @@
 #    By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/04/19 14:14:34 by jecarol           #+#    #+#              #
-#    Updated: 2018/04/20 05:06:16 by rfabre           ###   ########.fr        #
+#    Updated: 2018/04/27 03:54:25 by rlkcmptr         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 NAME = 21sh
@@ -14,7 +14,13 @@ NAME = 21sh
 CC = gcc
 CFLAGS = -Wall -Wextra -Werror -g
 
-SRCS_LIST = main.c line_movement.c line_edit.c copy_paste.c term.c line_edit_more.c env.c history.c tokenizer.c parsing.c freesets.c execution.c path_mngmnt.c errors.c echo.c cd.c setenv.c unset.c signal.c fd.c pipes.c more_parsing.c tools.c redirections.c inits.c quotes.c quote_more.c
+SRCS_LIST = main.c line_movement.c line_edit.c copy_paste.c term.c\
+line_edit_more.c env.c history.c tokenizer.c parsing.c freesets.c\
+execution.c path_mngmnt.c errors.c echo.c cd.c setenv.c unset.c signal.c\
+fd.c pipes.c more_parsing.c tools.c redirections.c inits.c quotes.c\
+quote_more.c cd_env.c env_misc.c env_tools.c execution_more.c free_more.c\
+line_edit_misc.c line_edit_tools.c misc.c ast_builder.c heredoc.c\
+parsing_checking.c parsing_tools.c init_more.c redirections_more.c
 
 SRCS_DIR = srcs/
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LIST))

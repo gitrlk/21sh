@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:27 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/26 19:35:06 by tchapka          ###   ########.fr       */
+/*   Updated: 2018/04/27 02:20:07 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,13 @@ void		ft_highlight(t_edit *line)
 	tmp = ft_strndup(line->line, line->start_select);
 	ft_putstr_fd(tmp, STDOUT_FILENO);
 	ft_putstr_fd(tgetstr("mr", NULL), STDOUT_FILENO);
-	tmp2 = ft_strsub(line->line, line->start_select , (line->end_select - line->start_select));
+	tmp2 = ft_strsub(line->line, line->start_select ,
+	(line->end_select - line->start_select));
 	ft_putstr_fd(tmp2, STDOUT_FILENO);
 	free(tmp);
 	ft_putstr_fd(tgetstr("me", NULL), STDOUT_FILENO);
-	tmp = ft_strsub(line->line, line->end_select , ((line->max_size - 2) - line->end_select));
+	tmp = ft_strsub(line->line, line->end_select ,
+	((line->max_size - 2) - line->end_select));
 	ft_putstr_fd(tmp, STDOUT_FILENO);
 	line->cursor_pos = line->max_size;
 	while ((size_t)++i <= ft_strlen(tmp))
