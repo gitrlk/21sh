@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 21:35:09 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/28 00:29:17 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -341,4 +341,6 @@ void				init_node(t_lexit *tmp);
 int					is_quote_closed(char const *s, char quote);
 int					ft_wlen(const char *s, char c);
 void				match_quotes(t_split *vals, const char *s, char d, char e);
+void				lol(t_sh *sh, t_execs *igo);
+
 #endif
