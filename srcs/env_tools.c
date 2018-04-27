@@ -1,5 +1,31 @@
 #include "../includes/sh.h"
 
+char			**ft_fill_envp(t_env *env)
+{
+	char		**ret;
+	t_env		*tmp;
+	int			len;
+	int			i;
+
+	tmp = env;
+	len = 0;
+	while (tmp)
+	{
+		len++;
+		tmp = tmp->next;
+	}
+	ret = ft_memalloc(sizeof(char **) * (len + 1));
+	i = 0;
+	tmp = env;
+	while (i < len)
+	{
+		ret[i] = ft_strdup(tmp->var);
+		tmp = tmp->next;
+		i++;
+	}
+	return (ret);
+}
+
 void			update_list(t_lexit *list, int i, t_env *env)
 {
 	char		**apaths;

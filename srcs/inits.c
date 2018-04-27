@@ -78,11 +78,3 @@ void				init_redirs(t_lexit *node)
 	node->redirs->left_target = NULL;
 	node->redirs->endoff = NULL;
 }
-
-// void				init_valhd(t_hdc *valhd)
-// {
-// 	valhd->ret_stop[0] = 0;
-// 	valhd->hd = 0;
-// 	valhd->ret_stop[1] = 0;
-// 	valhd->tmp = NULL;
-// }

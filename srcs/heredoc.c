@@ -61,9 +61,9 @@ void				heredoc_work(t_sh *sh, t_lexit *list, t_hdc *valhd)
 int				open_heredoc(t_sh *sh)
 {
 	int			fd;
-	char			*path;
+	char		*path;
 	int			random;
-	char			*tmp;
+	char		*tmp;
 
 	path = ft_strdup("/tmp/.");
 	random = 0;

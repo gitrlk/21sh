@@ -57,3 +57,16 @@ int 				ft_isstrprint(char *str)
 		i++;
 	return (i);
 }
+
+int		ft_wlen(const char *s, char c)
+{
+	int		len;
+
+	len = 0;
+	while (*s != c && *s != '\0')
+	{
+		len++;
+		s++;
+	}
+	return (len);
+}

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 03:53:15 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/27 16:29:58 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,6 +197,16 @@ typedef struct			s_insert
 	int					i;
 }							t_insert;
 
+typedef struct			s_split
+{
+	int		cnt;
+	int		in_substring;
+	int		i;
+	int		nb_word;
+	int 	index;
+	char 	**t;
+}						t_split;
+
 int					ft_pointchar(int c);
 void ft_left_arrow(t_edit *line);
 void ft_right_arrow(t_edit *line);
@@ -314,6 +324,12 @@ int 		its_over(t_insert *vals, t_parsing *data, char *input);
 int				node_lro(char *input, t_lexit **list, t_parsing *data, t_sh *sh);
 int					check_left_right(char *input, t_parsing *data);
 void			get_redir(t_lexit *node, t_sh *sh);
+t_split			init_split(char const *s, char c, char d, char e);
+int		ft_cnt_parts(const char *s, char c, char d, char e);
+void 		init_node(t_lexit *tmp);
+int				is_quote_closed(char const *s, char quote);
+int		ft_wlen(const char *s, char c);
+void 	match_quotes(t_split *vals, const char *s, char d, char e);
 
 
 
