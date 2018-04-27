@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:49:57 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 19:51:23 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/28 00:47:19 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,8 @@ char			*find_cmd(char **apaths, char *cmd)
 	struct stat	s;
 
 	may = NULL;
+	if (!ft_strcmp(cmd, "..") || !ft_strcmp(cmd, "."))
+		return (NULL);
 	if (!access(cmd, F_OK))
 	{
 		if (lstat(cmd, &s) != -1 && !(S_ISDIR(s.st_mode)) &&
