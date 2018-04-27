@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:38:42 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 19:38:54 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/27 20:38:33 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void				get_std_src_dst(t_lexit *node)
 	}
 }
 
-void 				last_right_redir(t_lexit *node, t_lexit *tmp)
+void				last_right_redir(t_lexit *node, t_lexit *tmp)
 {
 	node->prev->redirs->redir_right = tmp->prio == REDIR_R ? 1 : 2;
 	if (node->prev->redirs->right_target)
@@ -61,13 +61,13 @@ void				get_last_redir(t_lexit *node, t_sh *sh)
 	}
 }
 
-
-void			get_redir(t_lexit *node, t_sh *sh)
+void				get_redir(t_lexit *node, t_sh *sh)
 {
-	t_lexit		*tmp;
+	t_lexit			*tmp;
 
 	tmp = node;
-	if (tmp->next && (tmp->next->prio == REDIR_R || tmp->next->prio == REDIR_L ||
-	tmp->next->prio == REDIR_RR || tmp->next->prio == HEREDOC))
+	if (tmp->next && (tmp->next->prio == REDIR_R ||
+		tmp->next->prio == REDIR_L || tmp->next->prio == REDIR_RR ||
+		tmp->next->prio == HEREDOC))
 		get_last_redir(tmp->next, sh);
 }

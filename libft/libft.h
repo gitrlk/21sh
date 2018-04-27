@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/12/06 20:16:41 by rfabre            #+#    #+#             */
-/*   Updated: 2018/02/19 20:05:24 by tchapka          ###   ########.fr       */
+/*   Updated: 2018/04/27 20:35:25 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 # define BLUE "\033[34m"
 # define PURPLE "\033[35m"
 # define TURQUOISE "\033[36m"
-
 
 # define PRESS_LEFT				4479771
 # define PRESS_RIGHT			4414235
@@ -46,7 +45,6 @@
 # define PRESS_ALT_V			10127586
 # define PRESS_ALT_X 			8948194
 # define PRESS_ALT_K			39627
-
 
 typedef	struct		s_list
 {
