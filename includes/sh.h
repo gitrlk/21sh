@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 20:54:24 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/27 21:35:09 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,14 @@ typedef struct		s_hdc
 	int				hd;
 	char			*tmp;
 }					t_hdc;
+
+typedef struct		s_heredoc
+{
+	int				fd;
+	char			*path;
+	int				random;
+	char			*tmp;
+}					t_heredoc;
 
 typedef struct		s_parsing
 {
@@ -240,7 +248,8 @@ void				ft_push_env(t_env **lst, char *var);
 t_lexit				*ft_tree_it(t_lexit *lexdat, t_lexit *list, int prio);
 int					ft_isstrprint(char *str);
 char				*find_cmd(char **apaths, char *cmd);
-int					parsing_listing(t_lexit **list, char *input, t_env *env, t_sh *sh);
+int					parsing_listing(t_lexit **list,
+					char *input, t_env *env, t_sh *sh);
 t_lexit				*add_node(char *input, t_sh *sh);
 t_parsing			*init_data(void);
 int					quote_checker(char *input, t_sh *sh);
@@ -294,7 +303,8 @@ void				clean_list(t_lexit *tmp);
 void				del_quote(t_sh *sh, char quote);
 void				reset_line_mode(t_sh *sh);
 void				simple_quote_work(t_sh *sh, int *ret_stop, char quote);
-int					exec_cd_env(t_env **env, char *search, int mode, char **args);
+int					exec_cd_env(t_env **env, char *search,
+					int mode, char **args);
 int					find_t_env_str(char *venv, char *str);
 void				do_cd(char *path, t_env **venv, int mode);
 int					ft_get_egal_pos(char *vartoadd);
@@ -318,9 +328,11 @@ void				get_eof(t_lexit *node, t_sh *sh);
 void				do_heredoc(t_lexit *list, t_sh *sh);
 int					open_heredoc(t_sh *sh);
 void				hd_sig(t_hdc *valhd, t_lexit *list, t_sh *sh);
-int					test_l_r(t_parsing *data, char *input, t_lexit **list, t_sh *sh);
+int					test_l_r(t_parsing *data, char *input,
+					t_lexit **list, t_sh *sh);
 int					its_over(t_insert *vals, t_parsing *data, char *input);
-int					node_lro(char *input, t_lexit **list, t_parsing *data, t_sh *sh);
+int					node_lro(char *input, t_lexit **list,
+					t_parsing *data, t_sh *sh);
 int					check_left_right(char *input, t_parsing *data);
 void				get_redir(t_lexit *node, t_sh *sh);
 t_split				init_split(char const *s, char c, char d, char e);
