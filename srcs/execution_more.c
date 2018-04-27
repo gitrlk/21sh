@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 18:17:42 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 18:20:35 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/28 00:01:09 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,15 @@ void		exec_segment(t_sh *sh, t_execs *igo)
 		sh->execs = ft_tree_it(igo->head, NULL, 0);
 		igo->tmp2 = sh->execs;
 		execute(sh);
+		free_list(tete);
+		sh->execs = NULL;
+		igo->copy = NULL;
+		igo->head = NULL;
+		if (igo->tmp->next)
+			igo->tmp = igo->tmp->next;
+	}
+	else
+	{
 		free_list(tete);
 		sh->execs = NULL;
 		igo->copy = NULL;

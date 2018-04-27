@@ -6,13 +6,13 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:47:34 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 19:48:13 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/27 23:05:42 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
 
-void		cut_d_quotes(char const *s, char d, t_split *vals)
+char const		*cut_d_quotes(char const *s, char d, t_split *vals)
 {
 	if (is_quote_closed(s, d))
 	{
@@ -28,9 +28,10 @@ void		cut_d_quotes(char const *s, char d, t_split *vals)
 		vals->t[vals->index] = ft_strdup(&d);
 		vals->index++;
 	}
+	return (s);
 }
 
-void		cut_e_quotes(char const *s, char e, t_split *vals)
+char const		*cut_e_quotes(char const *s, char e, t_split *vals)
 {
 	if (is_quote_closed(s, e))
 	{
@@ -46,9 +47,10 @@ void		cut_e_quotes(char const *s, char e, t_split *vals)
 		vals->t[vals->index] = ft_strdup(&e);
 		vals->index++;
 	}
+	return (s);
 }
 
-int			ft_cnt_parts(const char *s, char c, char d, char e)
+int				ft_cnt_parts(const char *s, char c, char d, char e)
 {
 	t_split	vals;
 
@@ -71,7 +73,7 @@ int			ft_cnt_parts(const char *s, char c, char d, char e)
 	return (vals.cnt);
 }
 
-char		**ft_strsplit_21(char const *s, char c, char d, char e)
+char			**ft_strsplit_21(char const *s, char c, char d, char e)
 {
 	t_split	vals;
 
@@ -85,9 +87,9 @@ char		**ft_strsplit_21(char const *s, char c, char d, char e)
 		while (*s == c && *s != '\0')
 			s++;
 		if (*s == d)
-			cut_d_quotes(s, d, &vals);
+			s = cut_d_quotes(s, d, &vals);
 		else if (*s == e)
-			cut_e_quotes(s, e, &vals);
+			s = cut_e_quotes(s, e, &vals);
 		else
 		{
 			vals.t[vals.index] =

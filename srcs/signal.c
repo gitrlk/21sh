@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:43:57 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 21:44:05 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/27 23:05:14 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ void				init_term(void)
 
 	name = getenv("TERM");
 	if (!name || ft_strcmp(name, "xterm-256color"))
-		ft_errors(8, "terminal can't be set : couldn't resolve TERM variable", NULL);
+		ft_errors(8,
+		"terminal can't be set : couldn't resolve TERM variable", NULL);
 	if (tgetent(NULL, name) == ERR)
 		ft_errors(8, "terminal can't be set : term unknow", NULL);
 	if (tcgetattr(0, &term) == -1)

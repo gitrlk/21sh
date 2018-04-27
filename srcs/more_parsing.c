@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 17:40:18 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 18:05:31 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/27 23:43:03 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,13 +87,13 @@ int				double_check(t_lexit *lst)
 					return (0);
 			if (tmp->prio == REDIR_R || tmp->prio == REDIR_RR)
 				if (!check_redirr(tmp, checker))
-					break ;
+					return (0);
 			if (tmp->prio == REDIR_L || tmp->prio == HEREDOC)
 				if (!check_redirl(tmp))
-					break ;
+					return (0);
 			tmp = tmp->next;
 		}
-		return (!tmp ? 1 : 0);
+		return (1);
 	}
 	return (0);
 }
