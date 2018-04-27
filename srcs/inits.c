@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   inits.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 19:11:16 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/27 19:11:17 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
 void			init_line_edit(t_edit *line)
@@ -68,7 +80,7 @@ t_execs			*init_igo(t_sh *sh)
 	return (igo);
 }
 
-void				init_redirs(t_lexit *node)
+void			init_redirs(t_lexit *node)
 {
 	node->redirs = (t_redir *)malloc(sizeof(t_redir));
 	node->checker = 1;

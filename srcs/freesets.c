@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:03 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/27 02:54:52 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/27 17:39:23 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,12 @@ void			free_list(t_lexit *list)
 	tmp = list;
 	if (tmp)
 	{
-		while(list)
+		while (list)
 		{
 			tmp = list;
 			list = list->next;
 			clean_list(tmp);
-				free(tmp->redirs);
+			free(tmp->redirs);
 			if (tmp)
 				free(tmp);
 		}

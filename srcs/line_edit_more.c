@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:50 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/25 19:35:32 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/27 19:13:57 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,15 @@
 void				insert_std(t_insert *vals, int buf, t_edit *line)
 {
 	vals->tmp = ft_strndup(line->line, line->cursor_pos - 3);
-	vals->tmp2 = ft_strsub(line->line, line->cursor_pos - 3 , (line->max_size - line->cursor_pos) + 1);
+	vals->tmp2 = ft_strsub(line->line, line->cursor_pos - 3,
+		(line->max_size - line->cursor_pos) + 1);
 	ft_putchar_fd(buf, STDOUT_FILENO);
 	vals->tmp3 = ft_freejoinstr(vals->tmp, vals->buf2);
 	free(line->line);
 	line->line = ft_freejoinstr(vals->tmp3, vals->tmp2);
 	free(vals->tmp2);
-	vals->tmp2 = ft_strsub(line->line, line->cursor_pos - 3 , (line->max_size - line->cursor_pos));
+	vals->tmp2 = ft_strsub(line->line, line->cursor_pos - 3,
+		(line->max_size - line->cursor_pos));
 	ft_move_it(line, 1);
 	while ((size_t)vals->i < ft_strlen(vals->tmp2))
 	{
@@ -34,13 +36,15 @@ void				insert_std(t_insert *vals, int buf, t_edit *line)
 void				insert_hd(t_insert *vals, int buf, t_edit *line)
 {
 	vals->tmp = ft_strndup(line->q_str, line->cur_mod_pos - 7);
-	vals->tmp2 = ft_strsub(line->q_str, line->cur_mod_pos - 7 , (line->max_mod_size - line->cur_mod_pos) + 1);
+	vals->tmp2 = ft_strsub(line->q_str, line->cur_mod_pos - 7,
+		(line->max_mod_size - line->cur_mod_pos) + 1);
 	ft_putchar_fd(buf, STDOUT_FILENO);
 	vals->tmp3 = ft_freejoinstr(vals->tmp, vals->buf2);
 	free(line->q_str);
 	line->q_str = ft_freejoinstr(vals->tmp3, vals->tmp2);
 	free(vals->tmp2);
-	vals->tmp2 = ft_strsub(line->q_str, line->cur_mod_pos - 7 , (line->max_mod_size - line->cur_mod_pos));
+	vals->tmp2 = ft_strsub(line->q_str, line->cur_mod_pos - 7,
+		(line->max_mod_size - line->cur_mod_pos));
 	ft_move_it(line, 1);
 	while ((size_t)vals->i < ft_strlen(vals->tmp2))
 	{

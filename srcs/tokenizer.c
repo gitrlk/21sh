@@ -6,13 +6,13 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:05 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/27 03:48:02 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/27 19:49:28 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
 
-int				get_more_prio(char *str)
+int					get_more_prio(char *str)
 {
 	if ((ft_isstrprint(str)) && (!ft_strcmp(str, ">") ||
 	(str[0] == '>' && str[1] == '&') ||
@@ -30,7 +30,7 @@ int				get_more_prio(char *str)
 		return (-1);
 }
 
-int				get_prio(char *str, char **command, char **apaths)
+int					get_prio(char *str, char **command, char **apaths)
 {
 	char			*path;
 
@@ -44,7 +44,7 @@ int				get_prio(char *str, char **command, char **apaths)
 		return (PIPE);
 	else if ((path = find_cmd(apaths, str)) || !ft_strcmp(str, "cd") ||
 	!ft_strcmp(str, "env") || !ft_strcmp(str, "echo") || !ft_strcmp(str, "exit")
-	||  !ft_strcmp(str, "setenv") || !ft_strcmp(str, "unset"))
+	|| !ft_strcmp(str, "setenv") || !ft_strcmp(str, "unset"))
 	{
 		if (path)
 		{

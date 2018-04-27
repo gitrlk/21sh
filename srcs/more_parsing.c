@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   more_parsing.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 17:40:18 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/27 18:05:31 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
 int				check_semi(t_sh *sh, t_lexit *lst)
@@ -21,28 +33,19 @@ int				check_semi(t_sh *sh, t_lexit *lst)
 	return (0);
 }
 
-// t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
-// {
-// 	t_lexit		*dst;
-//
-// 	dst = add_node(src->input, sh);
-// 	dst->redirs = src->redirs;
-// 	return (dst);
-// }
-
 int				check_pipe(t_lexit *node, int checker)
 {
 	if (!checker)
 	{
 		if (node->prev->prio != COMMAND || node->next->prio != COMMAND)
 			return (node->prev->prio != COMMAND ?
-			ft_errors(6, NULL, node->prev->args[0]) :
-			ft_errors(6, NULL, node->next->args[0]));
+					ft_errors(6, NULL, node->prev->args[0]) :
+					ft_errors(6, NULL, node->next->args[0]));
 	}
 	else if (checker == 1)
 	{
 		if (node->next->prio != COMMAND)
-			return(ft_errors(6, NULL, node->next->args[0]));
+			return (ft_errors(6, NULL, node->next->args[0]));
 	}
 	return (1);
 }
@@ -59,14 +62,14 @@ int				check_redirl(t_lexit *node)
 	if (node->prio == HEREDOC)
 	{
 		if (node->prev->prio != COMMAND)
-			return(ft_errors(6, NULL, node->prev->args[0]));
+			return (ft_errors(6, NULL, node->prev->args[0]));
 	}
 	else if ((open(node->next->args[0], O_RDONLY)) == -1)
-		return(ft_errors(4, NULL, node->next->args[0]));
+		return (ft_errors(4, NULL, node->next->args[0]));
 	return (1);
 }
 
-int 			double_check(t_lexit *lst)
+int				double_check(t_lexit *lst)
 {
 	int			checker;
 	t_lexit		*tmp;
@@ -75,7 +78,7 @@ int 			double_check(t_lexit *lst)
 	tmp = lst;
 	if (tmp)
 	{
-		while(tmp)
+		while (tmp)
 		{
 			if (tmp->prio == COMMAND)
 				checker = 1;

@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:58 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/27 03:01:28 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/27 19:16:19 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,12 @@ void			select_mode_off(t_sh *sh)
 		ft_endkey(sh->line);
 }
 
-void 			select_mode_on(t_sh *sh)
+void			select_mode_on(t_sh *sh)
 {
 	sh->line->end_select = sh->line->cursor_pos - 2;
 	ft_go_start(sh->line);
 	ft_highlight(sh->line);
 }
-
 
 void			handle_key(t_sh *sh)
 {

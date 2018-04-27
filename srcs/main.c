@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/27 03:06:29 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/27 19:18:59 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ int				check_if_builtin(t_lexit *list)
 	if (list)
 	{
 		if (list->args && (!ft_strcmp(list->args[0], "env") ||
-		 !ft_strcmp(list->args[0], "echo") ||
-		  !ft_strcmp(list->args[0], "cd") || !ft_strcmp(list->args[0], "exit")
-		  || !ft_strcmp(list->args[0], "setenv")
-		  || !ft_strcmp(list->args[0], "unset")))
+					!ft_strcmp(list->args[0], "echo") ||
+		!ft_strcmp(list->args[0], "cd") || !ft_strcmp(list->args[0], "exit")
+		|| !ft_strcmp(list->args[0], "setenv")
+		|| !ft_strcmp(list->args[0], "unset")))
 			return (1);
 		return (0);
 	}
@@ -28,7 +28,7 @@ int				check_if_builtin(t_lexit *list)
 		return (0);
 }
 
-void				parsing_exing(t_sh *sh)
+void			parsing_exing(t_sh *sh)
 {
 	if (double_check(sh->list))
 	{
@@ -44,7 +44,7 @@ void				parsing_exing(t_sh *sh)
 	}
 }
 
-void				p_l_x(t_sh *sh)
+void			p_l_x(t_sh *sh)
 {
 	int			i;
 	int			number;
@@ -67,9 +67,9 @@ void				p_l_x(t_sh *sh)
 		ft_strdel(&sh->hd_state);
 }
 
-void				ft_21sh(t_sh *sh)
+void			ft_21sh(t_sh *sh)
 {
-	int				ret;
+	int			ret;
 
 	ft_prompt(1);
 	init_term();
@@ -82,7 +82,7 @@ void				ft_21sh(t_sh *sh)
 		sh->buf = 0;
 	}
 	ft_endkey(sh->line);
-	ft_add_history(sh->line); //add line to history
+	ft_add_history(sh->line);
 	ft_putchar('\n');
 	set_term_back();
 	p_l_x(sh);
@@ -93,8 +93,8 @@ void				ft_21sh(t_sh *sh)
 
 int				main(int ac, char **av, char **envp)
 {
-	t_sh			*sh;
-	int				i;
+	t_sh		*sh;
+	int			i;
 
 	(void)ac;
 	(void)av;

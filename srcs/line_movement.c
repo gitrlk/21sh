@@ -6,13 +6,13 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:16:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/25 20:12:18 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/27 19:17:12 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
 
-void ft_left_arrow(t_edit *line)
+void	ft_left_arrow(t_edit *line)
 {
 	if (line->prompt_mode == 0 && line->cursor_pos > 2)
 	{
@@ -31,7 +31,7 @@ void ft_left_arrow(t_edit *line)
 	}
 }
 
-void ft_right_arrow(t_edit *line)
+void	ft_right_arrow(t_edit *line)
 {
 	if (line->prompt_mode == 0 && line->cursor_pos < line->max_size)
 	{
@@ -45,7 +45,7 @@ void ft_right_arrow(t_edit *line)
 	}
 }
 
-void ft_endkey(t_edit *line)
+void	ft_endkey(t_edit *line)
 {
 	if (line->prompt_mode == 0 || line->prompt_mode == 1)
 		while (line->cursor_pos < line->max_size)
@@ -55,7 +55,7 @@ void ft_endkey(t_edit *line)
 			ft_right_arrow(line);
 }
 
-void ft_homekey(t_edit *line)
+void	ft_homekey(t_edit *line)
 {
 	if (line->prompt_mode == 0 || line->prompt_mode == 1)
 		while (line->cursor_pos > 2)

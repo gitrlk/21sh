@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd_env.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 18:05:56 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/27 18:07:35 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
 int			check_if_env(char *venv, char *str)
@@ -19,21 +31,21 @@ char		*get_venv_value(t_env **venv, char *search)
 	while (tmp)
 	{
 		if (find_t_env_str(tmp->var, search))
-			return (tmp->var + (ft_strlen(search) +1));
+			return (tmp->var + (ft_strlen(search) + 1));
 		tmp = tmp->next;
 	}
 	return (NULL);
 }
 
-int			exec_cd_env(t_env **env,char *search, int mode, char **args)
+int			exec_cd_env(t_env **env, char *search, int mode, char **args)
 {
 	t_env	*tmp;
-	tmp =	*env;
 	char	*path;
 
+	tmp = *env;
 	while (tmp)
 	{
-		if(check_if_env(tmp->var, search))
+		if (check_if_env(tmp->var, search))
 		{
 			if (mode == 3)
 			{
@@ -54,10 +66,10 @@ int			exec_cd_env(t_env **env,char *search, int mode, char **args)
 	return (1);
 }
 
-void			ft_refresh_link_cd(t_env **tmp, char *vartoadd)
+void		ft_refresh_link_cd(t_env **tmp, char *vartoadd)
 {
-	t_env		*tmp2;
-	int			i;
+	t_env	*tmp2;
+	int		i;
 
 	i = 0;
 	tmp2 = *tmp;

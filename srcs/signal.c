@@ -1,16 +1,28 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   signal.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 19:43:57 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/27 19:46:11 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
-void			sig_int(int i)
+void				sig_int(int i)
 {
 	i = 0;
 }
 
-void			listen_signal(void)
+void				listen_signal(void)
 {
 	signal(SIGINT, sig_int);
 }
 
-void 				hd_sig(t_hdc *valhd, t_lexit *list, t_sh *sh)
+void				hd_sig(t_hdc *valhd, t_lexit *list, t_sh *sh)
 {
 	close(valhd->ret_stop[0]);
 	ft_strdel(&list->redirs->endoff);
@@ -23,12 +35,12 @@ void 				hd_sig(t_hdc *valhd, t_lexit *list, t_sh *sh)
 
 void				init_term(void)
 {
-	const char			*name;
-	struct termios		term;
+	const char		*name;
+	struct termios	term;
 
 	if (!(name = getenv("TERM")))
 		ft_errors(8, "terminal can't be set : specify \"TERM\" variable", NULL);
-  if (tgetent(NULL, name) == ERR)
+	if (tgetent(NULL, name) == ERR)
 		ft_errors(8, "terminal can't be set : term unknow", NULL);
 	if (tcgetattr(0, &term) == -1)
 		ft_errors(8, "tcgetattr", NULL);
@@ -42,8 +54,8 @@ void				init_term(void)
 
 void				set_term_back(void)
 {
-	const char			*name;
-	struct termios		term;
+	const char		*name;
+	struct termios	term;
 
 	if (!(name = getenv("TERM")))
 		ft_errors(8, "terminal can't be set : specify \"TERM\" variable", NULL);

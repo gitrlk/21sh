@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_more.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 19:08:55 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/27 19:09:44 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
-void				init_valhd(t_hdc *valhd)
+void			init_valhd(t_hdc *valhd)
 {
 	valhd->ret_stop[0] = 0;
 	valhd->hd = 0;
@@ -10,7 +22,7 @@ void				init_valhd(t_hdc *valhd)
 
 t_split			init_split(char const *s, char c, char d, char e)
 {
-	t_split vals;
+	t_split		vals;
 
 	vals.index = 0;
 	vals.i = 0;
@@ -22,7 +34,7 @@ t_split			init_split(char const *s, char c, char d, char e)
 	return (vals);
 }
 
-void 		init_node(t_lexit *tmp)
+void			init_node(t_lexit *tmp)
 {
 	tmp->next = NULL;
 	tmp->left = 0;

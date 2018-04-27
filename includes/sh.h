@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 16:29:58 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/27 20:02:24 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
 # include <term.h>
 # include <fcntl.h>
 
-typedef enum 				e_priorities
+typedef enum		e_priorities
 {
 	SEMICOLON,
 	AND_OR,
@@ -38,135 +38,135 @@ typedef enum 				e_priorities
 	COMMAND,
 	ARG,
 	ERROR
-}								t_priorities;
+}					t_priorities;
 
-typedef	struct			s_edit
+typedef	struct		s_edit
 {
-	struct winsize 		sz;
-	int						cursor_pos;
-	int						cur_mod_pos;
-	int						max_size;
-	int						max_mod_size;
-	int 					select_mode;
-	int       		start_select;
-	int	    	    end_select;
-	int						prompt_mode;
-	int						quote_complete;
-	int           array_size;
-	char					*quote;
-	char 					*line;
-	char					*heredoc;
-	char 					*is_highlight;
-	char					*left;
-	char					*right;
-	char					*q_str;
-	struct s_hstr			*hstr; //pointer to the last element added
-	struct s_hstr			*curr; //pointer to current element of the history
-}								t_edit;
+	struct winsize	sz;
+	int				cursor_pos;
+	int				cur_mod_pos;
+	int				max_size;
+	int				max_mod_size;
+	int				select_mode;
+	int				start_select;
+	int				end_select;
+	int				prompt_mode;
+	int				quote_complete;
+	int				array_size;
+	char			*quote;
+	char			*line;
+	char			*heredoc;
+	char			*is_highlight;
+	char			*left;
+	char			*right;
+	char			*q_str;
+	struct s_hstr	*hstr;
+	struct s_hstr	*curr;
+}					t_edit;
 
-typedef struct 	s_hstr
+typedef struct		s_hstr
 {
-	char 					*cmd;
-	struct s_hstr		*up;
-	struct s_hstr		*down;
-} 							t_hstr;
+	char			*cmd;
+	struct s_hstr	*up;
+	struct s_hstr	*down;
+}					t_hstr;
 
-void ft_add_history(t_edit *line);
-void ft_arrow_up(t_edit *line);
-void ft_arrow_down(t_edit *line);
+void		ft_add_history(t_edit *line);
+void 		ft_arrow_up(t_edit *line);
+void		ft_arrow_down(t_edit *line);
 
-typedef struct			s_env
+typedef struct		s_env
 {
-	char					*var;
-	struct s_env		*next;
-}							t_env;
+	char			*var;
+	struct s_env	*next;
+}					t_env;
 
-typedef struct			s_lexit
+typedef struct		s_lexit
 {
-	char					*input;
-	char					**args;
-	char					*command;
-	int					is_pipe;
-	int					prio;
-	int					first;
-	int					agr;
-	int					checker;
-	int					fdsrc;
-	int					fddst;
-	int					fdclose;
-	int					quote;
-	struct s_redir		*redirs;
-	struct s_lexit		*left;
-	struct s_lexit		*right;
-	struct s_lexit		*next;
-	struct s_lexit		*prev;
-}							t_lexit;
+	char			*input;
+	char			**args;
+	char			*command;
+	int				is_pipe;
+	int				prio;
+	int				first;
+	int				agr;
+	int				checker;
+	int				fdsrc;
+	int				fddst;
+	int				fdclose;
+	int				quote;
+	struct s_redir	*redirs;
+	struct s_lexit	*left;
+	struct s_lexit	*right;
+	struct s_lexit	*next;
+	struct s_lexit	*prev;
+}					t_lexit;
 
-typedef struct			s_redir
+typedef struct		s_redir
 {
-	int					redir_right;
-	char					*right_target;
-	int					redir_left;
-	char					*left_target;
-	char					*endoff;
-	struct s_redir		*next;
-}							t_redir;
+	int				redir_right;
+	char			*right_target;
+	int				redir_left;
+	char			*left_target;
+	char			*endoff;
+	struct s_redir	*next;
+}					t_redir;
 
-typedef struct			s_hdc
+typedef struct		s_hdc
 {
 	int				ret_stop[2];
 	int				hd;
-	char				*tmp;
-}							t_hdc;
+	char			*tmp;
+}					t_hdc;
 
-typedef struct			s_parsing
+typedef struct		s_parsing
 {
-	int					index;
-	int					anex;
-	int					check;
-	int					len;
-	int					last;
-	int 					wordsize;
-	int					anex2;
-	int					quote_checker;
-	int					simpleq;
-	int					doubleq;
-	int					checker;
-	int					redir_c;
-	int					latest;
-	int					subber;
-	int					breaker;
-	int					empty;
-	t_env				*env;
-	char					*to_node;
-	char					to_node_op[3];
-	char					*ptr;
-	char					*ptr2;
-	char					*content;
-	char					*tmpn;
-	char					*empty_input;
-}							t_parsing;
+	int				index;
+	int				anex;
+	int				check;
+	int				len;
+	int				last;
+	int 			wordsize;
+	int				anex2;
+	int				quote_checker;
+	int				simpleq;
+	int				doubleq;
+	int				checker;
+	int				redir_c;
+	int				latest;
+	int				subber;
+	int				breaker;
+	int				empty;
+	t_env			*env;
+	char			*to_node;
+	char			to_node_op[3];
+	char			*ptr;
+	char			*ptr2;
+	char			*content;
+	char			*tmpn;
+	char			*empty_input;
+}					t_parsing;
 
-typedef struct			s_fday
+typedef struct		s_fday
 {
-	int					in;
-	int					out;
-	int					saved_fd;
-	int					saved_file;
-	int					saved_in;
-	int					saved_out;
-	int					saved_err;
-}							t_fday;
+	int				in;
+	int				out;
+	int				saved_fd;
+	int				saved_file;
+	int				saved_in;
+	int				saved_out;
+	int				saved_err;
+}					t_fday;
 
-typedef struct			s_sh
+typedef struct		s_sh
 {
-	t_env					*env;
-	t_lexit				*list;
-	t_lexit				*lexdat;
-	t_lexit				*execs;
-	t_edit				*line;
-	t_fday				fd;
-	char					*hd_state;
+	t_env			*env;
+	t_lexit			*list;
+	t_lexit			*lexdat;
+	t_lexit			*execs;
+	t_edit			*line;
+	t_fday			fd;
+	char			*hd_state;
 	int					buf;
 	int					buf2;
 }							t_sh;

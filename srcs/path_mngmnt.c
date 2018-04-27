@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:02 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/15 02:32:59 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/27 19:19:37 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,11 @@ void			ft_init_all_paths(char **paths)
 	}
 }
 
-char				**ft_set_paths(t_env *env)
+char			**ft_set_paths(t_env *env)
 {
-	t_env *tmp;
-	char *tmp1;
-	char **apaths;
+	t_env		*tmp;
+	char		*tmp1;
+	char		**apaths;
 
 	tmp = env;
 	if (!tmp)

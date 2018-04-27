@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tools_more.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 19:49:57 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/27 19:51:23 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
 t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
@@ -9,7 +21,7 @@ t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
 	return (dst);
 }
 
-void				cut_list(t_sh *sh, t_execs *igo)
+void			cut_list(t_sh *sh, t_execs *igo)
 {
 	if (!igo->copy)
 	{
@@ -26,11 +38,11 @@ void				cut_list(t_sh *sh, t_execs *igo)
 	}
 }
 
-char 				*check_on_apaths(char **apaths, char *cmd)
+char			*check_on_apaths(char **apaths, char *cmd)
 {
-	char	*tmp_path;
+	char		*tmp_path;
+	int			i;
 
-	int i;
 	i = 0;
 	while (apaths[i])
 	{
@@ -46,9 +58,9 @@ char 				*check_on_apaths(char **apaths, char *cmd)
 	return (NULL);
 }
 
-char				*find_cmd(char **apaths, char *cmd)
+char			*find_cmd(char **apaths, char *cmd)
 {
-	char	*may;
+	char		*may;
 	struct stat	s;
 
 	may = NULL;

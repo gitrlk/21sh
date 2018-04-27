@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_tools.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 18:12:42 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/27 18:13:59 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
 char			**ft_fill_envp(t_env *env)
@@ -30,7 +42,8 @@ void			update_list(t_lexit *list, int i, t_env *env)
 {
 	char		**apaths;
 	char		**tmp;
-	t_lexit *tmp1;
+	t_lexit		*tmp1;
+
 	tmp1 = list;
 	apaths = ft_set_paths(env);
 	if (tmp1->input)

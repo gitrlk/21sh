@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   line_edit_tools.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 19:11:32 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/27 19:14:39 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
 void			std_move_it(t_insert *vals, t_edit *line, int check)
@@ -46,12 +58,13 @@ void			ft_move_it(t_edit *line, int check)
 	}
 }
 
-void		print_cpy(int buf, t_edit *line)
+void			print_cpy(int buf, t_edit *line)
 {
 	char		str[5];
 	char		tmp[2];
-	int			i = 0;
+	int			i;
 
+	i = 0;
 	str[0] = buf % 128;
 	str[1] = buf >> 8;
 	str[2] = buf >> 16;
@@ -66,7 +79,7 @@ void		print_cpy(int buf, t_edit *line)
 	}
 }
 
-int		check_copy(int buf)
+int				check_copy(int buf)
 {
 	char		check[4];
 	int			i;

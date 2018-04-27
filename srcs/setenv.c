@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   setenv.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 17:37:25 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/27 17:38:14 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
 int			find_t_env(t_env **venv, char *commands)
@@ -69,7 +81,7 @@ void		exec_setenv(char **commands, t_env **venv)
 	else
 	{
 		if (!find_t_env(venv, commands[0]))
-      add_t_env(venv, commands);
+			add_t_env(venv, commands);
 		else
 		{
 			tmp = ft_strjoin((commands[0]), "=");

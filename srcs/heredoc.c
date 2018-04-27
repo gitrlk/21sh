@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   heredoc.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 18:25:09 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/27 18:25:52 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
 void				get_eof(t_lexit *node, t_sh *sh)
@@ -47,7 +59,8 @@ void				heredoc_work(t_sh *sh, t_lexit *list, t_hdc *valhd)
 	}
 	if (sh->buf == 3)
 		hd_sig(valhd, list, sh);
-	else if (!ft_strcmp(valhd->tmp, list->redirs->endoff) || ((sh->buf == 4) && (sh->line->cursor_pos == 2)))
+	else if (!ft_strcmp(valhd->tmp, list->redirs->endoff) ||
+		((sh->buf == 4) && (sh->line->cursor_pos == 2)))
 	{
 		ft_strdel(&list->redirs->endoff);
 		valhd->ret_stop[1] = 1;
@@ -58,12 +71,12 @@ void				heredoc_work(t_sh *sh, t_lexit *list, t_hdc *valhd)
 	ft_putchar('\n');
 }
 
-int				open_heredoc(t_sh *sh)
+int					open_heredoc(t_sh *sh)
 {
-	int			fd;
-	char		*path;
-	int			random;
-	char		*tmp;
+	int				fd;
+	char			*path;
+	int				random;
+	char			*tmp;
 
 	path = ft_strdup("/tmp/.");
 	random = 0;

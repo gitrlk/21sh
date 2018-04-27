@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:00 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/27 01:43:08 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/27 17:34:03 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,10 @@ int			ft_error2(int code, char *cmd, char *arg)
 		ft_putchar('\n');
 		return (0);
 	}
-	return(ft_error3(code, cmd, arg));
+	return (ft_error3(code, cmd, arg));
 }
 
-int 		ft_errors(int code, char *cmd, char *arg)
+int			ft_errors(int code, char *cmd, char *arg)
 {
 	if (!cmd)
 		(void)cmd;
@@ -82,5 +82,5 @@ int 		ft_errors(int code, char *cmd, char *arg)
 		ft_putstr_fd("21sh: unmatched \"\n", 2);
 		return (0);
 	}
-	return(ft_error2(code, cmd, arg));
+	return (ft_error2(code, cmd, arg));
 }

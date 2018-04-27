@@ -1,10 +1,22 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipes.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 19:35:08 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/27 19:35:09 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
 void		do_pipes(t_lexit *list, t_env *env, t_sh *sh)
 {
-	pid_t 	pipid;
-	int 	pipefd[2];
-	int 	status;
+	pid_t	pipid;
+	int		pipefd[2];
+	int		status;
 
 	pipe(pipefd);
 	pipid = fork();

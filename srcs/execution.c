@@ -1,8 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execution.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/04/27 18:16:06 by rfabre            #+#    #+#             */
+/*   Updated: 2018/04/27 18:17:37 by rfabre           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../includes/sh.h"
 
 void				execute(t_sh *sh)
 {
-
 	if (check_if_builtin(sh->execs))
 		exec_no_fork(sh->execs, sh->env, sh);
 	else if (sh->execs->prio != ARG)
@@ -30,12 +41,12 @@ void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
 
 void				execs(t_lexit *list, t_env *env, t_sh *sh)
 {
+	pid_t			pid;
+	int				status;
+
 	if (list)
 	{
-		pid_t pid;
-		int status;
 		pid = fork();
-
 		if (pid == 0)
 			execs_deep(list, env, sh);
 		else
