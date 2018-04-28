@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:49:57 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/28 01:50:09 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/28 12:27:28 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ char			*find_cmd(char **apaths, char *cmd)
 	{
 		if (lstat(cmd, &s) != -1 && !(S_ISDIR(s.st_mode)) &&
 		!access(cmd, X_OK) && !ft_strstr(BUILTIN, cmd))
+		{
 			may = ft_strdup(cmd);
 			return (may);
 		}
