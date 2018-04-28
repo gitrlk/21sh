@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/28 00:47:32 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/28 12:32:08 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ int				main(int ac, char **av, char **envp)
 	(void)ac;
 	(void)av;
 	i = 0;
+	if (ac != 1)
+		return (0);
 	sh = ft_memalloc(sizeof(t_sh));
 	sh->line = ft_memalloc(sizeof(t_edit));
 	init_structs(sh->line, &sh->fd);
