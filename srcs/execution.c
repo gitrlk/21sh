@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 18:16:06 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 18:17:37 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/28 20:47:09 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,14 +15,14 @@
 void				execute(t_sh *sh)
 {
 	if (check_if_builtin(sh->execs))
-		exec_no_fork(sh->execs, sh->env, sh);
+		exec_no_fork(sh->execs, &sh->env, sh);
 	else if (sh->execs->prio != ARG)
-		execs(sh->execs, sh->env, sh);
+		execs(sh->execs, &sh->env, sh);
 	else if (sh->execs->prio == ARG)
 		ft_errors(6, NULL, sh->execs->args[0]);
 }
 
-void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
+void				execs_deep(t_lexit *list, t_env **env, t_sh *sh)
 {
 	if (list->prio == PIPE)
 		do_pipes(list, env, sh);
@@ -39,7 +39,7 @@ void				execs_deep(t_lexit *list, t_env *env, t_sh *sh)
 		execs_deep(list->right, env, sh);
 }
 
-void				execs(t_lexit *list, t_env *env, t_sh *sh)
+void				execs(t_lexit *list, t_env **env, t_sh *sh)
 {
 	pid_t			pid;
 	int				status;
@@ -54,7 +54,7 @@ void				execs(t_lexit *list, t_env *env, t_sh *sh)
 	}
 }
 
-void				exec_no_fork(t_lexit *list, t_env *env, t_sh *sh)
+void				exec_no_fork(t_lexit *list, t_env **env, t_sh *sh)
 {
 	if (list)
 		execs_deep(list, env, sh);

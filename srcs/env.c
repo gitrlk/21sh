@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/27 18:14:55 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/28 20:50:40 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,13 @@ void			ft_empty_env(t_env **env, int *i)
 	*i += 1;
 }
 
-void			ft_env(t_lexit *l, t_env *env, t_sh *sh)
+void			ft_env(t_lexit *l, t_env **env, t_sh *sh)
 {
 	t_env		*new_env;
 	int			i;
 
 	i = 1;
-	new_env = (env ? ft_copy_list(env) : NULL);
+	new_env = (*env ? ft_copy_list(*env) : NULL);
 	if (!l->args[i])
 		ft_print_env(new_env);
 	else

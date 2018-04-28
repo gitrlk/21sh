@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 18:17:42 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/28 00:07:05 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/28 20:51:14 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@ void		exec_env(t_lexit *list, int i, t_env *new_env, t_sh *sh)
 {
 	update_list(list, i, new_env);
 	if (check_if_builtin(list))
-		exec_no_fork(list, new_env, sh);
+		exec_no_fork(list, &new_env, sh);
 	else if (list->prio != ARG)
-		execs(sh->execs, sh->env, sh);
+		execs(sh->execs, &sh->env, sh);
 	else
 		ft_errors(7, NULL, sh->execs->args[0]);
 }
 
-void		execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
+void		execute_builtin(t_lexit *list, t_env **env, t_sh *sh)
 {
 	int		mod;
 
@@ -36,11 +36,11 @@ void		execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 		else if (!ft_strcmp(list->args[0], "echo"))
 			ft_echo(list);
 		else if (!ft_strcmp(list->args[0], "cd"))
-			ft_cd(list->args, &env);
+			ft_cd(list->args, env);
 		else if (!ft_strcmp(list->args[0], "setenv"))
-			exec_setenv((list->args + 1), &env);
+			exec_setenv((list->args + 1), env);
 		else if (!ft_strcmp(list->args[0], "unset"))
-			exec_unsetenv((list->args + 1), &env);
+			exec_unsetenv((list->args + 1), env);
 		else if (!ft_strcmp(list->args[0], "exit"))
 			exit(0);
 		if (mod)
@@ -50,13 +50,13 @@ void		execute_builtin(t_lexit *list, t_env *env, t_sh *sh)
 	}
 }
 
-void		execute_binary(t_lexit *list, t_env *env, t_sh *sh)
+void		execute_binary(t_lexit *list, t_env **env, t_sh *sh)
 {
 	char	**newenv;
 	int		mod;
 
 	mod = 0;
-	newenv = ft_fill_envp(env);
+	newenv = ft_fill_envp(*env);
 	mod = switch_fd(list, sh, &mod);
 	if (mod != -1)
 	{

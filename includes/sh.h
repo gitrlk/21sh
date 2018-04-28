@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/28 00:29:17 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/28 20:49:59 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -237,7 +237,7 @@ int					ft_pre_parser(t_edit *line);
 int					parse_list(t_lexit *list);
 void				ft_freetab(char **table);
 void				ft_free_lexdat(t_lexit *lexdat);
-void				ft_env(t_lexit *list, t_env *env, t_sh *sh);
+void				ft_env(t_lexit *list, t_env **env, t_sh *sh);
 char				**ft_set_paths(t_env *env);
 int					ft_errors(int code, char *cmd, char *arg);
 char				**ft_prep_input(char *str);
@@ -255,10 +255,10 @@ t_parsing			*init_data(void);
 int					quote_checker(char *input, t_sh *sh);
 int					check_first_node(t_parsing *data, char *input);
 void				get_full_op(t_parsing *data, char *input);
-void				execs_deep(t_lexit *list, t_env *env, t_sh *sh);
+void				execs_deep(t_lexit *list, t_env **env, t_sh *sh);
 void				free_list(t_lexit *list);
 char				**copypasta(char **src, int i);
-void				execs(t_lexit *list, t_env *env, t_sh *sh);
+void				execs(t_lexit *list, t_env **env, t_sh *sh);
 int					get_prio(char *str, char **command, char **apaths);
 void				ft_echo(t_lexit *list);
 void				ft_cd(char **args, t_env **env);
@@ -269,21 +269,21 @@ int					find_t_env(t_env **venv, char *commands);
 void				ft_lst_add_tenv(t_env **alst, t_env *new);
 int					find_t_env_array(char *env, char *search);
 void				ft_lst_add_tenv(t_env **alst, t_env *new);
-void				exec_no_fork(t_lexit *list, t_env *env, t_sh *sh);
+void				exec_no_fork(t_lexit *list, t_env **env, t_sh *sh);
 int					check_if_builtin(t_lexit *list);
 void				listen_signal(void);
 void				init_term(void);
 void				set_term_back(void);
 int					switch_fd(t_lexit *list, t_sh *sh, int *mod);
 void				reset_fd(t_sh *sh, int mod);
-void				do_pipes(t_lexit *list, t_env *env, t_sh *sh);
+void				do_pipes(t_lexit *list, t_env **env, t_sh *sh);
 int					get_segment_number(t_sh *sh);
 int					double_check(t_lexit *lst);
 t_lexit				*copy_segment(t_sh *sh, t_lexit *src);
 int					check_semi(t_sh *sh, t_lexit *lst);
 void				execute(t_sh *sh);
-void				execute_builtin(t_lexit *list, t_env *env, t_sh *sh);
-void				execute_binary(t_lexit *list, t_env *env, t_sh *sh);
+void				execute_builtin(t_lexit *list, t_env **env, t_sh *sh);
+void				execute_binary(t_lexit *list, t_env **env, t_sh *sh);
 void				assign_redir(t_lexit *list, t_sh *sh);
 void				do_heredoc(t_lexit *list, t_sh *sh);
 void				init_valhd(t_hdc *valhd);
