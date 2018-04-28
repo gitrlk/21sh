@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 18:17:42 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/28 20:51:14 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/28 21:08:02 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void		exec_env(t_lexit *list, int i, t_env *new_env, t_sh *sh)
 	if (check_if_builtin(list))
 		exec_no_fork(list, &new_env, sh);
 	else if (list->prio != ARG)
-		execs(sh->execs, &sh->env, sh);
+		execs(sh->execs, &new_env, sh);
 	else
 		ft_errors(7, NULL, sh->execs->args[0]);
 }
