@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:50:04 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 19:54:36 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/29 18:54:43 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,9 @@ void			replace_quote(t_lexit *node, t_sh *sh)
 	i = 0;
 	while (node->args[i])
 	{
-		if (node->args[i][0] == '\'' || node->args[i][0] == '\"')
+		if ((node->args[i][0] == '\'' || node->args[i][0] == '\"') &&
+		(!is_quote_closed(node->args[i], '\'') &&
+		(!is_quote_closed(node->args[i], '\"'))))
 		{
 			ft_strdel(&node->args[i]);
 			if (sh->line->q_str)
