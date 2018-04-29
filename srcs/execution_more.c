@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 18:17:42 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/28 21:08:02 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/04/29 19:05:45 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void		execute_builtin(t_lexit *list, t_env **env, t_sh *sh)
 		if (!ft_strcmp(list->args[0], "env"))
 			ft_env(list, env, sh);
 		else if (!ft_strcmp(list->args[0], "echo"))
-			ft_echo(list);
+			ft_echo(list, env);
 		else if (!ft_strcmp(list->args[0], "cd"))
 			ft_cd(list->args, env);
 		else if (!ft_strcmp(list->args[0], "setenv"))
