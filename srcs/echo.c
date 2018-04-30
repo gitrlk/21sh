@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 18:11:43 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/30 15:51:09 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/30 16:25:53 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,9 @@
 
 void		print_var(char *var)
 {
-	char *tmp;
-	int i;
-	int j;
+	char	*tmp;
+	int		i;
+	int		j;
 
 	i = 0;
 	j = 0;
@@ -42,9 +42,10 @@ int			var_size(char *var)
 
 void		echo_env(t_lexit *list, int i, t_env **env)
 {
-	t_env *tmp;
-	char *envvar;
-	char *checker;
+	t_env	*tmp;
+	char	*envvar;
+	char	*checker;
+
 	tmp = (*env);
 	checker = NULL;
 	if (list->args[i][0] == '$')
