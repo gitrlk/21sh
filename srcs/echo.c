@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 18:11:43 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/29 20:53:05 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/30 15:51:09 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void		print_var(char *var)
 	j = i;
 	while (var[j])
 		j++;
-	tmp = ft_strsub(var, (i+1), j);
+	tmp = ft_strsub(var, (i + 1), j - i);
 	ft_putstr(tmp);
 	ft_strdel(&tmp);
 }
@@ -49,15 +49,15 @@ void		echo_env(t_lexit *list, int i, t_env **env)
 	checker = NULL;
 	if (list->args[i][0] == '$')
 	{
-		envvar = ft_strsub(list->args[i], 1, (ft_strlen(list->args[i])));
+		envvar = ft_strsub(list->args[i], 1, (ft_strlen(list->args[i]) - 1));
 		while (tmp)
 		{
 			checker = ft_strsub(tmp->var, 0, var_size(tmp->var));
 			if (!ft_strcmp(checker, envvar))
 				print_var(tmp->var);
+			ft_strdel(&checker);
 			tmp = tmp->next;
 		}
-		ft_strdel(&checker);
 		ft_strdel(&envvar);
 	}
 	else
