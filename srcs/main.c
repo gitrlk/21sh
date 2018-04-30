@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/28 12:32:08 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/04/30 18:27:28 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,41 @@ int				check_if_builtin(t_lexit *list)
 		return (0);
 }
 
+void			kick_semi(t_lexit *list)
+{
+	t_lexit		*tmp;
+	tmp = list;
+	while (tmp)
+	{
+		if (tmp->prio == SEMICOLON && !tmp->next)
+		{
+			if (tmp->input)
+				ft_strdel(&tmp->input);
+			if (tmp->args[0])
+				ft_freetab(tmp->args);
+			tmp->prev->next = NULL;
+			free(tmp);
+			tmp = NULL;
+			// tmp->prev->next = NULL;
+		}
+		else
+			tmp = tmp->next;
+	}
+}
+
 void			parsing_exing(t_sh *sh)
 {
 	if (double_check(sh->list))
 	{
 		assign_redir(sh->list, sh);
 		trim_redir(sh->list);
+		kick_semi(sh->list);
+		// while (sh->list)
+		// {
+		// 	ft_putstr(sh->list->input);
+		// 	sh->list = sh->list->next;
+		// }
+		// ft_putstr("boom");
 		sh->execs = ft_tree_it(sh->list, NULL, 0);
 		if (sh->execs && sh->execs->args)
 			execute(sh);
