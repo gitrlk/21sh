@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:11:32 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/30 16:19:04 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/04/30 16:31:32 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,7 @@ void			print_cpy(int buf, t_edit *line)
 	str[4] = '\0';
 	while (str[i])
 	{
-		if (ft_isprint(str[i]))
-			add_to_line(line, (int)str[i]);
+		add_to_line(line, (int)str[i]);
 		i++;
 	}
 }
@@ -89,9 +88,9 @@ int				check_copy(int buf)
 	check[3] = buf >> 24;
 	while (i < 4)
 	{
-		if ((int)check[i] < 127 && (int)check[i] > 31)
-			return (1);
+		if ((int)check[i] > 126 || (int)check[i] < 32)
+			return (0);
 		i++;
 	}
-	return (0);
+	return (1);
 }
