@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:11:47 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 20:04:35 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/01 16:22:26 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,22 @@ void			setup_parsing(t_parsing *data, t_env *env, char *input)
 	data->len = ft_strlen(input);
 }
 
+void			ignore_quotes(char *s, t_parsing *data)
+{
+	if (s[data->index] == '\'')
+	{
+		data->index++;
+		while (s[data->index] != '\'')
+			data->index++;
+	}
+	if (s[data->index] == '\"')
+	{
+		data->index++;
+		while (s[data->index] != '\"')
+			data->index++;
+	}
+}
+
 int				parsing_listing(t_lexit **list, char *s, t_env *env, t_sh *sh)
 {
 	t_parsing	*data;
@@ -84,6 +100,7 @@ int				parsing_listing(t_lexit **list, char *s, t_env *env, t_sh *sh)
 	{
 		while (((data->index + 1) <= data->len) && s[++data->index])
 		{
+			ignore_quotes(s, data);
 			if ((test_l_r(data, s, list, sh) == -1))
 			{
 				ft_errors(1, &data->ptr[0], NULL);

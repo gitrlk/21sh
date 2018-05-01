@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/30 18:27:28 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/05/01 16:07:45 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,12 +57,6 @@ void			parsing_exing(t_sh *sh)
 		assign_redir(sh->list, sh);
 		trim_redir(sh->list);
 		kick_semi(sh->list);
-		// while (sh->list)
-		// {
-		// 	ft_putstr(sh->list->input);
-		// 	sh->list = sh->list->next;
-		// }
-		// ft_putstr("boom");
 		sh->execs = ft_tree_it(sh->list, NULL, 0);
 		if (sh->execs && sh->execs->args)
 			execute(sh);
