@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:11:47 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/01 16:22:26 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/01 20:04:21 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,54 +62,100 @@ void			last_node(t_lexit **list, char *s, t_parsing *data, t_sh *sh)
 	lnk_last_noop(data, sh, &tmp, list);
 }
 
-void			setup_parsing(t_parsing *data, t_env *env, char *input)
+int				look_for_op(t_sh *sh, int pos)
 {
-	data->env = env;
-	data->empty_input = ft_strtrim(input);
-	if (data->empty_input[0] == '\0')
-		data->empty = 1;
-	ft_strdel(&data->empty_input);
-	data->len = ft_strlen(input);
+	while (sh->line->line[pos] && ft_isspace(sh->line->line[pos]))
+		pos++;
+	if (sh->line->line[pos] == ';')
+		return (0);
+	return (1);
 }
 
-void			ignore_quotes(char *s, t_parsing *data)
-{
-	if (s[data->index] == '\'')
-	{
-		data->index++;
-		while (s[data->index] != '\'')
-			data->index++;
-	}
-	if (s[data->index] == '\"')
-	{
-		data->index++;
-		while (s[data->index] != '\"')
-			data->index++;
-	}
-}
+// int				ignore_first_semi(t_sh *sh, t_parsing *data)
+// {
+// 	char		*tmp;
+// 	int			i;
+// 	int			start;
+// 	int			go;
+//
+// 	tmp = ft_strdup(sh->line->line);
+// 	start = 0;
+// 	go = 0;
+// 	i = 0;
+// 	while (sh->line->line[i] && ft_isspace(sh->line->line[i]))
+// 		i++;
+// 	if (sh->line->line[i] == ';')
+// 	{
+// 		start = i + 1;
+// 		if (!look_for_op(sh, (i + 1)))
+// 			return (ft_errors(1, ";", NULL));
+// 		while (sh->line->line[i])
+// 		{
+// 			i++;
+// 			go++;
+// 		}
+// 		ft_strdel(&sh->line->line);
+// 		sh->line->line = ft_strsub(tmp, start, go);
+// 	}
+// 	return (1);
+// }
+//
+// int				setup_parsing(t_parsing *data, t_env *env, t_sh *sh)
+// {
+// 	data->env = env;
+// 	data->empty_input = ft_strtrim(sh->line->line);
+// 	if (data->empty_input[0] == '\0')
+// 		data->empty = 1;
+// 	ft_strdel(&data->empty_input);
+// 	if (ignore_first_semi(sh, data))
+// 	{
+// 		data->len = ft_strlen(sh->line->line);
+// 		return (1);
+// 	}
+// 	return (0);
+// }
+//
+// void			ignore_quotes(char *s, t_parsing *data)
+// {
+// 	if (s[data->index] == '\'')
+// 	{
+// 		data->index++;
+// 		while (s[data->index] != '\'')
+// 			data->index++;
+// 	}
+// 	if (s[data->index] == '\"')
+// 	{
+// 		data->index++;
+// 		while (s[data->index] != '\"')
+// 			data->index++;
+// 	}
+// }
 
-int				parsing_listing(t_lexit **list, char *s, t_env *env, t_sh *sh)
+int				parsing_listing(t_lexit **list, t_env *env, t_sh *sh)
 {
 	t_parsing	*data;
 	t_lexit		*tmp;
 
 	tmp = *list;
 	data = init_data();
-	setup_parsing(data, env, s);
-	if (quote_checker(s, sh) && !data->empty)
+	if (setup_parsing(data, env, sh))
 	{
-		while (((data->index + 1) <= data->len) && s[++data->index])
+		if (quote_checker(sh->line->line, sh) && !data->empty)
 		{
-			ignore_quotes(s, data);
-			if ((test_l_r(data, s, list, sh) == -1))
+			while (((data->index + 1) <= data->len) &&
+			sh->line->line[++data->index])
 			{
-				ft_errors(1, &data->ptr[0], NULL);
-				free(data);
-				return (0);
+				ignore_quotes(sh->line->line, data);
+				if ((test_l_r(data, sh->line->line, list, sh) == -1))
+				{
+					ft_errors(1, &data->ptr[0], NULL);
+					free(data);
+					return (0);
+				}
 			}
+			if (sh->line->line && !*(list))
+				tmp = single_node(tmp, list, sh, sh->line->line);
 		}
-		if (s && !*(list))
-			tmp = single_node(tmp, list, sh, s);
 	}
 	ft_memdel((void **)&data);
 	return (1);

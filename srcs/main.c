@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/05/01 16:07:45 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/01 19:14:06 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void			p_l_x(t_sh *sh)
 
 	i = 0;
 	number = 0;
-	if (parsing_listing(&sh->list, sh->line->line, sh->env, sh))
+	if (parsing_listing(&sh->list, sh->env, sh))
 	{
 		number = get_execs(sh);
 		if (number == 1)

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/29 19:06:49 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/05/01 20:06:03 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,8 +248,7 @@ void				ft_push_env(t_env **lst, char *var);
 t_lexit				*ft_tree_it(t_lexit *lexdat, t_lexit *list, int prio);
 int					ft_isstrprint(char *str);
 char				*find_cmd(char **apaths, char *cmd);
-int					parsing_listing(t_lexit **list,
-					char *input, t_env *env, t_sh *sh);
+int					parsing_listing(t_lexit **list, t_env *env, t_sh *sh);
 t_lexit				*add_node(char *input, t_sh *sh);
 t_parsing			*init_data(void);
 int					quote_checker(char *input, t_sh *sh);
@@ -342,5 +341,9 @@ int					is_quote_closed(char const *s, char quote);
 int					ft_wlen(const char *s, char c);
 void				match_quotes(t_split *vals, const char *s, char d, char e);
 void				lol(t_sh *sh, t_execs *igo);
+int					setup_parsing(t_parsing *data, t_env *env, t_sh *sh);
+void				ignore_quotes(char *s, t_parsing *data);
+int					look_for_op(t_sh *sh, int pos);
+int					ignore_first_semi(t_sh *sh);
 
 #endif
