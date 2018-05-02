@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:11:40 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/01 17:39:04 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/02 23:33:31 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ int				check_right(char *tmp, char *tmp1, t_parsing *data, char *input)
 		data->subber++;
 	tmp1 = ft_strsub(input, data->index, (data->subber - data->index));
 	if ((!ft_isstrprint(tmp = ft_strtrim(tmp1)) && data->to_node_op[0] != ';')
-			|| tmp[0] == '\'' || tmp[0] == '\"')
+			|| ((tmp[0] == '\'' || tmp[0] == '\"') && tmp[1] == '\0'))
 	{
 		ft_strdel(&tmp);
 		ft_strdel(&tmp1);

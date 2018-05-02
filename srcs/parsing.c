@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:11:47 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/02 15:59:35 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/02 23:32:38 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,10 @@ int				parsing_listing(t_lexit **list, t_env *env, t_sh *sh)
 					return (parsing_error(&data));
 			}
 			if (sh->line->line && !*(list))
+			// {
+			// 	ft_putendl("bizarre");
 				tmp = single_node(tmp, list, sh, sh->line->line);
+			// }
 		}
 	}
 	ft_memdel((void **)&data);
