@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:16:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/27 19:17:12 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/02 03:38:27 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	ft_right_arrow(t_edit *line)
 		line->cursor_pos++;
 		ft_putstr_fd("\033[1C", STDOUT_FILENO);
 	}
-	if ((line->cursor_pos % (line->sz.ws_col)) == 0)
+	if ((line->cursor_pos % ((line->sz.ws_col)) == 0) && line->cursor_pos != line->max_size)
 	{
 		tputs(tgetstr("do", NULL), 1, ft_pointchar);
 		tputs(tgetstr("cr", NULL), 1, ft_pointchar);

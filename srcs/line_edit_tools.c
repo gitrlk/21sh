@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:11:32 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/30 16:31:32 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/02 11:46:43 by rlkcmptr         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 void			std_move_it(t_insert *vals, t_edit *line, int check)
 {
+	int i;
+	i = 0;
 	while (vals->i < line->max_size)
 	{
 		ft_left_arrow(line);
@@ -24,9 +26,21 @@ void			std_move_it(t_insert *vals, t_edit *line, int check)
 		line->cursor_pos--;
 		line->max_size--;
 	}
-	ft_putstr_fd(line->line, STDOUT_FILENO);
-	line->cursor_pos = ft_strlen(line->line) + 2;
 	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
+	while (line->line[i])
+	{
+		if ((line->cursor_pos % ((line->sz.ws_col)) == 0))
+			tputs(tgetstr("do", NULL), 1, ft_pointchar);
+		ft_putchar_fd(line->line[i], STDOUT_FILENO);
+		i++;
+	}
+	// ft_putstr_fd(line->line, STDOUT_FILENO);
+	line->cursor_pos = ft_strlen(line->line) + 2;
+	// ft_putnbr(line->cursor_pos);
+	// ft_putchar('\n');
+	// ft_putnbr(line->max_size);
+	// ft_putchar('\n');
+	// tputs(tgetstr("cd", NULL), 1, ft_pointchar);
 }
 
 void			ft_move_it(t_edit *line, int check)
