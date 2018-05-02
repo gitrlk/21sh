@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:40 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/27 19:08:45 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/02 14:17:40 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,13 @@ void		ft_arrow_up(t_edit *line)
 	}
 	tputs(tgetstr("cd", NULL), 1, ft_pointchar);
 	ft_putstr_fd(line->curr->cmd, STDOUT_FILENO);
+
 	free(line->line);
 	line->line = ft_strdup(line->curr->cmd);
 	line->max_size = ft_strlen(line->curr->cmd) + 2;
 	line->cursor_pos = line->max_size;
+	if (line->max_size % line->sz.ws_col == 0)
+		tputs(tgetstr("do", NULL), 1, ft_pointchar);
 }
 
 void		ft_arrow_down(t_edit *line)
@@ -57,6 +60,8 @@ void		ft_arrow_down(t_edit *line)
 			line->line = ft_strdup(line->curr->cmd);
 			line->max_size = ft_strlen(line->curr->cmd) + 2;
 			line->cursor_pos = line->max_size;
+			if (line->max_size % line->sz.ws_col == 0)
+				tputs(tgetstr("do", NULL), 1, ft_pointchar);
 		}
 		else
 			ft_line_reset(line);
