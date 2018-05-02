@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:27 by jecarol           #+#    #+#             */
-/*   Updated: 2018/05/02 17:34:52 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/02 19:20:17 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,6 @@ void		ft_highlight(t_edit *line)
 	tmp = ft_strsub(line->line, line->end_select,
 			((line->max_size - 2) - line->end_select));
 	ft_putstr_fd(tmp, STDOUT_FILENO);
-	// line->cursor_pos = line->max_size;
-	// if ((line->cursor_pos % ((line->sz.ws_col)) == 0))
-	// {
-	// 	tputs(tgetstr("do", NULL), 1, ft_pointchar);
-	// 	tputs(tgetstr("cr", NULL), 1, ft_pointchar);
-	// }
 	line->cursor_pos = line->max_size;
 	while ((size_t)++i <= ft_strlen(tmp))
 		ft_left_arrow(line);
@@ -66,19 +60,15 @@ void		ft_paste(t_edit *line)
 	i = 0;
 	tmp = ft_strndup(line->line, line->cursor_pos - 2);
 	tmp2 = ft_freejoinstr(tmp, line->is_highlight);
-	free(line->line);
 	tmp = ft_strsub(line->line, line->cursor_pos - 2,
 		((line->max_size) - line->cursor_pos));
+	free(line->line);
 	line->line = ft_freejoinstr(tmp2, tmp);
 	ft_go_start(line);
 	ft_putstr_fd(line->line, STDOUT_FILENO);
 	line->max_size += ft_strlen(line->is_highlight);
 	line->cursor_pos = ft_strlen(line->line) + 2;
-	if ((line->cursor_pos % ((line->sz.ws_col)) == 0))
-	{
-		tputs(tgetstr("do", NULL), 1, ft_pointchar);
-		tputs(tgetstr("cr", NULL), 1, ft_pointchar);
-	}
+	go_down(line);
 	while ((size_t)i < ft_strlen(tmp))
 	{
 		ft_left_arrow(line);
@@ -120,11 +110,7 @@ void		select_copy_cut(t_edit *line, int buf)
 		ft_go_start(line);
 		ft_putstr_fd(line->line, STDOUT_FILENO);
 		line->cursor_pos = (ft_strlen(line->line) + 2);
-		if ((line->cursor_pos % ((line->sz.ws_col)) == 0))
-		{
-			tputs(tgetstr("do", NULL), 1, ft_pointchar);
-			tputs(tgetstr("cr", NULL), 1, ft_pointchar);
-		}
+		go_down(line);
 	}
 	else if (line->select_mode && buf == PRESS_ALT_X)
 	{

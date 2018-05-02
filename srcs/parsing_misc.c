@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_misc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jecarol <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/02 16:01:19 by jecarol           #+#    #+#             */
-/*   Updated: 2018/05/02 16:01:21 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/02 18:48:25 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,28 +45,28 @@ int				ignore_first_semi(t_sh *sh)
 {
 	char		*tmp;
 	int			i;
-	int			start;
-	int			go;
+	int			start_go[2];
 
 	tmp = ft_strdup(sh->line->line);
-	start = 0;
-	go = 0;
+	start_go[0] = 0;
+	start_go[1] = 0;
 	i = 0;
 	while (sh->line->line[i] && ft_isspace(sh->line->line[i]))
 		i++;
 	if (sh->line->line[i] == ';')
 	{
-		start = i + 1;
+		start_go[0] = i + 1;
 		if (!look_for_op(sh, (i + 1)))
 			return (ft_errors(1, ";", NULL));
 		while (sh->line->line[i])
 		{
 			i++;
-			go++;
+			start_go[1]++;
 		}
 		ft_strdel(&sh->line->line);
-		sh->line->line = ft_strsub(tmp, start, go);
+		sh->line->line = ft_strsub(tmp, start_go[0], start_go[1]);
 	}
+	ft_strdel(&tmp);
 	return (1);
 }
 

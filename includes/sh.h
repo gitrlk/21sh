@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/02 16:55:25 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/02 18:47:13 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -350,5 +350,6 @@ void				kick_semi(t_lexit *list);
 void				ft_left_arrow_q(t_edit *line);
 void				ft_right_arrow_q(t_edit *line);
 void				ft_left_arrow_select_mode(t_edit *line);
+void				go_down(t_edit *line);
 
 #endif
