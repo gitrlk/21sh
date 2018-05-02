@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:00 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/27 17:34:03 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/02 17:40:30 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,12 @@ int			ft_error3(int code, char *cmd, char *arg)
 	if (code == 9)
 	{
 		ft_putstr_fd("cd: permission denied for oldpwd", 2);
+		ft_putchar('\n');
+		return (0);
+	}
+	if (code == 10)
+	{
+		ft_putstr_fd("21sh: \"&&\" and \"||\" operators aren't managed yet", 2);
 		ft_putchar('\n');
 		return (0);
 	}

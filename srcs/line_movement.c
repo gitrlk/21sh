@@ -6,11 +6,34 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:16:04 by jecarol           #+#    #+#             */
-/*   Updated: 2018/05/02 15:57:52 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/02 17:11:21 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
+
+void	ft_left_arrow_select_mode(t_edit *line)
+{
+	int start;
+	int up;
+
+	if (line->cursor_pos == 2)
+		return ;
+	up = line->sz.ws_col;
+	start = line->cursor_pos % line->sz.ws_col;
+	if (start == 0)
+	{
+		ft_putstr_fd("\033[1A", STDOUT_FILENO);
+		while (up > 0)
+		{
+			ft_putstr_fd("\033[1C", STDOUT_FILENO);
+			up--;
+		}
+	}
+	else
+		ft_putstr_fd("\033[1D", STDOUT_FILENO);
+	line->cursor_pos--;
+}
 
 void	ft_left_arrow(t_edit *line)
 {
@@ -23,7 +46,7 @@ void	ft_left_arrow(t_edit *line)
 			return ;
 		up = line->sz.ws_col;
 		start = line->cursor_pos % line->sz.ws_col;
-		if (start == 0)
+		if (start == 0 && !line->select_mode)
 		{
 			ft_putstr_fd("\033[1A", STDOUT_FILENO);
 			while (up > 0)

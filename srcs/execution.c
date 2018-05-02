@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 18:16:06 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/30 18:09:42 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/05/02 17:40:19 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,12 @@ void				execute(t_sh *sh)
 {
 	if (check_if_builtin(sh->execs))
 		exec_no_fork(sh->execs, &sh->env, sh);
-	else if (sh->execs->prio != ARG)
+	else if (sh->execs->prio != ARG && sh->execs->prio != AND_OR)
 		execs(sh->execs, &sh->env, sh);
-	else if (sh->execs->prio == ARG)
+	else if (sh->execs->prio == ARG && sh->execs->prio != AND_OR)
 		ft_errors(6, NULL, sh->execs->args[0]);
+	else if (sh->execs->prio == AND_OR)
+		ft_errors(10, NULL, sh->execs->args[0]);
 }
 
 void				execs_deep(t_lexit *list, t_env **env, t_sh *sh)

@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:58 by jecarol           #+#    #+#             */
-/*   Updated: 2018/05/02 15:12:08 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/02 17:16:08 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ void			select_mode_off(t_sh *sh)
 void			select_mode_on(t_sh *sh)
 {
 	sh->line->end_select = sh->line->cursor_pos - 2;
+	if (sh->line->cursor_pos % sh->line->sz.ws_col == 0)
+		return ;
 	ft_go_start(sh->line);
 	ft_highlight(sh->line);
 }
