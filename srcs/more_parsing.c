@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 17:40:18 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/30 18:00:41 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/05/03 01:32:25 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int				check_semi(t_sh *sh, t_lexit *lst)
 
 int				check_pipe(t_lexit *node, int checker)
 {
+	if (!node->prev && !node->next)
+		return (ft_errors(6, NULL, node->args[0]));
 	if (!checker)
 	{
 		if (node->prev->prio != COMMAND || node->next->prio != COMMAND)
@@ -52,6 +54,8 @@ int				check_pipe(t_lexit *node, int checker)
 
 int				check_redirr(t_lexit *node, int checker)
 {
+	if (!node->prev)
+		return (ft_errors(6, NULL, node->args[0]));
 	if (!checker)
 		return (ft_errors(6, NULL, node->prev->args[0]));
 	return (1);
@@ -59,6 +63,8 @@ int				check_redirr(t_lexit *node, int checker)
 
 int				check_redirl(t_lexit *node)
 {
+	if (!node->prev || !node->next)
+		return (ft_errors(6, NULL, node->args[0]));
 	if (node->prio == HEREDOC)
 	{
 		if (node->prev->prio != COMMAND)

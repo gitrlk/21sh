@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/02 16:01:19 by jecarol           #+#    #+#             */
-/*   Updated: 2018/05/02 18:48:25 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/03 01:47:40 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void			kick_semi(t_lexit *list)
 	tmp = list;
 	while (tmp)
 	{
-		if (tmp->prio == SEMICOLON && !tmp->next)
+		if (tmp->prio == SEMICOLON && !tmp->next && tmp->prev)
 		{
 			if (tmp->input)
 				ft_strdel(&tmp->input);
@@ -85,18 +85,23 @@ int				setup_parsing(t_parsing *data, t_env *env, t_sh *sh)
 	return (0);
 }
 
-void			ignore_quotes(char *s, t_parsing *data)
+void			ignore_quotes(char *s, t_parsing *data, int mod)
 {
-	if (s[data->index] == '\'')
+	if (mod == 1)
 	{
-		data->index++;
-		while (s[data->index] != '\'')
+		if (s[data->index] == '\'')
+		{
 			data->index++;
-	}
-	if (s[data->index] == '\"')
-	{
-		data->index++;
-		while (s[data->index] != '\"')
+			while (s[data->index] != '\'')
+				data->index++;
+		}
+		if (s[data->index] == '\"')
+		{
 			data->index++;
+			while (s[data->index] != '\"')
+				data->index++;
+		}
 	}
+	if (mod == 2)
+		ignore_quotes_more(s, data);
 }

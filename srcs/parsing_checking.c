@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:11:40 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/02 23:33:31 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/03 01:50:01 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,16 +68,15 @@ int				check_right(char *tmp, char *tmp1, t_parsing *data, char *input)
 		if (input[data->subber + 1] != '\0' &&
 		ft_strchr(OPERATOR, input[data->subber]))
 			data->subber++;
-	while (input[data->subber] && (!ft_strchr(OPERATOR, input[data->subber])))
+	while ((input[data->subber]) && !ft_strchr(OPERATOR, input[data->subber]))
+	{
+		ignore_quotes(input, data, 2);
 		data->subber++;
+	}
 	tmp1 = ft_strsub(input, data->index, (data->subber - data->index));
 	if ((!ft_isstrprint(tmp = ft_strtrim(tmp1)) && data->to_node_op[0] != ';')
 			|| ((tmp[0] == '\'' || tmp[0] == '\"') && tmp[1] == '\0'))
-	{
-		ft_strdel(&tmp);
-		ft_strdel(&tmp1);
-		return (0);
-	}
+		return (return_free(tmp, tmp1));
 	if (ft_strchr(OPERATOR, tmp[0]) && tmp[0] != '\0')
 	{
 		ft_strdel(&tmp);

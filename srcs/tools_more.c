@@ -6,11 +6,35 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:49:57 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/28 12:27:28 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/05/03 01:02:20 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
+
+t_lexit			*add_node_proxy(char *input, t_sh *sh)
+{
+	t_lexit		*tmp;
+	char		**apaths;
+	int			i;
+
+	i = 0;
+	if (!input)
+		return (NULL);
+	if (!(tmp = ft_memalloc(sizeof(t_lexit))))
+		return (NULL);
+	(void)sh;
+	apaths = ft_set_paths(sh->env);
+	tmp->input = ft_strtrim(input);
+	tmp->args = ft_prep_input(input);
+	replace_quote(tmp, sh);
+	init_node(tmp);
+	tmp->prio = get_prio(tmp->args[0], &tmp->command, apaths);
+	if (tmp->prio != COMMAND && tmp->prio != ARG)
+		tmp->prio = ARG;
+	ft_freetab(apaths);
+	return (tmp);
+}
 
 t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
 {

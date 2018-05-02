@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:11:47 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/02 23:32:38 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/03 00:54:51 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_lexit			*single_node(t_lexit *tmp, t_lexit **l, t_sh *sh, char *i)
 {
-	*l = add_node(i, sh);
+	*l = add_node_proxy(i, sh);
 	tmp = *l;
 	return (tmp);
 }
@@ -85,15 +85,12 @@ int				parsing_listing(t_lexit **list, t_env *env, t_sh *sh)
 			while (((data->index + 1) <= data->len) &&
 			sh->line->line[++data->index])
 			{
-				ignore_quotes(sh->line->line, data);
+				ignore_quotes(sh->line->line, data, 1);
 				if ((test_l_r(data, sh->line->line, list, sh) == -1))
 					return (parsing_error(&data));
 			}
 			if (sh->line->line && !*(list))
-			// {
-			// 	ft_putendl("bizarre");
 				tmp = single_node(tmp, list, sh, sh->line->line);
-			// }
 		}
 	}
 	ft_memdel((void **)&data);

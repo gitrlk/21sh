@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:42:07 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 19:43:25 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/03 01:41:03 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,8 @@ void			trim_and_free(t_lexit *save, t_lexit *tmp, t_lexit *to_free)
 		ft_strdel(&to_free->input);
 	if (to_free->args[0])
 		ft_freetab(to_free->args);
+	if (to_free->redirs)
+		free(to_free->redirs);
 	free(tmp);
 }
 
@@ -43,6 +45,8 @@ int				trim_end(t_lexit *tmp, t_lexit *save)
 		ft_strdel(&tmp->input);
 	if (tmp->args[0])
 		ft_freetab(tmp->args);
+	if (tmp->redirs)
+		free(tmp->redirs);
 	free(tmp);
 	save->next = NULL;
 	return (1);
@@ -59,12 +63,11 @@ void			trim_redir(t_lexit *list)
 	while (tmp)
 	{
 		if (tmp->prev && (tmp->prio == REDIR_R || tmp->prio == REDIR_RR ||
-		tmp->prio == REDIR_L))
+		tmp->prio == REDIR_L || tmp->prio == HEREDOC))
 		{
 			save = tmp->prev;
 			while (tmp->next && tmp->prio != PIPE && tmp->prio != AND_OR &&
-			tmp->prio != HEREDOC && tmp->prio != COMMAND &&
-			tmp->prio != SEMICOLON)
+			tmp->prio != COMMAND && tmp->prio != SEMICOLON)
 			{
 				trim_and_free(save, tmp, to_free);
 				tmp = save->next;

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/02 18:47:13 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/03 01:50:09 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -342,7 +342,7 @@ int					ft_wlen(const char *s, char c);
 void				match_quotes(t_split *vals, const char *s, char d, char e);
 void				lol(t_sh *sh, t_execs *igo);
 int					setup_parsing(t_parsing *data, t_env *env, t_sh *sh);
-void				ignore_quotes(char *s, t_parsing *data);
+void				ignore_quotes(char *s, t_parsing *data, int mod);
 int					look_for_op(t_sh *sh, int pos);
 int					ignore_first_semi(t_sh *sh);
 int					parsing_error(t_parsing **data);
@@ -351,5 +351,9 @@ void				ft_left_arrow_q(t_edit *line);
 void				ft_right_arrow_q(t_edit *line);
 void				ft_left_arrow_select_mode(t_edit *line);
 void				go_down(t_edit *line);
+void				replace_quote(t_lexit *node, t_sh *sh);
+t_lexit				*add_node_proxy(char *input, t_sh *sh);
+void				ignore_quotes_more(char *s, t_parsing *data);
+int					return_free(char *tmp, char *tmp1);
 
 #endif
