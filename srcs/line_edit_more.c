@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:15:50 by jecarol           #+#    #+#             */
-/*   Updated: 2018/05/02 11:49:21 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/05/02 15:45:15 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,14 +78,8 @@ void				add_to_line_std(t_edit *line, int buf, char *buf2)
 	{
 		line->line = ft_freejoinstr(line->line, buf2);
 		ft_putchar_fd(buf, STDOUT_FILENO);
-
-
 		if ((line->cursor_pos % ((line->sz.ws_col)) == 0))
-		{
 			tputs(tgetstr("do", NULL), 1, ft_pointchar);
-		}
-
-
 	}
 	else if (line->cursor_pos != line->max_size)
 		ft_insert(buf, line);
@@ -107,6 +101,8 @@ void				add_to_line(t_edit *line, int buf)
 		{
 			line->q_str = ft_freejoinstr(line->q_str, buf2);
 			ft_putchar_fd(buf, STDOUT_FILENO);
+			if ((line->cur_mod_pos % ((line->sz.ws_col)) == 0))
+				tputs(tgetstr("do", NULL), 1, ft_pointchar);
 		}
 		else if (line->cur_mod_pos != line->max_mod_size)
 			ft_insert(buf, line);

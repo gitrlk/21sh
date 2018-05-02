@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:11:47 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/01 20:04:21 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/02 15:59:35 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,66 +71,6 @@ int				look_for_op(t_sh *sh, int pos)
 	return (1);
 }
 
-// int				ignore_first_semi(t_sh *sh, t_parsing *data)
-// {
-// 	char		*tmp;
-// 	int			i;
-// 	int			start;
-// 	int			go;
-//
-// 	tmp = ft_strdup(sh->line->line);
-// 	start = 0;
-// 	go = 0;
-// 	i = 0;
-// 	while (sh->line->line[i] && ft_isspace(sh->line->line[i]))
-// 		i++;
-// 	if (sh->line->line[i] == ';')
-// 	{
-// 		start = i + 1;
-// 		if (!look_for_op(sh, (i + 1)))
-// 			return (ft_errors(1, ";", NULL));
-// 		while (sh->line->line[i])
-// 		{
-// 			i++;
-// 			go++;
-// 		}
-// 		ft_strdel(&sh->line->line);
-// 		sh->line->line = ft_strsub(tmp, start, go);
-// 	}
-// 	return (1);
-// }
-//
-// int				setup_parsing(t_parsing *data, t_env *env, t_sh *sh)
-// {
-// 	data->env = env;
-// 	data->empty_input = ft_strtrim(sh->line->line);
-// 	if (data->empty_input[0] == '\0')
-// 		data->empty = 1;
-// 	ft_strdel(&data->empty_input);
-// 	if (ignore_first_semi(sh, data))
-// 	{
-// 		data->len = ft_strlen(sh->line->line);
-// 		return (1);
-// 	}
-// 	return (0);
-// }
-//
-// void			ignore_quotes(char *s, t_parsing *data)
-// {
-// 	if (s[data->index] == '\'')
-// 	{
-// 		data->index++;
-// 		while (s[data->index] != '\'')
-// 			data->index++;
-// 	}
-// 	if (s[data->index] == '\"')
-// 	{
-// 		data->index++;
-// 		while (s[data->index] != '\"')
-// 			data->index++;
-// 	}
-// }
-
 int				parsing_listing(t_lexit **list, t_env *env, t_sh *sh)
 {
 	t_parsing	*data;
@@ -147,11 +87,7 @@ int				parsing_listing(t_lexit **list, t_env *env, t_sh *sh)
 			{
 				ignore_quotes(sh->line->line, data);
 				if ((test_l_r(data, sh->line->line, list, sh) == -1))
-				{
-					ft_errors(1, &data->ptr[0], NULL);
-					free(data);
-					return (0);
-				}
+					return (parsing_error(&data));
 			}
 			if (sh->line->line && !*(list))
 				tmp = single_node(tmp, list, sh, sh->line->line);

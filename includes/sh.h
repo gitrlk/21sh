@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/01 20:06:03 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/02 15:57:22 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -345,5 +345,9 @@ int					setup_parsing(t_parsing *data, t_env *env, t_sh *sh);
 void				ignore_quotes(char *s, t_parsing *data);
 int					look_for_op(t_sh *sh, int pos);
 int					ignore_first_semi(t_sh *sh);
+int					parsing_error(t_parsing **data);
+void				kick_semi(t_lexit *list);
+void				ft_left_arrow_q(t_edit *line);
+void				ft_right_arrow_q(t_edit *line);
 
 #endif

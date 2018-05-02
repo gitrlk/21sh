@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:43:57 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/02 13:45:11 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/02 16:00:29 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void				sig_int(int i)
 
 void				listen_signal(void)
 {
-	// signal(SIGINT, sig_int);
+	signal(SIGINT, sig_int);
 }
 
 void				hd_sig(t_hdc *valhd, t_lexit *list, t_sh *sh)

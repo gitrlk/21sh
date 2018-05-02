@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:14:55 by jecarol           #+#    #+#             */
-/*   Updated: 2018/05/01 19:14:06 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/02 14:50:08 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,28 +26,6 @@ int				check_if_builtin(t_lexit *list)
 	}
 	else
 		return (0);
-}
-
-void			kick_semi(t_lexit *list)
-{
-	t_lexit		*tmp;
-	tmp = list;
-	while (tmp)
-	{
-		if (tmp->prio == SEMICOLON && !tmp->next)
-		{
-			if (tmp->input)
-				ft_strdel(&tmp->input);
-			if (tmp->args[0])
-				ft_freetab(tmp->args);
-			tmp->prev->next = NULL;
-			free(tmp);
-			tmp = NULL;
-			// tmp->prev->next = NULL;
-		}
-		else
-			tmp = tmp->next;
-	}
 }
 
 void			parsing_exing(t_sh *sh)

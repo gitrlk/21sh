@@ -6,7 +6,7 @@
 #    By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/04/19 14:14:34 by jecarol           #+#    #+#              #
-#    Updated: 2018/05/01 20:04:35 by jecarol          ###   ########.fr        #
+#    Updated: 2018/05/02 15:56:52 by jecarol          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 NAME = 21sh
@@ -21,7 +21,8 @@ fd.c pipes.c more_parsing.c tools.c redirections.c inits.c quotes.c\
 quote_more.c cd_env.c env_misc.c env_tools.c execution_more.c free_more.c\
 line_edit_misc.c line_edit_tools.c misc.c ast_builder.c heredoc.c\
 parsing_checking.c parsing_tools.c init_more.c redirections_more.c\
-split_21.c split_21_tools.c tools_more.c lol.c parsing_misc.c
+split_21.c split_21_tools.c tools_more.c lol.c parsing_misc.c\
+line_movement_more.c
 
 SRCS_DIR = srcs/
 SRCS = $(addprefix $(SRCS_DIR), $(SRCS_LIST))

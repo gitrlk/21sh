@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/02/26 20:16:14 by jecarol           #+#    #+#             */
-/*   Updated: 2018/04/27 19:50:15 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/02 15:43:03 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void			ft_prompt(int prompt)
 	if (prompt == 2)
 	{
 		ft_putstr_fd(RED, STDOUT_FILENO);
-		ft_putstr_fd("heredoc>", STDOUT_FILENO);
+		ft_putstr_fd(">>", STDOUT_FILENO);
 		ft_putstr_fd(DEFAULT, STDOUT_FILENO);
 	}
 	if (prompt == 3)
