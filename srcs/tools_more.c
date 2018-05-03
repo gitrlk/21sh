@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:49:57 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/03 03:59:43 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/03 04:05:01 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,18 @@ t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
 
 	(void)sh;
 	dst = ft_memalloc(sizeof(t_lexit));
-	dst->input = ft_strdup(src->input);
-	dst->args = copypasta(src->args, 0);
-	dst->command = ft_strdup(src->command);
+	if (src->input)
+		dst->input = ft_strdup(src->input);
+	else
+		dst->input = NULL;
+	if (src->args)
+		dst->args = copypasta(src->args, 0);
+	else
+		dst->args = NULL;
+	if (src->command)
+		dst->command = ft_strdup(src->command);
+	else
+		dst->command = NULL;
 	dst->is_pipe = src->is_pipe;
 	dst->prio = src->prio;
 	dst->first = src->first;

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:38:24 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/03 02:57:55 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/03 05:10:36 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ void		del_after_quote(t_sh *sh, char quote)
 		i--;
 	tmp = ft_strsub(sh->line->q_str, 0, (i));
 	ft_strdel(&sh->line->q_str);
-	sh->line->q_str = tmp;
+	sh->line->q_str = ft_strdup(tmp);
+	ft_strdel(&tmp);
 }
 
 void		simple_quote_work(t_sh *sh, int *ret_stop, char quote)
