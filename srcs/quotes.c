@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:38:24 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/03 06:28:34 by rlkcmptr         ###   ########.fr       */
+/*   Updated: 2018/05/03 15:17:17 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void		del_after_quote(t_sh *sh, char quote)
 void		simple_quote_work(t_sh *sh, int *ret_stop, char quote)
 {
 	char *tmp;
+
 	if (sh->line->q_str && ft_strchr(sh->line->q_str, quote))
 	{
 		*ret_stop = 1;

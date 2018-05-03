@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:49:57 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/03 04:05:01 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/03 15:16:34 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,16 +33,12 @@ t_lexit			*add_node_proxy(char *input, t_sh *sh)
 	return (tmp);
 }
 
-t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
+t_lexit			*copy_segment(t_lexit *src)
 {
 	t_lexit		*dst;
 
-	(void)sh;
 	dst = ft_memalloc(sizeof(t_lexit));
-	if (src->input)
-		dst->input = ft_strdup(src->input);
-	else
-		dst->input = NULL;
+	dst->input = src->input ? ft_strdup(src->input) : NULL;
 	if (src->args)
 		dst->args = copypasta(src->args, 0);
 	else
@@ -68,13 +64,13 @@ void			cut_list(t_sh *sh, t_execs *igo)
 {
 	if (!igo->copy)
 	{
-		igo->copy = copy_segment(sh, igo->tmp);
+		igo->copy = copy_segment(igo->tmp);
 		igo->copy->first = 1;
 		igo->head = igo->copy;
 	}
 	else
 	{
-		igo->copy->next = copy_segment(sh, igo->tmp);
+		igo->copy->next = copy_segment(igo->tmp);
 		igo->copy->next->first = 0;
 		igo->copy->next->prev = igo->copy;
 		igo->copy = igo->copy->next;

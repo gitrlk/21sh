@@ -6,13 +6,13 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/02 18:48:49 by jecarol           #+#    #+#             */
-/*   Updated: 2018/05/03 04:00:54 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/03 15:14:14 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/sh.h"
 
-void		go_down(t_edit *line)
+void			go_down(t_edit *line)
 {
 	if ((line->cursor_pos % ((line->sz.ws_col)) == 0))
 	{
@@ -20,7 +20,6 @@ void		go_down(t_edit *line)
 		tputs(tgetstr("cr", NULL), 1, ft_pointchar);
 	}
 }
-
 
 void			double_ignore(char *s, t_parsing *data)
 {
