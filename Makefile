@@ -6,13 +6,13 @@
 #    By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/04/19 14:14:34 by jecarol           #+#    #+#              #
-#    Updated: 2018/05/03 15:40:12 by jecarol          ###   ########.fr        #
+#    Updated: 2018/05/03 18:01:32 by jecarol          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 NAME = 21sh
 
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror
 
 SRCS_LIST = main.c line_movement.c line_edit.c copy_paste.c term.c\
 line_edit_more.c env.c history.c tokenizer.c parsing.c freesets.c\
@@ -45,14 +45,14 @@ SUCCESS = $(C_GOOD)COMPILATION SUCCEEDED
 all: $(NAME)
 
 $(NAME): $(OBJS) includes/sh.h
-	make -C ./libft/
-	echo $(C_DURING)"Compiling" [ $(NAME) . . . ]
-	$(CC) $(CFLAGS) -ltermcap $(OBJS) $(LIB) -o $(NAME)
-	echo $(SUCCESS)
+	@make -C ./libft/
+	@echo $(C_DURING)"Compiling" [ $(NAME) . . . ]
+	@$(CC) $(CFLAGS) -ltermcap $(OBJS) $(LIB) -o $(NAME)
+	@echo $(SUCCESS)
 
 $(OBJS_DIR)%.o : $(SRCS_DIR)%.c includes/sh.h
-	mkdir -p $(OBJS_DIR)
-	$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
+	@mkdir -p $(OBJS_DIR)
+	@$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
 
 clean:
 		@/bin/rm -rf $(OBJS_DIR)

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:47:34 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 23:05:42 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/03 17:53:58 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char const		*cut_d_quotes(char const *s, char d, t_split *vals)
 	}
 	else
 	{
-		vals->t[vals->index] = ft_strdup(&d);
+		vals->t[vals->index] = ft_strdup("\'");
 		vals->index++;
 	}
 	return (s);
@@ -44,7 +44,7 @@ char const		*cut_e_quotes(char const *s, char e, t_split *vals)
 	}
 	else
 	{
-		vals->t[vals->index] = ft_strdup(&e);
+		vals->t[vals->index] = ft_strdup("\"");
 		vals->index++;
 	}
 	return (s);
