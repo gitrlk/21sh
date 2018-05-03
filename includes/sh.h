@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/01/25 01:35:08 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/03 01:50:09 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/03 15:38:01 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -278,7 +278,7 @@ void				reset_fd(t_sh *sh, int mod);
 void				do_pipes(t_lexit *list, t_env **env, t_sh *sh);
 int					get_segment_number(t_sh *sh);
 int					double_check(t_lexit *lst);
-t_lexit				*copy_segment(t_sh *sh, t_lexit *src);
+t_lexit				*copy_segment(t_lexit *src);
 int					check_semi(t_sh *sh, t_lexit *lst);
 void				execute(t_sh *sh);
 void				execute_builtin(t_lexit *list, t_env **env, t_sh *sh);
@@ -290,7 +290,7 @@ void				heredoc_work(t_sh *sh, t_lexit *list, t_hdc *valhd);
 t_execs				*init_igo(t_sh *sh);
 void				init_structs(t_edit *line, t_fday *fd);
 int					get_execs(t_sh *sh);
-void				cut_list(t_sh *sh, t_execs *igo);
+void				cut_list(t_execs *igo);
 void				exec_segment(t_sh *sh, t_execs *igo);
 void				exec_last_segment(t_sh *sh, t_execs *igo);
 int					free_igo(t_execs *igo, int mod);

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:49:57 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/03 15:16:34 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/03 15:35:58 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ t_lexit			*copy_segment(t_lexit *src)
 	return (dst);
 }
 
-void			cut_list(t_sh *sh, t_execs *igo)
+void			cut_list(t_execs *igo)
 {
 	if (!igo->copy)
 	{

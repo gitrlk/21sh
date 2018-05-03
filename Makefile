@@ -6,7 +6,7 @@
 #    By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/04/19 14:14:34 by jecarol           #+#    #+#              #
-#    Updated: 2018/05/03 01:55:53 by jecarol          ###   ########.fr        #
+#    Updated: 2018/05/03 15:40:12 by jecarol          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 NAME = 21sh
@@ -44,15 +44,15 @@ SUCCESS = $(C_GOOD)COMPILATION SUCCEEDED
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	@make -C ./libft/
-	@echo $(C_DURING)"Compiling" [ $(NAME) . . . ]
-	@$(CC) $(CFLAGS) $^ $(LIB) -o $(NAME) -ltermcap
-	@echo $(SUCCESS)
+$(NAME): $(OBJS) includes/sh.h
+	make -C ./libft/
+	echo $(C_DURING)"Compiling" [ $(NAME) . . . ]
+	$(CC) $(CFLAGS) -ltermcap $(OBJS) $(LIB) -o $(NAME)
+	echo $(SUCCESS)
 
-$(OBJS_DIR)%.o : $(SRCS_DIR)%.c
-	@mkdir -p $(OBJS_DIR)
-	@$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
+$(OBJS_DIR)%.o : $(SRCS_DIR)%.c includes/sh.h
+	mkdir -p $(OBJS_DIR)
+	$(CC) $(CFLAGS) $(HEADERS) -c $< -o $@
 
 clean:
 		@/bin/rm -rf $(OBJS_DIR)

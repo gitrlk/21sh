@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 18:17:42 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/03 04:33:37 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/03 15:38:26 by jecarol          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ int			get_execs(t_sh *sh)
 	{
 		while (igo->tmp)
 		{
-			cut_list(sh, igo);
+			cut_list(igo);
 			if (igo->tmp->next && igo->tmp->next->prio == SEMICOLON)
 				exec_segment(sh, igo);
 			if (igo->tmp->prio != SEMICOLON && !igo->tmp->next)
