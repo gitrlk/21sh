@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:11:40 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/03 01:50:01 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/03 03:52:21 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,21 +33,21 @@ int				check_if_over(char *input, t_parsing *data)
 	return (0);
 }
 
-int				check_left(char *tmp, char *tmp1, t_parsing *data, char *input)
+int				check_left(char *tmp, char *tmp1, t_parsing *d, char *s)
 {
-	if (input[data->index + 1] == '\0' && data->to_node_op[0] != ';')
+	if (s[d->index] && s[d->index + 1] == '\0' && d->to_node_op[0] != ';')
 		return (0);
-	if (data->index == 1)
+	if (d->index == 1)
 		return (0);
-	data->check = data->to_node_op[1] == '\0' ? data->index - data->anex :
-		data->index - (data->anex + 1);
-	if (data->to_node_op[1] != '\0')
+	d->check = d->to_node_op[1] == '\0' ? d->index - d->anex :
+		d->index - (d->anex + 1);
+	if (d->to_node_op[1] != '\0')
 	{
-		if (ft_isdigit(data->to_node_op[0]))
-			data->check = data->to_node_op[0] == '\0' ? data->index - data->anex
-				: data->index - (data->anex + 2);
+		if (ft_isdigit(d->to_node_op[0]))
+			d->check = d->to_node_op[0] == '\0' ? d->index - d->anex
+				: d->index - (d->anex + 2);
 	}
-	tmp1 = ft_strsub(input, data->anex, data->check);
+	tmp1 = ft_strsub(s, d->anex, d->check);
 	if (!ft_isstrprint(tmp = ft_strtrim(tmp1)))
 	{
 		ft_strdel(&tmp1);
@@ -56,9 +56,9 @@ int				check_left(char *tmp, char *tmp1, t_parsing *data, char *input)
 	}
 	ft_strdel(&tmp);
 	ft_strdel(&tmp1);
-	data->subber = data->index;
-	data->subber++;
-	data->index++;
+	d->subber = d->index;
+	d->subber++;
+	d->index++;
 	return (1);
 }
 

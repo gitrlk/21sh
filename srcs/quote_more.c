@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:35:33 by rfabre            #+#    #+#             */
-/*   Updated: 2018/04/27 19:36:22 by rfabre           ###   ########.fr       */
+/*   Updated: 2018/05/03 03:42:53 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int			do_quotes(t_sh *sh, char quote)
 
 void		get_matching_quotes(size_t *i, int *sq, int *dq, char *input)
 {
-	if (input[*i] == '\'')
+	if (input[*i] && input[*i] == '\'')
 	{
 		(*i)++;
 		(*sq)++;

@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 19:49:57 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/03 01:02:20 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/03 03:59:43 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,11 @@ t_lexit			*add_node_proxy(char *input, t_sh *sh)
 {
 	t_lexit		*tmp;
 	char		**apaths;
-	int			i;
 
-	i = 0;
 	if (!input)
 		return (NULL);
 	if (!(tmp = ft_memalloc(sizeof(t_lexit))))
 		return (NULL);
-	(void)sh;
 	apaths = ft_set_paths(sh->env);
 	tmp->input = ft_strtrim(input);
 	tmp->args = ft_prep_input(input);
@@ -40,7 +37,20 @@ t_lexit			*copy_segment(t_sh *sh, t_lexit *src)
 {
 	t_lexit		*dst;
 
-	dst = add_node(src->input, sh);
+	(void)sh;
+	dst = ft_memalloc(sizeof(t_lexit));
+	dst->input = ft_strdup(src->input);
+	dst->args = copypasta(src->args, 0);
+	dst->command = ft_strdup(src->command);
+	dst->is_pipe = src->is_pipe;
+	dst->prio = src->prio;
+	dst->first = src->first;
+	dst->agr = src->agr;
+	dst->checker = src->checker;
+	dst->fdsrc = src->fdsrc;
+	dst->fddst = src->fddst;
+	dst->fdclose = src->fdclose;
+	dst->quote = src->quote;
 	dst->redirs = src->redirs;
 	return (dst);
 }

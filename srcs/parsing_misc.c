@@ -6,7 +6,7 @@
 /*   By: jecarol <jecarol@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/05/02 16:01:19 by jecarol           #+#    #+#             */
-/*   Updated: 2018/05/03 01:47:40 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/03 04:00:50 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,25 +83,4 @@ int				setup_parsing(t_parsing *data, t_env *env, t_sh *sh)
 		return (1);
 	}
 	return (0);
-}
-
-void			ignore_quotes(char *s, t_parsing *data, int mod)
-{
-	if (mod == 1)
-	{
-		if (s[data->index] == '\'')
-		{
-			data->index++;
-			while (s[data->index] != '\'')
-				data->index++;
-		}
-		if (s[data->index] == '\"')
-		{
-			data->index++;
-			while (s[data->index] != '\"')
-				data->index++;
-		}
-	}
-	if (mod == 2)
-		ignore_quotes_more(s, data);
 }

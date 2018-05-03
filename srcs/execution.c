@@ -6,7 +6,7 @@
 /*   By: rfabre <rfabre@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/04/27 18:16:06 by rfabre            #+#    #+#             */
-/*   Updated: 2018/05/03 01:42:23 by jecarol          ###   ########.fr       */
+/*   Updated: 2018/05/03 03:42:24 by rfabre           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ void				execute(t_sh *sh)
 {
 	if (sh->execs->prio == SEMICOLON || sh->execs->prio == REDIR_R ||
 	sh->execs->prio == REDIR_RR || sh->execs->prio == REDIR_L ||
-	sh->execs->prio == HEREDOC || sh->execs->prio == AND_OR)
+	sh->execs->prio == HEREDOC || sh->execs->prio == AND_OR ||
+	sh->execs->prio == ARG)
 		ft_errors(6, NULL, sh->execs->args[0]);
 	else if (check_if_builtin(sh->execs))
 		exec_no_fork(sh->execs, &sh->env, sh);
